@@ -19,28 +19,33 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
-
 @Composable
-fun AddNoteScreen(
-    state: NoteState,
+fun AddManScreen(
+    state: ManState,
     navController: NavController,
-    onEvent: (NotesEvent) -> Unit
+    onEvent: (ManEvent) -> Unit
 ) {
 
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = {
-
-                onEvent(NotesEvent.SaveNote(
-                    title = state.title.value,
-                    description = state.description.value
-                ))
-                navController.popBackStack()
+                // Controllo se i campi non sono vuoti prima di salvare
+                if (state.title.value.isNotBlank() && state.description.value.isNotBlank()) {
+                    onEvent(
+                        ManEvent.SaveMan(
+                        title = state.title.value,
+                        description = state.description.value
+                    ))
+                    // Torna alla schermata precedente
+                    navController.popBackStack()
+                } else {
+                    // Mostra un messaggio di errore o fai qualcos'altro in caso di campi vuoti
+                }
             }) {
 
                 Icon(
                     imageVector = Icons.Rounded.Check,
-                    contentDescription = "Save Note"
+                    contentDescription = "Salva Manutenzione"
                 )
 
             }
@@ -82,11 +87,7 @@ fun AddNoteScreen(
                 placeholder = {
                     Text(text = "Description")
                 }
-
             )
-
         }
-
     }
-
 }

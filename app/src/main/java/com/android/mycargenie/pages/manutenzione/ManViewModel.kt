@@ -3,8 +3,8 @@ package com.android.mycargenie.pages.manutenzione
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.android.mycargenie.Data.Note
-import com.android.mycargenie.Data.NoteDao
+import com.android.mycargenie.data.Man
+import com.android.mycargenie.data.ManDao
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -13,46 +13,46 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class NotesViewModel(
-    private val dao: NoteDao
+class ManViewModel(
+    private val dao: ManDao
 ) : ViewModel() {
 
     private val isSortedByDateAdded = MutableStateFlow(true)
 
-    private var notes =
+    private var mans =
         isSortedByDateAdded.flatMapLatest { sort ->
             if (sort) {
-                dao.getNotesOrderdByDateAdded()
+                dao.getManOrderdByDateAdded()
             } else {
-                dao.getNotesOrderdByTitle()
+                dao.getManOrderdByTitle()
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
-    val _state = MutableStateFlow(NoteState())
+    val _state = MutableStateFlow(ManState())
     val state =
-        combine(_state, isSortedByDateAdded, notes) { state, isSortedByDateAdded, notes ->
+        combine(_state, isSortedByDateAdded, mans) { state, isSortedByDateAdded, mans ->
             state.copy(
-                notes = notes
+                men = mans
             )
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), NoteState())
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ManState())
 
-    fun onEvent(event: NotesEvent) {
+    fun onEvent(event: ManEvent) {
         when (event) {
-            is NotesEvent.DeleteNote -> {
+            is ManEvent.DeleteMan -> {
                 viewModelScope.launch {
-                    dao.deleteNote(event.note)
+                    dao.deleteMan(event.man)
                 }
             }
 
-            is NotesEvent.SaveNote -> {
-                val note = Note(
+            is ManEvent.SaveMan -> {
+                val man = Man(
                     title = state.value.title.value,
                     description = state.value.description.value,
                     dateAdded = System.currentTimeMillis()
                 )
 
                 viewModelScope.launch {
-                    dao.upsertNote(note)
+                    dao.upsertMan(man)
                 }
 
                 _state.update {
@@ -63,7 +63,7 @@ class NotesViewModel(
                 }
             }
 
-            NotesEvent.SortNotes -> {
+            ManEvent.SortMan -> {
                 isSortedByDateAdded.value = !isSortedByDateAdded.value
             }
         }

@@ -1,10 +1,10 @@
-package com.android.mycargenie.Data
+package com.android.mycargenie.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class Note(
+data class Man(
 
     val title: String,
     val description: String,

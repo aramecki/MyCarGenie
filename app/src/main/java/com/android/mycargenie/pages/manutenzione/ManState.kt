@@ -2,11 +2,11 @@ package com.android.mycargenie.pages.manutenzione
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import com.android.mycargenie.Data.Note
+import com.android.mycargenie.data.Man
 
-data class NoteState(
+data class ManState(
 
-    val notes: List<Note> = emptyList(),
+    val men: List<Man> = emptyList(),
     val title: MutableState<String> = mutableStateOf(""),
     val description: MutableState<String> = mutableStateOf("")
 

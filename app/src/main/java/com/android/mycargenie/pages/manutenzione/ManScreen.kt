@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -26,7 +25,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,12 +35,14 @@ import com.android.mycargenie.R
 
 @Composable
 fun ManutenzioneScreen(
-                       state: NoteState,
-                       navController: NavController,
-                       onEvent: (NotesEvent) -> Unit
+    state: ManState,
+    navController: NavController,
+    onEvent: (ManEvent) -> Unit
 ) {
 
+
     Scaffold(
+
         topBar = {
             Row(
                 modifier = Modifier
@@ -51,17 +53,18 @@ fun ManutenzioneScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = stringResource(id = R.string.app_name),
+                    text = "Manutenzione", //Da inserire in strings stringResource(id = R.string.app_name),
                     modifier = Modifier.weight(1f),
-                    fontSize = 17.sp,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onPrimary
                 )
 
-                IconButton(onClick = { onEvent(NotesEvent.SortNotes) }) {
+
+                IconButton(onClick = { onEvent(ManEvent.SortMan) }) {
                     Icon(
-                        imageVector = Icons.Rounded.Check,
-                        contentDescription = "Sort Notes",
+                        imageVector = ImageVector.vectorResource(id = R.drawable.sort),
+                        contentDescription = "Ordina Manutenzione",
                         modifier = Modifier.size(35.dp),
                         tint = MaterialTheme.colorScheme.onPrimary
                     )
@@ -73,9 +76,9 @@ fun ManutenzioneScreen(
             FloatingActionButton(onClick = {
                 state.title.value = ""
                 state.description.value = ""
-                navController.navigate("AddNoteScreen")
+                navController.navigate("AddManScreen")
             }) {
-                Icon(imageVector = Icons.Rounded.Add, contentDescription = "Add new note")
+                Icon(imageVector = Icons.Rounded.Add, contentDescription = "Aggiungi Manutenzione")
             }
         }
     ) { paddingValues ->
@@ -88,8 +91,8 @@ fun ManutenzioneScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
-            items(state.notes.size) { index ->
-                NoteItem(
+            items(state.men.size) { index ->
+                ManItem(
                     state = state,
                     index = index,
                     onEvent = onEvent
@@ -103,10 +106,10 @@ fun ManutenzioneScreen(
 }
 
 @Composable
-fun NoteItem(
-    state: NoteState,
+fun ManItem(
+    state: ManState,
     index: Int,
-    onEvent: (NotesEvent) -> Unit
+    onEvent: (ManEvent) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -120,32 +123,32 @@ fun NoteItem(
         ) {
 
             Text(
-                text = state.notes[index].title,
+                text = state.men[index].title,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onPrimary
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = state.notes[index].description,
+                text = state.men[index].description,
                 fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
 
         }
 
         IconButton(
             onClick = {
-                onEvent(NotesEvent.DeleteNote(state.notes[index]))
+                onEvent(ManEvent.DeleteMan(state.men[index]))
             }
         ) {
 
             Icon(
                 imageVector = Icons.Rounded.Delete,
-                contentDescription = "Delete Note",
-                modifier = Modifier.size(35.dp),
+                contentDescription = "Elimina Manutenzione",
+                modifier = Modifier.size(18.dp),
                 tint = MaterialTheme.colorScheme.onPrimaryContainer
             )
 
