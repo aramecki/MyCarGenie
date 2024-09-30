@@ -1,6 +1,7 @@
 package com.android.mycargenie
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -16,15 +17,20 @@ import com.android.mycargenie.pages.manutenzione.ManViewModel
 import com.android.mycargenie.ui.MainApp
 import com.android.mycargenie.ui.theme.MyCarGenieTheme
 
+
 class MainActivity : ComponentActivity() {
+
 
     private val database by lazy {
         Room.databaseBuilder(
             applicationContext,
             ManDatabase::class.java,
             "man.db"
-        ).build()
+        )            .build()
     }
+
+
+
 
     private val viewModel by viewModels<ManViewModel>(
         factoryProducer = {
@@ -39,6 +45,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+
+            deleteExistingDatabase()
+
             MyCarGenieTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -50,7 +59,23 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    private fun deleteExistingDatabase() {
+        // Nome del database senza estensione
+        val databaseName = "man.db"
+
+        // Elimina il database esistente
+        val deleted = this.deleteDatabase(databaseName)
+
+        if (deleted) {
+            Log.d("MainActivity", "Database $databaseName eliminato con successo.")
+        } else {
+            Log.d("MainActivity", "Il database $databaseName non esiste o non è stato eliminato.")
+        }
+    }
 }
+
+
 
 
 

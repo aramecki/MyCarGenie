@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class Man(
 
     val title: String,
+    val date: String,
     val description: String,
     val dateAdded: Long,
 

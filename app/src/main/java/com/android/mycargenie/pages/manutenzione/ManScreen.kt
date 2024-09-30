@@ -75,6 +75,7 @@ fun ManutenzioneScreen(
         floatingActionButton = {
             FloatingActionButton(onClick = {
                 state.title.value = ""
+                state.date.value = ""
                 state.description.value = ""
                 navController.navigate("AddManScreen")
             }) {
@@ -124,6 +125,15 @@ fun ManItem(
 
             Text(
                 text = state.men[index].title,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = state.men[index].date,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onPrimary

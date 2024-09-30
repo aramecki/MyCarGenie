@@ -8,6 +8,7 @@ data class ManState(
 
     val men: List<Man> = emptyList(),
     val title: MutableState<String> = mutableStateOf(""),
+    val date: MutableState<String> = mutableStateOf(""),
     val description: MutableState<String> = mutableStateOf("")
 
 )

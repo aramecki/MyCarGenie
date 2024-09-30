@@ -47,6 +47,7 @@ class ManViewModel(
             is ManEvent.SaveMan -> {
                 val man = Man(
                     title = state.value.title.value,
+                    date = state.value.date.value,
                     description = state.value.description.value,
                     dateAdded = System.currentTimeMillis()
                 )
@@ -58,6 +59,7 @@ class ManViewModel(
                 _state.update {
                     it.copy(
                         title = mutableStateOf(""),
+                       // date = mutableStateOf(""),
                         description = mutableStateOf("")
                     )
                 }

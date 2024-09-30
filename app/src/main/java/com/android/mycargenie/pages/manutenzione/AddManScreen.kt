@@ -33,8 +33,9 @@ fun AddManScreen(
                 if (state.title.value.isNotBlank() && state.description.value.isNotBlank()) {
                     onEvent(
                         ManEvent.SaveMan(
-                        title = state.title.value,
-                        description = state.description.value
+                            title = state.title.value,
+                            date = state.date.value,
+                            description = state.description.value
                     ))
                     // Torna alla schermata precedente
                     navController.popBackStack()
@@ -71,7 +72,25 @@ fun AddManScreen(
                     fontSize = 17.sp
                 ),
                 placeholder = {
-                    Text(text = "Title")
+                    Text(text = "Titolo") //Da aggiungere a styring
+                }
+
+            )
+
+            TextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                value = state.date.value,
+                onValueChange = {
+                    state.date.value = it
+                },
+                textStyle = TextStyle(
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 17.sp
+                ),
+                placeholder = {
+                    Text(text = "Data") // Da aggiungere a string
                 }
 
             )
@@ -85,7 +104,7 @@ fun AddManScreen(
                     state.description.value = it
                 },
                 placeholder = {
-                    Text(text = "Description")
+                    Text(text = "Descrizione") // Da aggiungere a string
                 }
             )
         }
