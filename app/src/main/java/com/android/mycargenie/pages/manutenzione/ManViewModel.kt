@@ -22,9 +22,9 @@ class ManViewModel(
     private var mans =
         isSortedByDateAdded.flatMapLatest { sort ->
             if (sort) {
-                dao.getManOrderdByDateAdded()
+                dao.getManOrderByDate()
             } else {
-                dao.getManOrderdByTitle()
+                dao.getManOrderByDateAdded()
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
@@ -48,6 +48,7 @@ class ManViewModel(
                 val man = Man(
                     title = state.value.title.value,
                     date = state.value.date.value,
+                    place = state.value.place.value,
                     description = state.value.description.value,
                     dateAdded = System.currentTimeMillis()
                 )
@@ -59,7 +60,8 @@ class ManViewModel(
                 _state.update {
                     it.copy(
                         title = mutableStateOf(""),
-                       // date = mutableStateOf(""),
+                        date = mutableStateOf(""),
+                        place = mutableStateOf(""),
                         description = mutableStateOf("")
                     )
                 }

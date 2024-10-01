@@ -10,6 +10,7 @@ sealed interface ManEvent {
     data class SaveMan(
         val title: String,
         val date: String,
+        val place: String,
         val description: String
     ): ManEvent
 }
