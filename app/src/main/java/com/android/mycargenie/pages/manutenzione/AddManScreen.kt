@@ -6,17 +6,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -33,7 +29,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,7 +39,6 @@ import androidx.navigation.compose.rememberNavController
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import java.util.Objects.toString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -91,9 +85,12 @@ fun AddManScreen(
                     onEvent(
                         ManEvent.SaveMan(
                             title = state.title.value,
-                            date = state.date.value,
+                            type = state.type.value,
                             place = state.place.value,
-                            description = state.description.value
+                            date = state.date.value,
+                            kmt = state.kmt.value,
+                            description = state.description.value,
+                            price = state.price.value
                         )
                     )
                     navController.popBackStack() // Torna alla schermata precedente
@@ -188,7 +185,7 @@ fun AddManScreen(
 }
 
 
-// Funzione di supporto per formattare la data in modo leggibile
+// Formattazione data
 fun formatDate(timestamp: Long): String {
     val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     return formatter.format(Date(timestamp))

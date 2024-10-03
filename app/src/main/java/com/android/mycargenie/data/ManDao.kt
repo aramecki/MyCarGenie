@@ -15,11 +15,11 @@ interface ManDao {
     @Delete
     suspend fun deleteMan(man: Man)
 
-    @Query("SELECT * FROM man ORDER BY dateAdded")
-    fun getManOrderdByDateAdded(): Flow<List<Man>>
+    @Query("SELECT * FROM man ORDER BY date")
+    fun getManOrderedByDate(): Flow<List<Man>>
 
 
-    @Query("SELECT * FROM man ORDER BY title ASC")
-    fun getManOrderdByTitle(): Flow<List<Man>>
+    @Query("SELECT * FROM man ORDER BY dateAdded ASC")
+    fun getManOrderedByDateAdded(): Flow<List<Man>>
 
 }

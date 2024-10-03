@@ -13,6 +13,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.FloatingActionButton
@@ -75,9 +78,12 @@ fun ManutenzioneScreen(
         floatingActionButton = {
             FloatingActionButton(onClick = {
                 state.title.value = ""
-                state.date.value = ""
+                state.type.value = ""
                 state.place.value = ""
+                state.date.value = ""
+                state.kmt.value = 0
                 state.description.value = ""
+                state.price.value = 0.0
                 navController.navigate("AddManScreen")
             }) {
                 Icon(imageVector = Icons.Rounded.Add, contentDescription = "Aggiungi Manutenzione")
@@ -120,10 +126,28 @@ fun ManItem(
             .background(MaterialTheme.colorScheme.primaryContainer)
             .padding(12.dp)
     ) {
+        val icon = when (state.men[index].type) {
+            "Meccanico" -> Icons.Default.Build // Sostituisci con l'icona che desideri
+            "Elettrauto" -> Icons.Default.Build // Sostituisci con l'icona che desideri
+            "Carrozziere" -> Icons.Default.Call // Sostituisci con l'icona che desideri
+            else -> Icons.Default.PlayArrow // Icona per "Altro"
+        }
+
+        // Aggiungi l'icona
+        Icon(
+            imageVector = icon,
+            contentDescription = null, // Aggiungi una descrizione se necessario
+            modifier = Modifier
+                .size(30.dp)
+                .padding(end = 8.dp),
+            tint = MaterialTheme.colorScheme.onPrimary
+        )
+
         Column(
             modifier = Modifier.weight(1f)
         ) {
 
+            //Titolo
             Text(
                 text = state.men[index].title,
                 fontSize = 18.sp,
@@ -131,8 +155,29 @@ fun ManItem(
                 color = MaterialTheme.colorScheme.onPrimary
             )
 
+            /*
             Spacer(modifier = Modifier.height(8.dp))
 
+            //Tipo
+            Text(
+                text = state.men[index].type,
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+            */
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            //Luogo
+            Text(
+                text = state.men[index].place,
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            //Data
             Text(
                 text = state.men[index].date,
                 fontSize = 18.sp,
@@ -143,7 +188,7 @@ fun ManItem(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = state.men[index].place,
+                text = state.men[index].kmt.toString(),
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
@@ -154,6 +199,18 @@ fun ManItem(
                 text = state.men[index].description,
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            val price = state.men[index].price.toString().replace('.', ',')
+
+            Text(
+                text = "$price €",
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                modifier = Modifier
+                    .align(Alignment.End)
             )
 
         }
@@ -175,7 +232,3 @@ fun ManItem(
 
     }
 }
-
-
-
-

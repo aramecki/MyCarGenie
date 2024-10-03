@@ -53,7 +53,6 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    // Passiamo il viewModel a MainApp
                     MainApp(viewModel)
                 }
             }

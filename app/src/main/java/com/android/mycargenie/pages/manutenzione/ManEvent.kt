@@ -3,14 +3,17 @@ package com.android.mycargenie.pages.manutenzione
 import com.android.mycargenie.data.Man
 
 sealed interface ManEvent {
-    object SortMan: ManEvent
+    data object SortMan: ManEvent
 
     data class DeleteMan(val man: Man): ManEvent
 
     data class SaveMan(
         val title: String,
-        val date: String,
+        val type: String,
         val place: String,
-        val description: String
+        val date: String,
+        val kmt: Int,
+        val description: String,
+        val price: Double,
     ): ManEvent
 }
