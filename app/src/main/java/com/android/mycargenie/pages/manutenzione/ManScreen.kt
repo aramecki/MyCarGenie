@@ -53,7 +53,7 @@ fun ManutenzioneScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Manutenzione", //Da inserire in strings stringResource(id = R.string.app_name),
+                    text = "Manutenzione", //Da inserire in strings
                     modifier = Modifier.weight(1f),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold,
