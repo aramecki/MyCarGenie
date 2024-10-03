@@ -156,16 +156,6 @@ fun ManItem(
                 color = MaterialTheme.colorScheme.onPrimary
             )
 
-            /*
-            Spacer(modifier = Modifier.height(8.dp))
-
-            //Tipo
-            Text(
-                text = state.men[index].type,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-            */
 
             Spacer(modifier = Modifier.height(8.dp))
 

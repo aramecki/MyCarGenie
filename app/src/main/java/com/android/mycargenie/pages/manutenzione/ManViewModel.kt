@@ -59,7 +59,6 @@ class ManViewModel(
                     kmt = state.value.kmt.value,
                     description = state.value.description.value,
                     price = state.value.price.value,
-                    dateAdded = System.currentTimeMillis()
                 )
 
                 viewModelScope.launch {

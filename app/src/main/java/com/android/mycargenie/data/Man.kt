@@ -13,7 +13,6 @@ data class Man(
     val kmt: Int,
     val description: String,
     val price: Double,
-    val dateAdded: Long,
 
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0
