@@ -15,7 +15,7 @@ interface ManDao {
     @Delete
     suspend fun deleteMan(man: Man)
 
-    @Query("SELECT * FROM man ORDER BY date")
+    @Query("SELECT * FROM man ORDER BY date ASC")
     fun getManOrderedByDate(): Flow<List<Man>>
 
 

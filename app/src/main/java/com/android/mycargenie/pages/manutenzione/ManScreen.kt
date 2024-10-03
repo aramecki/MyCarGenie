@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Delete
@@ -127,16 +128,16 @@ fun ManItem(
             .padding(12.dp)
     ) {
         val icon = when (state.men[index].type) {
-            "Meccanico" -> Icons.Default.Build // Sostituisci con l'icona che desideri
-            "Elettrauto" -> Icons.Default.Build // Sostituisci con l'icona che desideri
-            "Carrozziere" -> Icons.Default.Call // Sostituisci con l'icona che desideri
-            else -> Icons.Default.PlayArrow // Icona per "Altro"
+            "Meccanico" -> Icons.Default.Build
+            "Elettrauto" -> Icons.Default.Edit
+            "Carrozziere" -> Icons.Default.Call
+            else -> Icons.Default.PlayArrow
         }
 
-        // Aggiungi l'icona
+
         Icon(
             imageVector = icon,
-            contentDescription = null, // Aggiungi una descrizione se necessario
+            contentDescription = state.men[index].type,
             modifier = Modifier
                 .size(30.dp)
                 .padding(end = 8.dp),

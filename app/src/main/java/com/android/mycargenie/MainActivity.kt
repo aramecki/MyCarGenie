@@ -39,6 +39,7 @@ class MainActivity : ComponentActivity() {
                     return ManViewModel(database.dao()) as T
                 }
             }
+
         }
     )
 

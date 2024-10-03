@@ -4,33 +4,48 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.DateRange
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,7 +66,7 @@ fun AddManScreen(
     var showError by remember { mutableStateOf(false) }
     var showDatePicker by remember { mutableStateOf(false) } // Stato per controllare quando mostrare il DatePickerDialog
 
-    // DatePickerDialog da mostrare quando l'utente clicca sul campo data
+    // DatePickerDialog
     if (showDatePicker) {
         val datePickerState = rememberDatePickerState()
 
@@ -81,7 +96,7 @@ fun AddManScreen(
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                if (state.title.value.isNotBlank() && state.date.value.isNotBlank() && state.place.value.isNotBlank() && state.description.value.isNotBlank()) {
+                if (state.title.value.isNotBlank() && state.date.value.isNotBlank() && state.description.value.isNotBlank()) {
                     onEvent(
                         ManEvent.SaveMan(
                             title = state.title.value,
@@ -93,9 +108,9 @@ fun AddManScreen(
                             price = state.price.value
                         )
                     )
-                    navController.popBackStack() // Torna alla schermata precedente
+                    navController.popBackStack()
                 } else {
-                    showError = true // Mostra il messaggio di errore
+                    showError = true
                 }
             }) {
                 Icon(
@@ -106,72 +121,188 @@ fun AddManScreen(
         }
     ) { paddingValues ->
 
+        val focusManager = LocalFocusManager.current
+
+
         Column(
-            verticalArrangement = Arrangement.Top, // Assicura che gli elementi vengano disposti dall'alto
-            horizontalAlignment = Alignment.Start, // Allinea gli elementi a sinistra
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start,
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
 
+            //Titolo
             Row {
-                TextField(
+                OutlinedTextField(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
                     value = state.title.value,
-                    onValueChange = { state.title.value = it },
+                    onValueChange = { newValue ->
+                        if (newValue.length <= 50) {
+                            state.title.value = newValue
+                        }
+                    },
                     textStyle = TextStyle(
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 17.sp
                     ),
-                    placeholder = { Text(text = "Titolo") }
+                    placeholder = { Text(text = "Titolo") },
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Next) }
+                    )
                 )
             }
 
+
+            val types = listOf("Meccanico", "Elettrauto", "Carrozziere", "Altro")
+
             Row {
-// 2. Selettore di data con pulsante
+                Column {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 8.dp, end = 8.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)  // Peso 1 per una distribuzione equa
+                                .padding(8.dp)  // Usa un padding uniforme
+                        ) {
+                            TypeDropdownMenu(
+                                types = types,
+                                selectedType = state.type
+                            )
+                        }
+
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(8.dp)
+                        ) {
+                            OutlinedTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                value = state.place.value,
+                                onValueChange = { newValue ->
+                                    if (newValue.length <= 16) {
+                                        state.place.value = newValue
+                                    }
+                                },
+                                textStyle = TextStyle(
+                                    fontSize = 17.sp
+                                ),
+                                placeholder = { Text(text = "Luogo") },
+                                keyboardOptions = KeyboardOptions.Default.copy(
+                                    imeAction = ImeAction.Next
+                                ),
+                                keyboardActions = KeyboardActions(
+                                    onNext = { focusManager.moveFocus(FocusDirection.Next) }
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+
+
+            //Data
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
-                        .padding(16.dp)
+                        .padding(start = 16.dp, end = 8.dp)
                         .clickable {
                             showDatePicker = true
-                        } // Quando clicchi, mostra il DatePickerDialog
+                        }
+                        .clip(RoundedCornerShape(4.dp))
                         .background(MaterialTheme.colorScheme.secondaryContainer)
                         .padding(16.dp)
                 ) {
-                    Text(
-                        text = state.date.value.ifEmpty { "Data" },
-                        //fontWeight = FontWeight.SemiBold,
-                        fontSize = 17.sp
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.DateRange,
+                            contentDescription = "Calendario"
+                        )
+                        Text(
+                            text = state.date.value.ifEmpty { "Data" },
+                            fontSize = 17.sp,
+                            modifier = Modifier
+                                .padding(start = 8.dp)
+                        )
+                    }
                 }
 
-                Row {
-                    TextField(
+                //Kilometri
+                Column {
+                    OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
-                        value = state.place.value,
-                        onValueChange = { state.place.value = it },
-                        placeholder = { Text(text = "Luogo") }
+                            .padding(start = 8.dp, end = 16.dp),
+                        value = if (state.kmt.value == 0) "" else state.kmt.value.toString(),
+                        onValueChange = { newValue ->
+                            if (newValue.isEmpty()) {
+                                state.kmt.value = 0
+                            } else {
+                                newValue.toIntOrNull()?.let { intValue ->
+                                    if (intValue in 1..9_999_999) {
+                                        state.kmt.value = intValue
+                                    }
+                                }
+                            }
+                        },
+                        placeholder = { Text(text = "Kilometri") },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onNext = { focusManager.moveFocus(FocusDirection.Next) }
+                        )
                     )
                 }
             }
-
 
             // 3. Descrizione
             Row {
-                TextField(
+                // OutlinedTextField
+                OutlinedTextField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(top = 16.dp, start = 16.dp, end = 16.dp),
                     value = state.description.value,
-                    onValueChange = { state.description.value = it },
-                    placeholder = { Text(text = "Descrizione") }
+                    onValueChange = { newValue ->
+                        if (newValue.length <= 500) {
+                            state.description.value = newValue
+                        }
+                    },
+                    placeholder = { Text(text = "Descrizione") },
                 )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp, end = 16.dp)
+                ) {
+                    Spacer(Modifier.weight(1f))
+                    Text(
+                        text = "${state.description.value.length} / 500",
+                        style = TextStyle(
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            fontSize = 12.sp
+                        )
+                    )
+                }
             }
+        }
+    }
 
             if (showError) {
                 Text(
@@ -181,8 +312,8 @@ fun AddManScreen(
                 )
             }
         }
-    }
-}
+
+
 
 
 // Formattazione data
@@ -191,14 +322,57 @@ fun formatDate(timestamp: Long): String {
     return formatter.format(Date(timestamp))
 }
 
+
+@Composable
+fun TypeDropdownMenu(types: List<String>, selectedType: MutableState<String>) {
+    var isDropDownExpanded by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()  // Riempi tutta la larghezza disponibile
+            .clickable { isDropDownExpanded = true } // Clicca per espandere il dropdown
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .clip(RoundedCornerShape(4.dp))
+                .background(MaterialTheme.colorScheme.secondaryContainer)
+                .padding(16.dp)
+                .fillMaxWidth() // Assicurati che il Row occupi la larghezza massima
+        ) {
+            Text(text = selectedType.value.ifEmpty { "Seleziona un tipo" }) // Mostra un testo predefinito se non è selezionato
+            Icon(
+                imageVector = Icons.Rounded.ArrowDropDown,
+                contentDescription = "Dropdown Arrow"
+            )
+        }
+
+        DropdownMenu(
+            expanded = isDropDownExpanded,
+            onDismissRequest = { isDropDownExpanded = false }
+        ) {
+            types.forEachIndexed { _, type ->
+                DropdownMenuItem(
+                    text = { Text(text = type) },
+                    onClick = {
+                        selectedType.value = type // Aggiorna il tipo selezionato
+                        isDropDownExpanded = false // Chiudi il dropdown
+                    }
+                )
+            }
+        }
+    }
+}
+
 @SuppressLint("UnrememberedMutableState")
 @Preview
 @Composable
 fun PreviewAddManScreen() {
     val exampleState = ManState(
-        title = mutableStateOf("Titolo di esempio"),
+        title = mutableStateOf("Titolo"),
         date = mutableStateOf("01/01/2024"),
-        place = mutableStateOf("Luogo di esempio"),
+        place = mutableStateOf("12345678912345"),
         description = mutableStateOf("Descrizione di esempio")
     )
 
