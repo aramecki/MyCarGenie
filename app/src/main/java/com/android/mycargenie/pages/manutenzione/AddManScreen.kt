@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -41,7 +42,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -51,6 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.android.mycargenie.R
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -272,35 +277,91 @@ fun AddManScreen(
 
             // 3. Descrizione
             Row {
-                // OutlinedTextField
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                    value = state.description.value,
-                    onValueChange = { newValue ->
-                        if (newValue.length <= 500) {
-                            state.description.value = newValue
-                        }
-                    },
-                    placeholder = { Text(text = "Descrizione") },
-                )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 4.dp, end = 16.dp)
-                ) {
-                    Spacer(Modifier.weight(1f))
-                    Text(
-                        text = "${state.description.value.length} / 500",
-                        style = TextStyle(
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            fontSize = 12.sp
-                        )
+                Column {
+                    // OutlinedTextField
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                        value = state.description.value,
+                        onValueChange = { newValue ->
+                            if (newValue.length <= 500) {
+                                state.description.value = newValue
+                            }
+                        },
+                        placeholder = { Text(text = "Descrizione") },
                     )
+
+                    // Contatore dei caratteri
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 4.dp, end = 16.dp) // Padding per allineare meglio il contatore
+                    ) {
+                        Spacer(Modifier.weight(1f)) // Spaziatura per spingere il testo a destra
+                        Text(
+                            text = "${state.description.value.length} / 500",
+                            style = TextStyle(
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                fontSize = 12.sp
+                            )
+                        )
+                    }
                 }
             }
+
+
+            //Prezzo
+            Row(
+                modifier = Modifier
+                    .padding(top = 16.dp)
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f)
+                            .padding(end = 16.dp),
+                        value = if (state.price.value == 0.0) "" else state.price.value.toString()
+                            .replace('.', ','),
+                        onValueChange = { newValue ->
+                            val regex = Regex("^\\d{0,5}(,\\d{0,2})?\$")
+                            val formattedValue = newValue.replace(',', '.')
+                            if (newValue.isEmpty()) {
+                                state.price.value = 0.0
+                            } else if (regex.matches(newValue)) {
+                                formattedValue.toDoubleOrNull()?.let { doubleValue ->
+                                    if (doubleValue <= 99999.99) {
+                                        state.price.value = doubleValue
+                                    }
+                                }
+                            }
+                        },
+                        placeholder = { Text(text = "Prezzo") },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.euro_symbol),
+                                contentDescription = "Euro Icon",
+                                modifier = Modifier.size(20.dp)  // Imposta la dimensione desiderata
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onNext = {
+                                focusManager.moveFocus(FocusDirection.Next)
+                            }
+                        )
+                    )
+
+                }
+            }
+
         }
     }
 
@@ -341,7 +402,7 @@ fun TypeDropdownMenu(types: List<String>, selectedType: MutableState<String>) {
                 .padding(16.dp)
                 .fillMaxWidth() // Assicurati che il Row occupi la larghezza massima
         ) {
-            Text(text = selectedType.value.ifEmpty { "Seleziona un tipo" }) // Mostra un testo predefinito se non è selezionato
+            Text(text = selectedType.value.ifEmpty { "Tipo" }) // Mostra un testo predefinito se non è selezionato
             Icon(
                 imageVector = Icons.Rounded.ArrowDropDown,
                 contentDescription = "Dropdown Arrow"
