@@ -12,9 +12,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.Check
@@ -42,7 +44,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.vectorResource
@@ -56,6 +57,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.android.mycargenie.R
+import com.android.mycargenie.ui.theme.MyCarGenieTheme
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -128,6 +130,7 @@ fun AddManScreen(
 
         val focusManager = LocalFocusManager.current
 
+        val scrollState = rememberScrollState()
 
         Column(
             verticalArrangement = Arrangement.Top,
@@ -135,6 +138,7 @@ fun AddManScreen(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
+                .verticalScroll(scrollState)
         ) {
 
             //Titolo
@@ -175,8 +179,8 @@ fun AddManScreen(
                     ) {
                         Column(
                             modifier = Modifier
-                                .weight(1f)  // Peso 1 per una distribuzione equa
-                                .padding(8.dp)  // Usa un padding uniforme
+                                .weight(1f)
+                                .padding(8.dp)
                         ) {
                             TypeDropdownMenu(
                                 types = types,
@@ -296,13 +300,13 @@ fun AddManScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 4.dp, end = 16.dp) // Padding per allineare meglio il contatore
+                            .padding(top = 4.dp, end = 16.dp)
                     ) {
-                        Spacer(Modifier.weight(1f)) // Spaziatura per spingere il testo a destra
+                        Spacer(Modifier.weight(1f))
                         Text(
                             text = "${state.description.value.length} / 500",
                             style = TextStyle(
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer,
                                 fontSize = 12.sp
                             )
                         )
@@ -345,7 +349,7 @@ fun AddManScreen(
                             Icon(
                                 imageVector = ImageVector.vectorResource(id = R.drawable.euro_symbol),
                                 contentDescription = "Euro Icon",
-                                modifier = Modifier.size(20.dp)  // Imposta la dimensione desiderata
+                                modifier = Modifier.size(20.dp)
                             )
                         },
                         keyboardOptions = KeyboardOptions(
@@ -390,8 +394,8 @@ fun TypeDropdownMenu(types: List<String>, selectedType: MutableState<String>) {
 
     Box(
         modifier = Modifier
-            .fillMaxWidth()  // Riempi tutta la larghezza disponibile
-            .clickable { isDropDownExpanded = true } // Clicca per espandere il dropdown
+            .fillMaxWidth()
+            .clickable { isDropDownExpanded = true }
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -400,9 +404,9 @@ fun TypeDropdownMenu(types: List<String>, selectedType: MutableState<String>) {
                 .clip(RoundedCornerShape(4.dp))
                 .background(MaterialTheme.colorScheme.secondaryContainer)
                 .padding(16.dp)
-                .fillMaxWidth() // Assicurati che il Row occupi la larghezza massima
+                .fillMaxWidth()
         ) {
-            Text(text = selectedType.value.ifEmpty { "Tipo" }) // Mostra un testo predefinito se non è selezionato
+            Text(text = selectedType.value.ifEmpty { "Tipo" })
             Icon(
                 imageVector = Icons.Rounded.ArrowDropDown,
                 contentDescription = "Dropdown Arrow"
@@ -417,8 +421,8 @@ fun TypeDropdownMenu(types: List<String>, selectedType: MutableState<String>) {
                 DropdownMenuItem(
                     text = { Text(text = type) },
                     onClick = {
-                        selectedType.value = type // Aggiorna il tipo selezionato
-                        isDropDownExpanded = false // Chiudi il dropdown
+                        selectedType.value = type
+                        isDropDownExpanded = false
                     }
                 )
             }
@@ -426,10 +430,14 @@ fun TypeDropdownMenu(types: List<String>, selectedType: MutableState<String>) {
     }
 }
 
+
 @SuppressLint("UnrememberedMutableState")
-@Preview
+@Preview(
+    name = "Light Mode",
+    showBackground = true
+)
 @Composable
-fun PreviewAddManScreen() {
+fun PreviewAddManScreenLight() {
     val exampleState = ManState(
         title = mutableStateOf("Titolo"),
         date = mutableStateOf("01/01/2024"),
@@ -450,9 +458,49 @@ fun PreviewAddManScreen() {
         }
     }
 
-    AddManScreen(
-        state = exampleState,
-        navController = navController,
-        onEvent = onEvent
+    // Preview in modalità chiara
+    MyCarGenieTheme(darkTheme = false) {
+        AddManScreen(
+            state = exampleState,
+            navController = navController,
+            onEvent = onEvent
+        )
+    }
+}
+
+@SuppressLint("UnrememberedMutableState")
+@Preview(
+    name = "Dark Mode",
+    showBackground = true
+)
+@Composable
+fun PreviewAddManScreenDark() {
+    val exampleState = ManState(
+        title = mutableStateOf("Titolo"),
+        date = mutableStateOf("01/01/2024"),
+        place = mutableStateOf("12345678912345"),
+        description = mutableStateOf("Descrizione di esempio")
     )
+
+    val navController = rememberNavController()
+
+    val onEvent: (ManEvent) -> Unit = { event ->
+        when (event) {
+            is ManEvent.SaveMan -> {
+                println("Salvato: ${event.title}, ${event.date}, ${event.place}, ${event.description}")
+            }
+
+            is ManEvent.DeleteMan -> TODO()
+            ManEvent.SortMan -> TODO()
+        }
+    }
+
+    // Preview in modalità scura
+    MyCarGenieTheme(darkTheme = true) {
+        AddManScreen(
+            state = exampleState,
+            navController = navController,
+            onEvent = onEvent
+        )
+    }
 }
