@@ -1,5 +1,7 @@
 package com.android.mycargenie.pages.manutenzione
 
+import android.annotation.SuppressLint
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,10 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Build
-import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.FloatingActionButton
@@ -26,16 +24,23 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableDoubleStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.android.mycargenie.R
+import com.android.mycargenie.data.Man
+import com.android.mycargenie.ui.theme.MyCarGenieTheme
 
 @Composable
 fun ManutenzioneScreen(
@@ -128,10 +133,10 @@ fun ManItem(
             .padding(12.dp)
     ) {
         val icon = when (state.men[index].type) {
-            "Meccanico" -> Icons.Default.Build
-            "Elettrauto" -> Icons.Default.Edit
-            "Carrozziere" -> Icons.Default.Call
-            else -> Icons.Default.PlayArrow
+            "Meccanico" -> ImageVector.vectorResource(id = R.drawable.manufacturing)
+            "Elettrauto" -> ImageVector.vectorResource(id = R.drawable.lightbulb)
+            "Carrozziere" -> ImageVector.vectorResource(id = R.drawable.brush)
+            else -> ImageVector.vectorResource(id = R.drawable.repair)
         }
 
 
@@ -153,7 +158,7 @@ fun ManItem(
                 text = state.men[index].title,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onPrimary
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
 
 
@@ -163,7 +168,7 @@ fun ManItem(
             Text(
                 text = state.men[index].place,
                 fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
+                color = MaterialTheme.colorScheme.onSecondaryContainer
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -172,8 +177,8 @@ fun ManItem(
             Text(
                 text = state.men[index].date,
                 fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onPrimary
+                //fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSecondary
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -221,5 +226,57 @@ fun ManItem(
 
         }
 
+    }
+}
+
+@SuppressLint("UnrememberedMutableState")
+@Preview(
+    name = "Light Mode",
+    showBackground = true
+)
+@Preview(
+    name = "Dark Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true
+)
+@Composable
+fun PreviewManutenzioneScreen() {
+    // Stato di esempio per la preview
+    val exampleState = ManState(
+        title = mutableStateOf("Manutenzione Auto"),
+        type = mutableStateOf("Meccanico"),
+        place = mutableStateOf("Garage ABC"),
+        date = mutableStateOf("10/10/2024"),
+        kmt = mutableIntStateOf(45000),
+        description = mutableStateOf("Cambio olio e controllo freni"),
+        price = mutableDoubleStateOf(150.0),
+        men = listOf(
+            Man("Cambio olio", "Meccanico", "Garage 1", "10/10/2024", 45000, "Cambio completo olio", 100.0),
+            Man("Revisione freni", "Elettrauto", "Garage 2", "11/11/2024", 45500, "Revisione pastiglie freni", 150.0)
+        )
+    )
+
+    val navController = rememberNavController()
+
+    val onEvent: (ManEvent) -> Unit = { event ->
+        when (event) {
+            is ManEvent.SaveMan -> {
+                println("Salvato: ${event.title}, ${event.date}, ${event.place}, ${event.description}")
+            }
+            is ManEvent.DeleteMan -> {
+                println("Elimina: ${event.man.title}")
+            }
+            ManEvent.SortMan -> {
+                println("Ordina Manutenzione")
+            }
+        }
+    }
+
+    MyCarGenieTheme {
+        ManutenzioneScreen(
+            state = exampleState,
+            navController = navController,
+            onEvent = onEvent
+        )
     }
 }
