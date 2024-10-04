@@ -51,6 +51,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -157,7 +158,7 @@ fun AddManScreen(
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 17.sp
                     ),
-                    placeholder = { Text(text = "Titolo") },
+                    placeholder = { Text(text = "Titolo*") },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Next
                     ),
@@ -241,7 +242,7 @@ fun AddManScreen(
                             contentDescription = "Calendario"
                         )
                         Text(
-                            text = state.date.value.ifEmpty { "Data" },
+                            text = state.date.value.ifEmpty { "Data*" },
                             fontSize = 17.sp,
                             modifier = Modifier
                                 .padding(start = 8.dp)
@@ -293,7 +294,7 @@ fun AddManScreen(
                                 state.description.value = newValue
                             }
                         },
-                        placeholder = { Text(text = "Descrizione") },
+                        placeholder = { Text(text = "Descrizione*") },
                     )
 
                     // Contatore dei caratteri
@@ -366,12 +367,26 @@ fun AddManScreen(
                 }
             }
 
+            Row(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "I campi contrassegnati da * sono obbligatori.",
+                    fontSize = 14.sp,
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
+
         }
     }
 
             if (showError) {
                 Text(
-                    text = "Compila tutti i campi.",
+                    text = "Compila tutti i campi obbligatori.",
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(16.dp)
                 )

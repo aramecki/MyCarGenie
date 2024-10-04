@@ -177,7 +177,6 @@ fun ManItem(
             Text(
                 text = state.men[index].date,
                 fontSize = 18.sp,
-                //fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSecondary
             )
 
