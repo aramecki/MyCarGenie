@@ -19,13 +19,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.android.mycargenie.R
 import com.android.mycargenie.pages.manutenzione.AddManScreen
 import com.android.mycargenie.pages.manutenzione.ManViewModel
 import com.android.mycargenie.pages.manutenzione.ManutenzioneScreen
+import com.android.mycargenie.pages.manutenzione.ViewManScreen
 
 
 // Screens (now simple Composables)
@@ -123,11 +126,21 @@ fun MainApp(viewModel: ManViewModel) {
                         onEvent = viewModel::onEvent
                     )
                 }
-                // Aggiungi altre schermate qui come necessario
+                composable(
+                    route = "ViewManScreen/{index}",
+                    arguments = listOf(navArgument("index") { type = NavType.IntType })
+                    ) {
+                    ViewManScreen(
+                        state = viewModel.state.collectAsState().value,
+                        navController = navController,
+                    )
+
+                    }
+                }
             }
         }
     }
-}
+
 
 @Composable
 fun BottomNavigationBar(

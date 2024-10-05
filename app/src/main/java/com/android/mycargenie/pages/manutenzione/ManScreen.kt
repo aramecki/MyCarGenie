@@ -3,6 +3,7 @@ package com.android.mycargenie.pages.manutenzione
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -62,7 +63,7 @@ fun ManutenzioneScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Manutenzione", //Da inserire in strings stringResource(id = R.string.app_name),
+                    text = "Manutenzione", //Da inserire in strings
                     modifier = Modifier.weight(1f),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -109,7 +110,8 @@ fun ManutenzioneScreen(
                 ManItem(
                     state = state,
                     index = index,
-                    onEvent = onEvent
+                    onEvent = onEvent,
+                    navController = navController
                 )
             }
 
@@ -123,7 +125,8 @@ fun ManutenzioneScreen(
 fun ManItem(
     state: ManState,
     index: Int,
-    onEvent: (ManEvent) -> Unit
+    onEvent: (ManEvent) -> Unit,
+    navController: NavController
 ) {
     Row(
         modifier = Modifier
@@ -131,6 +134,9 @@ fun ManItem(
             .clip(RoundedCornerShape(10.dp))
             .background(MaterialTheme.colorScheme.primaryContainer)
             .padding(12.dp)
+            .clickable {
+                navController.navigate("ViewManScreen/$index")
+            }
     ) {
         val icon = when (state.men[index].type) {
             "Meccanico" -> ImageVector.vectorResource(id = R.drawable.manufacturing)
