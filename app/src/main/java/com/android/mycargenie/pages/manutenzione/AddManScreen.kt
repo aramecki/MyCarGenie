@@ -50,6 +50,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -160,7 +161,8 @@ fun AddManScreen(
                     ),
                     placeholder = { Text(text = "Titolo*") },
                     keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Next
+                        imeAction = ImeAction.Next,
+                        capitalization = KeyboardCapitalization.Sentences
                     ),
                     keyboardActions = KeyboardActions(
                         onNext = { focusManager.moveFocus(FocusDirection.Next) }
@@ -207,7 +209,8 @@ fun AddManScreen(
                                 ),
                                 placeholder = { Text(text = "Luogo") },
                                 keyboardOptions = KeyboardOptions.Default.copy(
-                                    imeAction = ImeAction.Next
+                                    imeAction = ImeAction.Next,
+                                    capitalization = KeyboardCapitalization.Sentences
                                 ),
                                 keyboardActions = KeyboardActions(
                                     onNext = { focusManager.moveFocus(FocusDirection.Next) }
@@ -295,6 +298,9 @@ fun AddManScreen(
                             }
                         },
                         placeholder = { Text(text = "Descrizione*") },
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            capitalization = KeyboardCapitalization.Sentences
+                        ),
                     )
 
                     // Contatore dei caratteri
@@ -355,11 +361,26 @@ fun AddManScreen(
                         },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next
+                            imeAction = ImeAction.Done
                         ),
                         keyboardActions = KeyboardActions(
-                            onNext = {
-                                focusManager.moveFocus(FocusDirection.Next)
+                            onDone = {
+                                if (state.title.value.isNotBlank() && state.date.value.isNotBlank() && state.description.value.isNotBlank()) {
+                                    onEvent(
+                                        ManEvent.SaveMan(
+                                            title = state.title.value,
+                                            type = state.type.value,
+                                            place = state.place.value,
+                                            date = state.date.value,
+                                            kmt = state.kmt.value,
+                                            description = state.description.value,
+                                            price = state.price.value
+                                        )
+                                    )
+                                    navController.popBackStack()
+                                } else {
+                                    showError = true
+                                }
                             }
                         )
                     )
