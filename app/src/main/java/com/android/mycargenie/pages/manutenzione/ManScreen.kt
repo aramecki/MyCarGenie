@@ -194,6 +194,7 @@ fun ManItem(
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
 
+            /*
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
@@ -201,6 +202,7 @@ fun ManItem(
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
+             */
 
             Spacer(modifier = Modifier.height(8.dp))
 

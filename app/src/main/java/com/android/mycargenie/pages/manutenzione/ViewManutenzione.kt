@@ -1,5 +1,6 @@
 package com.android.mycargenie.pages.manutenzione
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -7,18 +8,23 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.DateRange
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.mycargenie.R
+import java.text.DecimalFormat
 
 
 @Composable
@@ -40,19 +46,12 @@ fun ViewManScreen(
             ) {
 
                 Row(
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth(1f)
                 ) {
 
-                    Text(
-                        text = manItem.title,
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            
-                            .fillMaxWidth(0.5f)
-                    )
+                    //Icona tipo
 
                     val icon = when (manItem.type) {
                         "Meccanico" -> ImageVector.vectorResource(id = R.drawable.manufacturing)
@@ -61,63 +60,150 @@ fun ViewManScreen(
                         else -> ImageVector.vectorResource(id = R.drawable.repair)
                     }
 
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = manItem.type,
-                        modifier = Modifier
-                            .fillMaxWidth(0.5f)
-                            .size(30.dp)
-                            .padding(end = 8.dp),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
 
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column {
+                                Icon(
+                                    imageVector = icon,
+                                    contentDescription = manItem.type,
+                                    modifier = Modifier
+                                        .size(45.dp),
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+
+                            //Titolo
+
+                            val fontSize = when {
+                                manItem.title.length < 20 -> 30.sp
+                                manItem.title.length < 30 -> 24.sp
+                                manItem.title.length < 40 -> 17.sp
+                                else -> 14.sp
+                            }
+
+                            Column {
+                                Text(
+                                    text = manItem.title,
+                                    style = MaterialTheme.typography.headlineMedium.copy(
+                                        fontSize = fontSize
+                                    ),
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(start = 8.dp)
+                                )
+                            }
+
+                        }
+                    }
+
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+
+
+                    Column {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.DateRange,
+                                contentDescription = "Luogo",
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier
+                                    .size(30.dp)
+                            )
+                            Text(
+                                text = manItem.date,
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier
+                                    .padding(start = 4.dp)
+                            )
+                        }
+                    }
+
+                    Column(
+                        horizontalAlignment = Alignment.End,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.location),
+                                contentDescription = "Luogo",
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier
+                                    .size(30.dp)
+                            )
+                            Text(
+                                text = manItem.place,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+
+                    }
                 }
 
 
+                Spacer(modifier = Modifier.height(32.dp))
 
-                //Spacer(modifier = Modifier.height(16.dp))
-
-
-
-                Text(
-                    text = "Tipo: ${manItem.type}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "Luogo: ${manItem.place}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "Data: ${manItem.date}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "Km: ${manItem.kmt}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
                     text = "Descrizione: ${manItem.description}",
                     style = MaterialTheme.typography.bodyMedium
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
 
-                Text(
-                    text = "Prezzo: ${manItem.price.toString().replace('.', ',')} €",
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                Spacer(modifier = Modifier.height(32.dp))
+
+
+                Row {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f)
+                    ) {
+                        //Kilometri
+
+                        val formatter = DecimalFormat("#,###")
+                        val formattedKmt = formatter.format(manItem.kmt)
+
+                        Text(
+                            text = "$formattedKmt km",
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontSize = 16.sp
+                            )
+                        )
+                    }
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "${manItem.price.toString().replace('.', ',')} €",
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontSize = 16.sp
+                            ),
+                            modifier = Modifier
+                                .align(Alignment.End)
+                        )
+                    }
+                }
+
+
+
             }
         } else {
             Column(

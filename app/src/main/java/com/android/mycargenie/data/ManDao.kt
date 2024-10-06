@@ -19,7 +19,7 @@ interface ManDao {
     fun getManOrderedByDate(): Flow<List<Man>>
 
 
-    @Query("SELECT * FROM man ORDER BY id")
+    @Query("SELECT * FROM man ORDER BY id DESC")
     fun getManOrderedByDateAdded(): Flow<List<Man>>
 
 }

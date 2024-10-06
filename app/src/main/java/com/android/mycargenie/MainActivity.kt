@@ -44,6 +44,7 @@ class MainActivity : ComponentActivity() {
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContent {
 
@@ -61,10 +62,10 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun deleteExistingDatabase() {
-        // Nome del database senza estensione
+
         val databaseName = "man.db"
 
-        // Elimina il database esistente
+
         val deleted = this.deleteDatabase(databaseName)
 
         if (deleted) {
