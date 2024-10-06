@@ -1,5 +1,10 @@
 package com.android.mycargenie.ui
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -22,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.android.mycargenie.R
@@ -79,32 +85,55 @@ fun MainApp(viewModel: ManViewModel) {
     // Inizializzazione della navbar
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
 
+    val currentBackStackEntry = navController.currentBackStackEntryAsState().value
+    val currentDestination = currentBackStackEntry?.destination?.route
+
+    // Determinare se la navbar deve essere visibile o meno
+    val shouldShowBottomBar = currentDestination !in listOf("ViewManScreen/{index}", "AddManScreen")
+
     Scaffold(
         bottomBar = {
-            BottomNavigationBar(
-                items = listOf(
-                    BottomNavItem("Libretto", ImageVector.vectorResource(id = R.drawable.assignment)) { LibrettoScreen() },
-                    BottomNavItem("Manutenzione", ImageVector.vectorResource(id = R.drawable.time_to_leave)) {
-                        selectedTabIndex = 1 // Aggiorna l'indice selezionato per il NavBar
-                        navController.navigate("ManutenzioneScreen")
-                    },
-                    BottomNavItem("Carburante", ImageVector.vectorResource(id = R.drawable.gas_station)) { CarburanteScreen() },
-                    BottomNavItem("Professionisti", ImageVector.vectorResource(id = R.drawable.store)) { ProfessionistiScreen() },
-                    BottomNavItem("Rifornimento", ImageVector.vectorResource(id = R.drawable.location)) { RifornimentoScreen() }
-                ),
-                selectedIndex = selectedTabIndex,
-                onTabSelected = { index ->
-                    selectedTabIndex = index
-                    // Naviga in base all'indice selezionato
-                    when (index) {
-                        0 -> navController.navigate("HomeScreen")
-                        1 -> navController.navigate("ManutenzioneScreen")
-                        2 -> navController.navigate("CarburanteScreen")
-                        3 -> navController.navigate("ProfessionistiScreen")
-                        4 -> navController.navigate("RifornimentoScreen")
+            if (shouldShowBottomBar) {
+                BottomNavigationBar(
+                    items = listOf(
+                        BottomNavItem(
+                            "Libretto",
+                            ImageVector.vectorResource(id = R.drawable.assignment)
+                        ) { LibrettoScreen() },
+                        BottomNavItem(
+                            "Manutenzione",
+                            ImageVector.vectorResource(id = R.drawable.time_to_leave)
+                        ) {
+                            selectedTabIndex = 1 // Aggiorna l'indice selezionato per il NavBar
+                            navController.navigate("ManutenzioneScreen")
+                        },
+                        BottomNavItem(
+                            "Carburante",
+                            ImageVector.vectorResource(id = R.drawable.gas_station)
+                        ) { CarburanteScreen() },
+                        BottomNavItem(
+                            "Professionisti",
+                            ImageVector.vectorResource(id = R.drawable.store)
+                        ) { ProfessionistiScreen() },
+                        BottomNavItem(
+                            "Rifornimento",
+                            ImageVector.vectorResource(id = R.drawable.location)
+                        ) { RifornimentoScreen() }
+                    ),
+                    selectedIndex = selectedTabIndex,
+                    onTabSelected = { index ->
+                        selectedTabIndex = index
+                        // Naviga in base all'indice selezionato
+                        when (index) {
+                            0 -> navController.navigate("HomeScreen")
+                            1 -> navController.navigate("ManutenzioneScreen")
+                            2 -> navController.navigate("CarburanteScreen")
+                            3 -> navController.navigate("ProfessionistiScreen")
+                            4 -> navController.navigate("RifornimentoScreen")
+                        }
                     }
-                }
-            )
+                )
+            }
         }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
@@ -119,20 +148,33 @@ fun MainApp(viewModel: ManViewModel) {
                         onEvent = viewModel::onEvent
                     )
                 }
-                composable("AddManScreen") {
+                composable("AddManScreen",
+                    enterTransition = {
+                        slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500))
+                    },
+                    exitTransition = {
+                        slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
+                    }
+                ) {
                     AddManScreen(
                         state = viewModel.state.collectAsState().value,
                         navController = navController,
                         onEvent = viewModel::onEvent
                     )
                 }
-                composable(
-                    route = "ViewManScreen/{index}",
-                    arguments = listOf(navArgument("index") { type = NavType.IntType })
-                    ) {
+                composable("ViewManScreen/{index}",
+                    arguments = listOf(navArgument("index") { type = NavType.IntType }),
+                    enterTransition = {
+                        slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500))
+                    },
+                    exitTransition = {
+                        slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
+                    }
+                ) {
                     ViewManScreen(
                         state = viewModel.state.collectAsState().value,
                         navController = navController,
+                        viewModel = viewModel
                     )
 
                     }

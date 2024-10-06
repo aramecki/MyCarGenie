@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -218,6 +217,7 @@ fun ManItem(
 
         }
 
+        /*
         IconButton(
             onClick = {
                 onEvent(ManEvent.DeleteMan(state.men[index]))
@@ -232,6 +232,8 @@ fun ManItem(
             )
 
         }
+
+         */
 
     }
 }

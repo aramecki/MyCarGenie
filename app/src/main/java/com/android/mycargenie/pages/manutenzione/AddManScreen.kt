@@ -73,7 +73,7 @@ fun AddManScreen(
 ) {
 
     var showError by remember { mutableStateOf(false) }
-    var showDatePicker by remember { mutableStateOf(false) } // Stato per controllare quando mostrare il DatePickerDialog
+    var showDatePicker by remember { mutableStateOf(false) }
 
     // DatePickerDialog
     if (showDatePicker) {
