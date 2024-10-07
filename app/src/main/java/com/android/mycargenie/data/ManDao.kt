@@ -22,4 +22,7 @@ interface ManDao {
     @Query("SELECT * FROM man ORDER BY id DESC")
     fun getManOrderedByDateAdded(): Flow<List<Man>>
 
+    @Query("SELECT MAX(id) FROM man")
+    fun getLastInsertedId(): Flow<Int?>
+
 }

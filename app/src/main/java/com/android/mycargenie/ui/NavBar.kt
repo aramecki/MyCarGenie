@@ -31,13 +31,16 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.android.mycargenie.R
+import com.android.mycargenie.pages.libretto.LibrettoScreen
 import com.android.mycargenie.pages.manutenzione.AddManScreen
 import com.android.mycargenie.pages.manutenzione.ManViewModel
 import com.android.mycargenie.pages.manutenzione.ManutenzioneScreen
 import com.android.mycargenie.pages.manutenzione.ViewManScreen
 
 
-// Screens (now simple Composables)
+// Screens
+
+/*
 @Composable
 fun LibrettoScreen() {
     Text(
@@ -45,6 +48,8 @@ fun LibrettoScreen() {
         modifier = Modifier.fillMaxSize()
     )
 }
+
+ */
 
 @Composable
 fun CarburanteScreen() {
@@ -79,16 +84,14 @@ data class BottomNavItem(
 
 @Composable
 fun MainApp(viewModel: ManViewModel) {
-    // Creiamo un NavController da utilizzare per la navigazione
+
     val navController = rememberNavController()
 
-    // Inizializzazione della navbar
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
 
     val currentBackStackEntry = navController.currentBackStackEntryAsState().value
     val currentDestination = currentBackStackEntry?.destination?.route
 
-    // Determinare se la navbar deve essere visibile o meno
     val shouldShowBottomBar = currentDestination !in listOf("ViewManScreen/{index}", "AddManScreen")
 
     Scaffold(
@@ -99,12 +102,17 @@ fun MainApp(viewModel: ManViewModel) {
                         BottomNavItem(
                             "Libretto",
                             ImageVector.vectorResource(id = R.drawable.assignment)
-                        ) { LibrettoScreen() },
+                        ) {
+                            selectedTabIndex = 0
+                            navController.navigate(("LibrettoScreen")
+
+                            )
+                          },
                         BottomNavItem(
                             "Manutenzione",
                             ImageVector.vectorResource(id = R.drawable.time_to_leave)
                         ) {
-                            selectedTabIndex = 1 // Aggiorna l'indice selezionato per il NavBar
+                            selectedTabIndex = 1
                             navController.navigate("ManutenzioneScreen")
                         },
                         BottomNavItem(
@@ -123,9 +131,9 @@ fun MainApp(viewModel: ManViewModel) {
                     selectedIndex = selectedTabIndex,
                     onTabSelected = { index ->
                         selectedTabIndex = index
-                        // Naviga in base all'indice selezionato
+
                         when (index) {
-                            0 -> navController.navigate("HomeScreen")
+                            0 -> navController.navigate("LibrettoScreen")
                             1 -> navController.navigate("ManutenzioneScreen")
                             2 -> navController.navigate("CarburanteScreen")
                             3 -> navController.navigate("ProfessionistiScreen")
@@ -137,9 +145,14 @@ fun MainApp(viewModel: ManViewModel) {
         }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            NavHost(navController = navController, startDestination = "HomeScreen") {
-                composable("HomeScreen") {
-                    LibrettoScreen() // Mostra HomeScreen
+            NavHost(navController = navController, startDestination = "LibrettoScreen") {
+
+                composable("LibrettoScreen") {
+                    LibrettoScreen(
+                        state = viewModel.state.collectAsState().value,
+                        navController = navController,
+                        lastId = viewModel.lastInsertedId.collectAsState().value
+                    )
                 }
                 composable("ManutenzioneScreen") {
                     ManutenzioneScreen(

@@ -10,6 +10,7 @@ import com.android.mycargenie.data.ManDao
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -19,6 +20,18 @@ import kotlinx.coroutines.launch
 class ManViewModel(
     private val dao: ManDao
 ) : ViewModel() {
+
+    private val _lastInsertedId = MutableStateFlow<Int?>(null)
+    val lastInsertedId: StateFlow<Int?> = _lastInsertedId
+
+    init {
+        viewModelScope.launch {
+            dao.getLastInsertedId().collect { lastId ->
+                println("Ultimo ID inserito: $lastId")  // Aggiungi questo log
+                _lastInsertedId.value = lastId
+            }
+        }
+    }
 
     private val isSortedByDateAdded = MutableStateFlow(true)
 
