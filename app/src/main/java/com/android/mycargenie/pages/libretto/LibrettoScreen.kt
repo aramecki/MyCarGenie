@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.DateRange
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -31,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.mycargenie.R
 import com.android.mycargenie.pages.manutenzione.ManState
+import java.text.DecimalFormat
 
 @Composable
 fun LibrettoScreen(
@@ -45,7 +48,7 @@ fun LibrettoScreen(
 
     Column {
 
-        Spacer(modifier = Modifier.height(80.dp))
+        Spacer(modifier = Modifier.height(70.dp))
 
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -114,24 +117,14 @@ fun LibrettoScreen(
             }
         }
 
-        data class Man(
-            val id: Int,
-            val title: String,
-            val type: String,
-            // Aggiungi altre proprietà se necessario
-        ) {
-            override fun toString(): String {
-                return "Man(id=$id, title='$title', type='$type')"
-            }
-        }
-
 
         // Visualizzazione del caricamento se la lista è vuota
         if (sortedMen.isEmpty()) {
             Text(
-                text = "Caricamento in corso...",
+                text = "Aggiungi la tua prima manutenzione per visualizzare un resoconto.",
                 modifier = Modifier.padding(16.dp),
-                fontSize = 18.sp
+                fontSize = 18.sp,
+                textAlign = TextAlign.Center
             )
             return@Column // Interrompi l'esecuzione della funzione se la lista è vuota
         } else {
@@ -145,19 +138,23 @@ fun LibrettoScreen(
         // Mostra il contenuto della card solo se lastId è valido
         if (sortedMen.isNotEmpty()) {
             // Prendi sempre il primo elemento della lista ordinata
-            val currentItem = sortedMen.first() // Oppure, se vuoi il primo elemento quando lastId è 6: sortedMen[5]
+            val currentItem = sortedMen.first()
+            val index = state.men.indexOf(currentItem)
 
             // Log per mostrare l'elemento attuale
             println("Mostro la card con id: ${currentItem.id}, Dettagli dell'oggetto: $currentItem")
 
+            Spacer(modifier = Modifier.height(30.dp))
+
                 Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(10.dp)
                     .clip(RoundedCornerShape(10.dp))
                     .background(MaterialTheme.colorScheme.primaryContainer)
                     .padding(12.dp)
                     .clickable {
-                        navController.navigate("ViewManScreen/$lastId")
+                        navController.navigate("ViewManScreen/$index")
                     }
             ) {
 
@@ -168,69 +165,133 @@ fun LibrettoScreen(
                     else -> ImageVector.vectorResource(id = R.drawable.repair)
                 }
 
-
-                Icon(
-                    imageVector = icon,
-                    contentDescription = currentItem.type,
-                    modifier = Modifier
-                        .size(30.dp)
-                        .padding(end = 8.dp),
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
-
-                Column(
-                    modifier = Modifier.weight(1f)
-                ) {
-
-                    //Titolo
-                    Text(
-                        text = currentItem.title,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-
-/*
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    //Luogo
-                    Text(
-                        text = state.men[lastId].place,
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    //Data
-                    Text(
-                        text = state.men[lastId].date,
-                        fontSize = 18.sp,
-                        color = MaterialTheme.colorScheme.onSecondary
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        text = state.men[lastId].kmt.toString(),
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
+                    Column {
 
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Row {
+                        Column {
+                            Icon(
+                                imageVector = icon,
+                                contentDescription = currentItem.type,
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .padding(end = 8.dp),
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
 
-                    val price = state.men[lastId].price.toString().replace('.', ',')
 
-                    Text(
-                        text = "$price €",
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier
-                            .align(Alignment.End)
-                    )
-*/
-                }
+                        Column {
+
+                            //Titolo
+                            Text(
+                                text = currentItem.title,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        }
+                    }
+
+
+
+
+                        Row(
+                            modifier = Modifier
+                                .padding(top = 8.dp)
+                        ) {
+
+                            Column(
+                                horizontalAlignment = Alignment.Start,
+                                modifier = Modifier
+                                    .fillMaxWidth(0.5f)
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Rounded.DateRange,
+                                        contentDescription = "Data",
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier
+                                            .size(30.dp)
+                                    )
+                                    Text(
+                                        text = currentItem.date,
+                                        fontSize = 18.sp,
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                }
+                            }
+
+
+                            //Luogo
+                            Column(
+                                horizontalAlignment = Alignment.End,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Icon(
+                                        imageVector = ImageVector.vectorResource(id = R.drawable.location),
+                                        contentDescription = "Luogo",
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier
+                                            .size(30.dp)
+                                    )
+
+                                    Text(
+                                        text = currentItem.place,
+                                        fontSize = 16.sp,
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                                    )
+                                }
+                            }
+
+                        }
+
+
+                        Row(
+                            modifier = Modifier
+                                .padding(top = 16.dp)
+                        ) {
+
+                            Column(
+                                modifier = Modifier
+                                    .padding(start = 8.dp)
+                            ) {
+                                val formatter = DecimalFormat("#,###")
+                                val formattedKmt = formatter.format(currentItem.kmt)
+
+                                Text(
+                                    text = "$formattedKmt km",
+                                    fontSize = 18.sp,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                            }
+
+                            Column(
+                                horizontalAlignment = Alignment.End,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+                                val price = currentItem.price.toString().replace('.', ',')
+
+                                Row {
+                                    Text(
+                                        text = "$price €",
+                                        fontSize = 18.sp,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    )
+                                }
+
+                            }
+
+
+                        }
+                    }
             }
         } else {
             println("Id non mostrato: $lastId")
