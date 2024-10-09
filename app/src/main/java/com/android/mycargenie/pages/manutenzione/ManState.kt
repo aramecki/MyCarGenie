@@ -9,6 +9,7 @@ import com.android.mycargenie.data.Man
 data class ManState(
 
     val men: List<Man> = emptyList(),
+    val id: Int? = null,
     val title: MutableState<String> = mutableStateOf(""),
     val type: MutableState<String> = mutableStateOf(""),
     val place: MutableState<String> = mutableStateOf(""),

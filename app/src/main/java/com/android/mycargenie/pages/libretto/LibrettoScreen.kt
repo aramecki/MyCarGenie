@@ -41,8 +41,8 @@ fun LibrettoScreen(
     navController: NavController,
     lastId: Int?
 ) {
-    println("Ultimo ID passato a LibrettoScreen: $lastId")  // Aggiungi questo log
-    println("Numero di elementi in state.men: ${state.men.size}")  // Aggiungi questo log
+    //println("Ultimo ID passato a LibrettoScreen: $lastId")  // Aggiungi questo log
+    //println("Numero di elementi in state.men: ${state.men.size}")  // Aggiungi questo log
 
     val sortedMen = state.men.sortedByDescending { it.id }
 
@@ -129,9 +129,9 @@ fun LibrettoScreen(
             return@Column // Interrompi l'esecuzione della funzione se la lista è vuota
         } else {
             // Log dei contenuti della lista
-            println("Contenuto della lista sortedMen:")
+            //println("Contenuto della lista sortedMen:")
             sortedMen.forEachIndexed { index, man ->
-                println("Elemento $index: $man")
+                //println("Elemento $index: $man")
             }
         }
 
@@ -142,7 +142,7 @@ fun LibrettoScreen(
             val index = state.men.indexOf(currentItem)
 
             // Log per mostrare l'elemento attuale
-            println("Mostro la card con id: ${currentItem.id}, Dettagli dell'oggetto: $currentItem")
+            //println("Mostro la card con id: ${currentItem.id}, Dettagli dell'oggetto: $currentItem")
 
             Spacer(modifier = Modifier.height(30.dp))
 
@@ -174,7 +174,7 @@ fun LibrettoScreen(
                                 imageVector = icon,
                                 contentDescription = currentItem.type,
                                 modifier = Modifier
-                                    .size(30.dp)
+                                    .size(36.dp)
                                     .padding(end = 8.dp),
                                 tint = MaterialTheme.colorScheme.onPrimary
                             )
@@ -214,7 +214,7 @@ fun LibrettoScreen(
                                         contentDescription = "Data",
                                         tint = MaterialTheme.colorScheme.primary,
                                         modifier = Modifier
-                                            .size(30.dp)
+                                            .size(24.dp)
                                     )
                                     Text(
                                         text = currentItem.date,
@@ -235,11 +235,15 @@ fun LibrettoScreen(
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
                                     Icon(
-                                        imageVector = ImageVector.vectorResource(id = R.drawable.location),
+                                        imageVector = ImageVector.vectorResource
+
+
+
+                                            (id = R.drawable.location),
                                         contentDescription = "Luogo",
                                         tint = MaterialTheme.colorScheme.primary,
                                         modifier = Modifier
-                                            .size(30.dp)
+                                            .size(24.dp)
                                     )
 
                                     Text(
@@ -294,7 +298,7 @@ fun LibrettoScreen(
                     }
             }
         } else {
-            println("Id non mostrato: $lastId")
+            //println("Id non mostrato: $lastId")
             Text(
                 text = "Aggiungi la tua prima manutenzione per mostrare un riepilogo.",
                 textAlign = TextAlign.Center,

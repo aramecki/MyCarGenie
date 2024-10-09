@@ -15,5 +15,5 @@ data class Man(
     val price: Double,
 
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0
+    val id: Int? = null
 )

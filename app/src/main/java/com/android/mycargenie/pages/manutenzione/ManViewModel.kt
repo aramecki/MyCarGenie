@@ -65,6 +65,7 @@ class ManViewModel(
 
             is ManEvent.SaveMan -> {
                 val man = Man(
+                    id = state.value.id,
                     title = state.value.title.value,
                     type = state.value.type.value,
                     place = state.value.place.value,
@@ -75,7 +76,7 @@ class ManViewModel(
                 )
 
                 viewModelScope.launch {
-                    dao.upsertMan(man)
+                    dao.upsertMan(man) // Assicurati che questa chiamata utilizzi l'ID corretto
                 }
 
                 _state.update {

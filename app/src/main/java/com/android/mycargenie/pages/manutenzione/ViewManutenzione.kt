@@ -85,7 +85,7 @@ fun ViewManScreen(
                     Row {
 
                         IconButton(onClick = {
-                            TODO()                        //Implementare modifica manutenzione
+                            navController.navigate("EditManScreen/$manIndex")
                         }) {
                             Icon(
                                 imageVector = Icons.Filled.Edit,

@@ -33,6 +33,7 @@ import androidx.navigation.navArgument
 import com.android.mycargenie.R
 import com.android.mycargenie.pages.libretto.LibrettoScreen
 import com.android.mycargenie.pages.manutenzione.AddManScreen
+import com.android.mycargenie.pages.manutenzione.EditManScreen
 import com.android.mycargenie.pages.manutenzione.ManViewModel
 import com.android.mycargenie.pages.manutenzione.ManutenzioneScreen
 import com.android.mycargenie.pages.manutenzione.ViewManScreen
@@ -191,7 +192,25 @@ fun MainApp(viewModel: ManViewModel) {
                     )
 
                     }
+
+                composable("EditManScreen/{manIndex}",
+                    arguments = listOf(navArgument("manIndex") { type = NavType.IntType }),
+                    enterTransition = {
+                        slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500))
+                    },
+                    exitTransition = {
+                        slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
+                    }
+                ) {
+                    EditManScreen(
+                        state = viewModel.state.collectAsState().value,
+                        navController = navController,
+                        viewModel = viewModel,
+                        onEvent = viewModel::onEvent
+                    )
                 }
+
+            }
             }
         }
     }

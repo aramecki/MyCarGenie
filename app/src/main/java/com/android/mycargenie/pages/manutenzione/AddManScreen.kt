@@ -138,6 +138,7 @@ fun AddManScreen(
                 if (state.title.value.isNotBlank() && state.date.value.isNotBlank() && state.description.value.isNotBlank()) {
                     onEvent(
                         ManEvent.SaveMan(
+                            id = null,
                             title = state.title.value,
                             type = state.type.value,
                             place = state.place.value,
@@ -398,6 +399,7 @@ fun AddManScreen(
                                 if (state.title.value.isNotBlank() && state.date.value.isNotBlank() && state.description.value.isNotBlank()) {
                                     onEvent(
                                         ManEvent.SaveMan(
+                                            id = null,
                                             title = state.title.value,
                                             type = state.type.value,
                                             place = state.place.value,
