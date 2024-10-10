@@ -3,16 +3,18 @@ package com.android.mycargenie.data
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Upsert
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ManDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun upsertMan(man: Man)
+    @Insert
+    suspend fun insertMan(man: Man)
+
+    @Update
+    suspend fun updateMan(man: Man)
 
     @Delete
     suspend fun deleteMan(man: Man)

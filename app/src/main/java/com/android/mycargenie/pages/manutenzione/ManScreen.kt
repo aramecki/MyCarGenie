@@ -41,6 +41,7 @@ import androidx.navigation.compose.rememberNavController
 import com.android.mycargenie.R
 import com.android.mycargenie.data.Man
 import com.android.mycargenie.ui.theme.MyCarGenieTheme
+import java.text.DecimalFormat
 
 @Composable
 fun ManutenzioneScreen(
@@ -109,7 +110,6 @@ fun ManutenzioneScreen(
                 ManItem(
                     state = state,
                     index = index,
-                    onEvent = onEvent,
                     navController = navController
                 )
             }
@@ -124,7 +124,6 @@ fun ManutenzioneScreen(
 fun ManItem(
     state: ManState,
     index: Int,
-    onEvent: (ManEvent) -> Unit,
     navController: NavController
 ) {
     Row(
@@ -193,19 +192,10 @@ fun ManItem(
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
 
-            /*
             Spacer(modifier = Modifier.height(8.dp))
 
-            Text(
-                text = state.men[index].description,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-             */
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            val price = state.men[index].price.toString().replace('.', ',')
+            val decimalFormat = DecimalFormat("#,##0.00")
+            val price = decimalFormat.format(state.men[index].price).replace('.', ',')
 
             Text(
                 text = "$price €",
@@ -271,6 +261,9 @@ fun PreviewManutenzioneScreen() {
         when (event) {
             is ManEvent.SaveMan -> {
                 println("Salvato: ${event.title}, ${event.date}, ${event.place}, ${event.description}")
+            }
+            is ManEvent.UpdateMan -> {
+                println("Aggiornato: ${event.id}, ${event.title}, ${event.date}, ${event.place}, ${event.description}")
             }
             is ManEvent.DeleteMan -> {
                 println("Elimina: ${event.man.title}")

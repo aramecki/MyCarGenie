@@ -295,12 +295,17 @@ fun ViewManScreen(
                         )
                     }
 
+                    //Prezzo
+
+                    val decimalFormat = DecimalFormat("#,##0.00")
+                    val price = decimalFormat.format(manItem.price).replace('.', ',')
+
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
                         Text(
-                            text = "${manItem.price.toString().replace('.', ',')} €",
+                            text = "$price €",
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontSize = 16.sp
                             ),

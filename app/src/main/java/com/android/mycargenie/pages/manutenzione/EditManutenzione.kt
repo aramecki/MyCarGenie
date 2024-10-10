@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,13 +19,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.DateRange
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -66,27 +62,21 @@ import com.android.mycargenie.R
 fun EditManScreen(
     state: ManState,
     navController: NavController,
-    viewModel: ManViewModel,
     onEvent: (ManEvent) -> Unit
 ) {
     val manIndex = navController.currentBackStackEntry?.arguments?.getInt("manIndex")
 
     val manItem = manIndex?.takeIf { it in state.men.indices }?.let { state.men[it] }
 
-    val manId = manItem?.id ?: 0
-
-    //val idSave = manItem?.id ?: 0
 
     Log.d("manIndex", "manIndex: $manIndex")
     Log.d("manItem", "manItem: $manItem")
-    //Log.d("idSave", "idSave: $idSave")
-
-
 
 
 
     if (manItem != null) {
         LaunchedEffect(manItem) {
+            state.id.value = manItem.id ?: 0
             state.title.value = manItem.title
             state.type.value = manItem.type
             state.place.value = manItem.place
@@ -160,10 +150,11 @@ fun EditManScreen(
             FloatingActionButton(onClick = {
                 if (state.title.value.isNotBlank() && state.date.value.isNotBlank() && state.description.value.isNotBlank()) {
 
-                    Log.d("SaveMan", "Saving: Title: ${state.title.value}, Type: ${state.type.value} id: $manId")
+                    Log.d("SaveMan", "Saving: Title: ${state.title.value}, Type: ${state.type.value} id: ${state.id.value}")
 
                     onEvent(
-                        ManEvent.SaveMan(
+                        ManEvent.UpdateMan(
+                            id = state.id.value,
                             title = state.title.value,
                             type = state.type.value,
                             place = state.place.value,
@@ -171,7 +162,6 @@ fun EditManScreen(
                             kmt = state.kmt.value,
                             description = state.description.value,
                             price = state.price.value,
-                            id = manId,
                             )
                     )
                     navController.popBackStack()
@@ -181,7 +171,7 @@ fun EditManScreen(
             }) {
                 Icon(
                     imageVector = Icons.Rounded.Check,
-                    contentDescription = "Salva Manutenzione"
+                    contentDescription = "Salva Modifiche Manutenzione"
                 )
             }
         }
@@ -219,7 +209,7 @@ fun EditManScreen(
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 17.sp
                         ),
-                        //placeholder = { Text(text = "Titolo*") },
+                        placeholder = {if (state.title.value.isEmpty()) Text(text = "Titolo*") },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             imeAction = ImeAction.Next,
                             capitalization = KeyboardCapitalization.Sentences
@@ -245,12 +235,9 @@ fun EditManScreen(
                                     .weight(1f)
                                     .padding(8.dp)
                             ) {
-                                EditTypeDropdownMenu(
+                                TypeDropdownMenu(
                                     types = types,
-                                    selectedType = state.type.value,
-                                    onTypeSelected = { newType ->
-                                        state.type.value = newType
-                                    }
+                                    selectedType = state.type
                                 )
                             }
 
@@ -270,7 +257,7 @@ fun EditManScreen(
                                     textStyle = TextStyle(
                                         fontSize = 17.sp
                                     ),
-                                    //placeholder = { Text(text = "Luogo") },
+                                    placeholder = { if (state.place.value.isEmpty()) Text(text = "Luogo") },
                                     keyboardOptions = KeyboardOptions.Default.copy(
                                         imeAction = ImeAction.Next,
                                         capitalization = KeyboardCapitalization.Sentences
@@ -334,7 +321,7 @@ fun EditManScreen(
                                     }
                                 }
                             },
-                            //placeholder = { Text(text = "Kilometri") },
+                            placeholder = {if (state.kmt.value == 0) Text(text = "Kilometri") },
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Next
@@ -349,7 +336,6 @@ fun EditManScreen(
                 // 3. Descrizione
                 Row {
                     Column {
-                        // OutlinedTextField
                         OutlinedTextField(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -360,13 +346,12 @@ fun EditManScreen(
                                     state.description.value = newValue
                                 }
                             },
-                            //placeholder = { Text(text = "Descrizione*") },
+                            placeholder = {if (state.description.value.isEmpty()) Text(text = "Descrizione*") },
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 capitalization = KeyboardCapitalization.Sentences
                             ),
                         )
 
-                        // Contatore dei caratteri
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -374,7 +359,7 @@ fun EditManScreen(
                         ) {
                             Spacer(Modifier.weight(1f))
                             Text(
-                                text = "${state.description.value.length} / 500",                    //Controllare se si aggiorna correttamente
+                                text = "${state.description.value.length} / 500",
                                 style = TextStyle(
                                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                                     fontSize = 12.sp
@@ -414,7 +399,7 @@ fun EditManScreen(
                                     }
                                 }
                             },
-                            //placeholder = { Text(text = "Prezzo") },
+                            placeholder = {if (state.price.value == 0.0) Text(text = "Prezzo") },
                             leadingIcon = {
                                 Icon(
                                     imageVector = ImageVector.vectorResource(id = R.drawable.euro_symbol),
@@ -430,15 +415,15 @@ fun EditManScreen(
                                 onDone = {
                                     if (state.title.value.isNotBlank() && state.date.value.isNotBlank() && state.description.value.isNotBlank()) {
                                         onEvent(
-                                            ManEvent.SaveMan(
+                                            ManEvent.UpdateMan(
+                                                id = state.id.value,
                                                 title = state.title.value,
                                                 type = state.type.value,
                                                 place = state.place.value,
                                                 date = state.date.value,
-                                                kmt = state.kmt.value,  // Converti il testo in Int
+                                                kmt = state.kmt.value,
                                                 description = state.description.value,
                                                 price = state.price.value,
-                                                id = state.id,
                                             )
                                         )
                                         navController.popBackStack()
@@ -491,46 +476,3 @@ fun EditManScreen(
     }
 
 }
-
-@Composable
-fun EditTypeDropdownMenu(types: List<String>, selectedType: String, onTypeSelected: (String) -> Unit) {
-    var isDropDownExpanded by remember { mutableStateOf(false) }
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { isDropDownExpanded = true }
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .clip(RoundedCornerShape(4.dp))
-                .background(MaterialTheme.colorScheme.secondaryContainer)
-                .padding(16.dp)
-                .fillMaxWidth()
-        ) {
-            Text(text = selectedType.ifEmpty { "Tipo" })
-            Icon(
-                imageVector = Icons.Rounded.ArrowDropDown,
-                contentDescription = "Dropdown Arrow"
-            )
-        }
-
-        DropdownMenu(
-            expanded = isDropDownExpanded,
-            onDismissRequest = { isDropDownExpanded = false }
-        ) {
-            types.forEachIndexed { _, type ->
-                DropdownMenuItem(
-                    text = { Text(text = type) },
-                    onClick = {
-                        onTypeSelected(type)
-                        isDropDownExpanded = false
-                    }
-                )
-            }
-        }
-    }
-}
-

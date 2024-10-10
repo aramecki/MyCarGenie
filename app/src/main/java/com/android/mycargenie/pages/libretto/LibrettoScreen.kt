@@ -38,8 +38,7 @@ import java.text.DecimalFormat
 @Composable
 fun LibrettoScreen(
     state: ManState,
-    navController: NavController,
-    lastId: Int?
+    navController: NavController
 ) {
     //println("Ultimo ID passato a LibrettoScreen: $lastId")  // Aggiungi questo log
     //println("Numero di elementi in state.men: ${state.men.size}")  // Aggiungi questo log
@@ -118,7 +117,6 @@ fun LibrettoScreen(
         }
 
 
-        // Visualizzazione del caricamento se la lista è vuota
         if (sortedMen.isEmpty()) {
             Text(
                 text = "Aggiungi la tua prima manutenzione per visualizzare un resoconto.",
@@ -126,23 +124,16 @@ fun LibrettoScreen(
                 fontSize = 18.sp,
                 textAlign = TextAlign.Center
             )
-            return@Column // Interrompi l'esecuzione della funzione se la lista è vuota
+            return@Column
         } else {
-            // Log dei contenuti della lista
-            //println("Contenuto della lista sortedMen:")
-            sortedMen.forEachIndexed { index, man ->
-                //println("Elemento $index: $man")
+            sortedMen.forEachIndexed { _, _ ->
             }
         }
 
-        // Mostra il contenuto della card solo se lastId è valido
         if (sortedMen.isNotEmpty()) {
-            // Prendi sempre il primo elemento della lista ordinata
             val currentItem = sortedMen.first()
             val index = state.men.indexOf(currentItem)
 
-            // Log per mostrare l'elemento attuale
-            //println("Mostro la card con id: ${currentItem.id}, Dettagli dell'oggetto: $currentItem")
 
             Spacer(modifier = Modifier.height(30.dp))
 
@@ -281,7 +272,8 @@ fun LibrettoScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                             ) {
-                                val price = currentItem.price.toString().replace('.', ',')
+                                val decimalFormat = DecimalFormat("#,##0.00")
+                                val price = decimalFormat.format(state.men[index].price).replace('.', ',')
 
                                 Row {
                                     Text(
@@ -298,7 +290,6 @@ fun LibrettoScreen(
                     }
             }
         } else {
-            //println("Id non mostrato: $lastId")
             Text(
                 text = "Aggiungi la tua prima manutenzione per mostrare un riepilogo.",
                 textAlign = TextAlign.Center,

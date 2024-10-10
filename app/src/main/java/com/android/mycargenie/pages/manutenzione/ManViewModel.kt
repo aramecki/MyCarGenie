@@ -65,7 +65,6 @@ class ManViewModel(
 
             is ManEvent.SaveMan -> {
                 val man = Man(
-                    id = state.value.id,
                     title = state.value.title.value,
                     type = state.value.type.value,
                     place = state.value.place.value,
@@ -76,11 +75,41 @@ class ManViewModel(
                 )
 
                 viewModelScope.launch {
-                    dao.upsertMan(man) // Assicurati che questa chiamata utilizzi l'ID corretto
+                    dao.insertMan(man)
                 }
 
                 _state.update {
                     it.copy(
+                        title = mutableStateOf(""),
+                        type = mutableStateOf(""),
+                        place = mutableStateOf(""),
+                        date = mutableStateOf(""),
+                        kmt = mutableIntStateOf(0),
+                        description = mutableStateOf(""),
+                        price = mutableDoubleStateOf(0.0)
+                    )
+                }
+            }
+
+            is ManEvent.UpdateMan -> {
+                val man = Man(
+                    id = state.value.id.value,
+                    title = state.value.title.value,
+                    type = state.value.type.value,
+                    place = state.value.place.value,
+                    date = state.value.date.value,
+                    kmt = state.value.kmt.value,
+                    description = state.value.description.value,
+                    price = state.value.price.value,
+                )
+
+                viewModelScope.launch {
+                    dao.updateMan(man)
+                }
+
+                _state.update {
+                    it.copy(
+                        id = mutableIntStateOf(0),
                         title = mutableStateOf(""),
                         type = mutableStateOf(""),
                         place = mutableStateOf(""),

@@ -17,4 +17,16 @@ sealed interface ManEvent {
         val description: String,
         val price: Double,
     ): ManEvent
+
+    data class UpdateMan(
+        val id: Int,
+        val title: String,
+        val type: String,
+        val place: String,
+        val date: String,
+        val kmt: Int,
+        val description: String,
+        val price: Double,
+    ): ManEvent
+
 }

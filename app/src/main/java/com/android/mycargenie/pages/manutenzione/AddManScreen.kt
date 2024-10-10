@@ -520,6 +520,9 @@ fun PreviewAddManScreenLight() {
             is ManEvent.SaveMan -> {
                 println("Salvato: ${event.title}, ${event.date}, ${event.place}, ${event.description}")
             }
+            is ManEvent.UpdateMan -> {
+                println("Aggiornato: ${event.id}, ${event.title}, ${event.date}, ${event.place}, ${event.description}")
+            }
 
             is ManEvent.DeleteMan -> TODO()
             ManEvent.SortMan -> TODO()
@@ -556,6 +559,9 @@ fun PreviewAddManScreenDark() {
         when (event) {
             is ManEvent.SaveMan -> {
                 println("Salvato: ${event.title}, ${event.date}, ${event.place}, ${event.description}")
+            }
+            is ManEvent.UpdateMan -> {
+                println("Aggiornato: ${event.id}, ${event.title}, ${event.date}, ${event.place}, ${event.description}")
             }
 
             is ManEvent.DeleteMan -> TODO()

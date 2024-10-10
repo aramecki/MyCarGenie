@@ -151,8 +151,7 @@ fun MainApp(viewModel: ManViewModel) {
                 composable("LibrettoScreen") {
                     LibrettoScreen(
                         state = viewModel.state.collectAsState().value,
-                        navController = navController,
-                        lastId = viewModel.lastInsertedId.collectAsState().value
+                        navController = navController
                     )
                 }
                 composable("ManutenzioneScreen") {
@@ -205,7 +204,6 @@ fun MainApp(viewModel: ManViewModel) {
                     EditManScreen(
                         state = viewModel.state.collectAsState().value,
                         navController = navController,
-                        viewModel = viewModel,
                         onEvent = viewModel::onEvent
                     )
                 }
