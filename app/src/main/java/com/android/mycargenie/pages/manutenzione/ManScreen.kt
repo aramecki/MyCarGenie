@@ -1,13 +1,10 @@
 package com.android.mycargenie.pages.manutenzione
 
-import android.annotation.SuppressLint
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,23 +21,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableDoubleStateOf
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.android.mycargenie.R
-import com.android.mycargenie.data.Man
-import com.android.mycargenie.ui.theme.MyCarGenieTheme
 import java.text.DecimalFormat
 
 @Composable
@@ -143,91 +133,118 @@ fun ManItem(
             else -> ImageVector.vectorResource(id = R.drawable.repair)
         }
 
-
-        Icon(
-            imageVector = icon,
-            contentDescription = state.men[index].type,
-            modifier = Modifier
-                .size(30.dp)
-                .padding(end = 8.dp),
-            tint = MaterialTheme.colorScheme.onPrimary
-        )
-
         Column(
-            modifier = Modifier.weight(1f)
+            verticalArrangement = Arrangement.SpaceEvenly
         ) {
 
-            //Titolo
-            Text(
-                text = state.men[index].title,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
-            )
 
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(bottom = 4.dp)
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = state.men[index].type,
+                    modifier = Modifier
+                        .size(34.dp)
+                        .padding(end = 4.dp),
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Column {
+
+                    //Titolo
+                    Text(
+                        text = state.men[index].title,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+
+                //Data
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = state.men[index].date,
+                        fontSize = 18.sp,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+            }
+
 
             //Luogo
-            Text(
-                text = state.men[index].place,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            //Data
-            Text(
-                text = state.men[index].date,
-                fontSize = 18.sp,
-                color = MaterialTheme.colorScheme.onSecondary
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = state.men[index].kmt.toString(),
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            val decimalFormat = DecimalFormat("#,##0.00")
-            val price = decimalFormat.format(state.men[index].price).replace('.', ',')
-
-            Text(
-                text = "$price €",
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .align(Alignment.End)
-            )
-
-        }
-
-        /*
-        IconButton(
-            onClick = {
-                onEvent(ManEvent.DeleteMan(state.men[index]))
+                    .padding(bottom = 4.dp)
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.location),
+                    contentDescription = "Luogo",
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier
+                        .size(34.dp)
+                        .padding(end = 4.dp),
+                )
+                Text(
+                    text = state.men[index].place,
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
             }
-        ) {
 
-            Icon(
-                imageVector = Icons.Rounded.Delete,
-                contentDescription = "Elimina Manutenzione",
-                modifier = Modifier.size(18.dp),
-                tint = MaterialTheme.colorScheme.onPrimaryContainer
-            )
 
+            //Kilometri
+
+            val formatter = DecimalFormat("#,###")
+            val formattedKmt = formatter.format(state.men[index].kmt)
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.time_to_leave),
+                    contentDescription = "Data",
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier
+                        .size(34.dp)
+                        .padding(end = 4.dp),
+                )
+
+                Text(
+                    text = "$formattedKmt km",
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+
+
+                //Prezzo
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    val decimalFormat = DecimalFormat("#,##0.00")
+                    val price = decimalFormat.format(state.men[index].price).replace('.', ',')
+
+                    Text(
+                        text = "$price €",
+                        fontSize = 18.sp,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+                }
+            }
         }
-
-         */
-
     }
 }
 
+    /*
 @SuppressLint("UnrememberedMutableState")
 @Preview(
     name = "Light Mode",
@@ -282,3 +299,5 @@ fun PreviewManutenzioneScreen() {
         )
     }
 }
+
+     */

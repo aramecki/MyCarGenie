@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.DateRange
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -40,8 +38,6 @@ fun LibrettoScreen(
     state: ManState,
     navController: NavController
 ) {
-    //println("Ultimo ID passato a LibrettoScreen: $lastId")  // Aggiungi questo log
-    //println("Numero di elementi in state.men: ${state.men.size}")  // Aggiungi questo log
 
     val sortedMen = state.men.sortedByDescending { it.id }
 
@@ -156,116 +152,99 @@ fun LibrettoScreen(
                     else -> ImageVector.vectorResource(id = R.drawable.repair)
                 }
 
-                    Column {
-
-
-                    Row {
-                        Column {
-                            Icon(
-                                imageVector = icon,
-                                contentDescription = currentItem.type,
-                                modifier = Modifier
-                                    .size(36.dp)
-                                    .padding(end = 8.dp),
-                                tint = MaterialTheme.colorScheme.onPrimary
-                            )
-                        }
-
-
-                        Column {
-
-                            //Titolo
-                            Text(
-                                text = currentItem.title,
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-                        }
-                    }
-
-
+                    Column(
+                        verticalArrangement = Arrangement.SpaceEvenly
+                    ) {
 
 
                         Row(
+                            verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
-                                .padding(top = 8.dp)
+                                .padding(bottom = 4.dp)
                         ) {
-
-                            Column(
-                                horizontalAlignment = Alignment.Start,
-                                modifier = Modifier
-                                    .fillMaxWidth(0.5f)
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Rounded.DateRange,
-                                        contentDescription = "Data",
-                                        tint = MaterialTheme.colorScheme.primary,
-                                        modifier = Modifier
-                                            .size(24.dp)
-                                    )
-                                    Text(
-                                        text = currentItem.date,
-                                        fontSize = 18.sp,
-                                        color = MaterialTheme.colorScheme.primary
-                                    )
-                                }
+                            Column {
+                                Icon(
+                                    imageVector = icon,
+                                    contentDescription = currentItem.type,
+                                    modifier = Modifier
+                                        .size(34.dp)
+                                        .padding(end = 4.dp),
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
                             }
 
 
-                            //Luogo
+                            Column {
+
+                                //Titolo
+                                Text(
+                                    text = currentItem.title,
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                            }
                             Column(
                                 horizontalAlignment = Alignment.End,
                                 modifier = Modifier
                                     .fillMaxWidth()
                             ) {
+                                Text(
+                                    text = currentItem.date,
+                                    fontSize = 18.sp,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                                )
+                            }
+                        }
+
+
+                            //Luogo
+
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                     .padding(bottom = 4.dp)
                                 ) {
                                     Icon(
-                                        imageVector = ImageVector.vectorResource
-
-
-
-                                            (id = R.drawable.location),
+                                        imageVector = ImageVector.vectorResource(id = R.drawable.location),
                                         contentDescription = "Luogo",
                                         tint = MaterialTheme.colorScheme.primary,
                                         modifier = Modifier
-                                            .size(24.dp)
+                                            .size(34.dp)
+                                            .padding(end = 4.dp),
                                     )
 
                                     Text(
                                         text = currentItem.place,
-                                        fontSize = 16.sp,
+                                        fontSize = 18.sp,
                                         color = MaterialTheme.colorScheme.onSecondaryContainer
                                     )
                                 }
-                            }
 
-                        }
+                        //Kilometri
+
+                        val formatter = DecimalFormat("#,###")
+                        val formattedKmt = formatter.format(currentItem.kmt)
 
 
                         Row(
+                            verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
-                                .padding(top = 16.dp)
                         ) {
-
-                            Column(
+                            Icon(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.time_to_leave),
+                                contentDescription = "Data",
+                                tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier
-                                    .padding(start = 8.dp)
-                            ) {
-                                val formatter = DecimalFormat("#,###")
-                                val formattedKmt = formatter.format(currentItem.kmt)
-
-                                Text(
-                                    text = "$formattedKmt km",
-                                    fontSize = 18.sp,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                    .size(34.dp)
+                                    .padding(end = 4.dp),
                                 )
-                            }
+
+                            Text(
+                                text = "$formattedKmt km",
+                                fontSize = 18.sp,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
 
                             Column(
                                 horizontalAlignment = Alignment.End,
@@ -275,20 +254,16 @@ fun LibrettoScreen(
                                 val decimalFormat = DecimalFormat("#,##0.00")
                                 val price = decimalFormat.format(state.men[index].price).replace('.', ',')
 
-                                Row {
-                                    Text(
-                                        text = "$price €",
-                                        fontSize = 18.sp,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    )
-                                }
-
+                                Text(
+                                    text = "$price €",
+                                    fontSize = 18.sp,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                )
                             }
-
-
                         }
                     }
-            }
+                }
+
         } else {
             Text(
                 text = "Aggiungi la tua prima manutenzione per mostrare un riepilogo.",
@@ -296,6 +271,6 @@ fun LibrettoScreen(
                 modifier = Modifier
                     .padding(top = 60.dp)
             )
-            }
         }
     }
+}
