@@ -37,28 +37,14 @@ import com.android.mycargenie.pages.manutenzione.EditManScreen
 import com.android.mycargenie.pages.manutenzione.ManViewModel
 import com.android.mycargenie.pages.manutenzione.ManutenzioneScreen
 import com.android.mycargenie.pages.manutenzione.ViewManScreen
+import com.android.mycargenie.pages.rifornimento.AddRifScreen
+import com.android.mycargenie.pages.rifornimento.EditRifScreen
+import com.android.mycargenie.pages.rifornimento.RifViewModel
+import com.android.mycargenie.pages.rifornimento.RifornimentoScreen
+import com.android.mycargenie.pages.rifornimento.ViewRifScreen
 
 
 // Screens
-
-/*
-@Composable
-fun LibrettoScreen() {
-    Text(
-        text = "Libretto",
-        modifier = Modifier.fillMaxSize()
-    )
-}
-
- */
-
-@Composable
-fun CarburanteScreen() {
-    Text(
-        text = "Carburante",
-        modifier = Modifier.fillMaxSize()
-    )
-}
 
 @Composable
 fun ProfessionistiScreen() {
@@ -68,13 +54,6 @@ fun ProfessionistiScreen() {
     )
 }
 
-@Composable
-fun RifornimentoScreen() {
-    Text(
-        text = "Rifornimento",
-        modifier = Modifier.fillMaxSize()
-    )
-}
 
 // Defining the items
 data class BottomNavItem(
@@ -84,7 +63,7 @@ data class BottomNavItem(
 )
 
 @Composable
-fun MainApp(viewModel: ManViewModel) {
+fun MainApp(viewModel: ManViewModel, rifViewModel: RifViewModel) {
 
     val navController = rememberNavController()
 
@@ -93,7 +72,7 @@ fun MainApp(viewModel: ManViewModel) {
     val currentBackStackEntry = navController.currentBackStackEntryAsState().value
     val currentDestination = currentBackStackEntry?.destination?.route
 
-    val shouldShowBottomBar = currentDestination !in listOf("ViewManScreen/{index}", "AddManScreen")
+    val shouldShowBottomBar = currentDestination !in listOf("ViewManScreen/{index}", "AddManScreen", "EditManScreen/{manIndex}", "ViewRifScreen/{index}", "AddRifScreen", "EditRifScreen/{rifIndex}")
 
     Scaffold(
         bottomBar = {
@@ -117,17 +96,20 @@ fun MainApp(viewModel: ManViewModel) {
                             navController.navigate("ManutenzioneScreen")
                         },
                         BottomNavItem(
-                            "Carburante",
+                            "Rifornimento",
                             ImageVector.vectorResource(id = R.drawable.gas_station)
-                        ) { CarburanteScreen() },
+                        ) {
+                            selectedTabIndex = 2
+                            navController.navigate("RifornimentoScreen")
+                          },
                         BottomNavItem(
                             "Professionisti",
                             ImageVector.vectorResource(id = R.drawable.store)
                         ) { ProfessionistiScreen() },
                         BottomNavItem(
-                            "Rifornimento",
+                            "Carburanti",
                             ImageVector.vectorResource(id = R.drawable.location)
-                        ) { RifornimentoScreen() }
+                        ) { TODO() }
                     ),
                     selectedIndex = selectedTabIndex,
                     onTabSelected = { index ->
@@ -136,9 +118,9 @@ fun MainApp(viewModel: ManViewModel) {
                         when (index) {
                             0 -> navController.navigate("LibrettoScreen")
                             1 -> navController.navigate("ManutenzioneScreen")
-                            2 -> navController.navigate("CarburanteScreen")
+                            2 -> navController.navigate("RifornimentoScreen")
                             3 -> navController.navigate("ProfessionistiScreen")
-                            4 -> navController.navigate("RifornimentoScreen")
+                            4 -> navController.navigate("CarburantiScreen")
                         }
                     }
                 )
@@ -175,6 +157,7 @@ fun MainApp(viewModel: ManViewModel) {
                         onEvent = viewModel::onEvent
                     )
                 }
+
                 composable("ViewManScreen/{index}",
                     arguments = listOf(navArgument("index") { type = NavType.IntType }),
                     enterTransition = {
@@ -207,6 +190,62 @@ fun MainApp(viewModel: ManViewModel) {
                         onEvent = viewModel::onEvent
                     )
                 }
+
+                composable("RifornimentoScreen") {
+                    RifornimentoScreen(
+                        state = rifViewModel.state.collectAsState().value,
+                        navController = navController,
+                        onEvent = rifViewModel::onEvent
+                    )
+                }
+                composable("AddRifScreen",
+                    enterTransition = {
+                        slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500))
+                    },
+                    exitTransition = {
+                        slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
+                    }
+                ) {
+                    AddRifScreen(
+                        state = rifViewModel.state.collectAsState().value,
+                        navController = navController,
+                        onEvent = rifViewModel::onEvent
+                    )
+                }
+                composable("ViewRifScreen/{index}",
+                    arguments = listOf(navArgument("index") { type = NavType.IntType }),
+                    enterTransition = {
+                        slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500))
+                    },
+                    exitTransition = {
+                        slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
+                    }
+                ) {
+                    ViewRifScreen(
+                        state = rifViewModel.state.collectAsState().value,
+                        navController = navController,
+                        viewModel = rifViewModel
+                    )
+
+                }
+
+                composable("EditRifScreen/{rifIndex}",
+                    arguments = listOf(navArgument("rifIndex") { type = NavType.IntType }),
+                    enterTransition = {
+                        slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500))
+                    },
+                    exitTransition = {
+                        slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
+                    }
+                ) {
+                    EditRifScreen(
+                        state = rifViewModel.state.collectAsState().value,
+                        navController = navController,
+                        onEvent = rifViewModel::onEvent
+                    )
+                }
+
+
 
             }
             }

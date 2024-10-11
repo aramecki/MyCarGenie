@@ -13,7 +13,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
 import com.android.mycargenie.data.ManDatabase
+import com.android.mycargenie.data.RifDatabase
 import com.android.mycargenie.pages.manutenzione.ManViewModel
+import com.android.mycargenie.pages.rifornimento.RifViewModel
 import com.android.mycargenie.ui.MainApp
 import com.android.mycargenie.ui.theme.MyCarGenieTheme
 
@@ -26,7 +28,15 @@ class MainActivity : ComponentActivity() {
             applicationContext,
             ManDatabase::class.java,
             "man.db"
-        )            .build()
+        ) .build()
+    }
+
+    private val rifdatabase by lazy {
+        Room.databaseBuilder(
+            applicationContext,
+            RifDatabase::class.java,
+            "rif.db"
+        ) .build()
     }
 
 
@@ -39,9 +49,16 @@ class MainActivity : ComponentActivity() {
                     return ManViewModel(database.dao()) as T
                 }
             }
+        }
+    )
 
-            
-
+    private val rifViewModel by viewModels<RifViewModel>(
+        factoryProducer = {
+            object : ViewModelProvider.Factory {
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return RifViewModel(rifdatabase.dao()) as T
+                }
+            }
         }
     )
 
@@ -50,14 +67,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
 
-            //deleteExistingDatabase()
+            deleteExistingDatabase()
 
             MyCarGenieTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainApp(viewModel)
+                    MainApp(viewModel = viewModel, rifViewModel = rifViewModel)
                 }
             }
         }
@@ -65,7 +82,7 @@ class MainActivity : ComponentActivity() {
 
     private fun deleteExistingDatabase() {
 
-        val databaseName = "man.db"
+        val databaseName = "rif.db"
 
 
         val deleted = this.deleteDatabase(databaseName)
