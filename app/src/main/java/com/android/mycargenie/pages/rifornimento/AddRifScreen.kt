@@ -38,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,7 +52,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -62,8 +62,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.android.mycargenie.R
+import com.android.mycargenie.pages.manutenzione.TypeDropdownMenu
+import com.android.mycargenie.pages.manutenzione.formatDate
 import com.android.mycargenie.ui.theme.MyCarGenieTheme
 import java.text.SimpleDateFormat
+import java.time.Instant
 import java.util.Date
 import java.util.Locale
 
@@ -74,6 +77,10 @@ fun AddRifScreen(
     navController: NavController,
     onEvent: (RifEvent) -> Unit
 ) {
+
+    LaunchedEffect(Unit) {
+        state.date.value = formatDate(Instant.now().toEpochMilli())
+    }
 
     var showError by remember { mutableStateOf(false) }
     var showDatePicker by remember { mutableStateOf(false) }
@@ -135,7 +142,7 @@ fun AddRifScreen(
 
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                if (state.title.value.isNotBlank() && state.date.value.isNotBlank() && state.description.value.isNotBlank()) {
+                if (state.date.value.isNotBlank() && state.description.value.isNotBlank()) {
                     onEvent(
                         RifEvent.SaveRif(
                             id = null,
@@ -174,35 +181,8 @@ fun AddRifScreen(
                 .verticalScroll(scrollState)
         ) {
 
-            //Titolo
-            Row {
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    value = state.title.value,
-                    onValueChange = { newValue ->
-                        if (newValue.length <= 50) {
-                            state.title.value = newValue
-                        }
-                    },
-                    textStyle = TextStyle(
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 17.sp
-                    ),
-                    placeholder = { Text(text = "Titolo*") },
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        imeAction = ImeAction.Next,
-                        capitalization = KeyboardCapitalization.Sentences
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onNext = { focusManager.moveFocus(FocusDirection.Next) }
-                    )
-                )
-            }
 
-
-            val types = listOf("Meccanico", "Elettrauto", "Carrozziere", "Altro")
+            val types = listOf("Benzina", "Gasolio", "GPL", "Metano", "Elettrico", "Altro")
 
             Row {
                 Column {
@@ -253,14 +233,180 @@ fun AddRifScreen(
             }
 
 
-            //Data
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(top = 8.dp)
             ) {
+                //Prezzo
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .padding(start = 16.dp)
+                ) {
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 8.dp),
+                        value = if (state.price.value == 0.0) "" else state.price.value.toString()
+                            .replace('.', ','),
+                        onValueChange = { newValue ->
+                            val regex = Regex("^\\d{0,5}(,\\d{0,2})?\$")
+                            val formattedValue = newValue.replace(',', '.')
+                            if (newValue.isEmpty()) {
+                                state.price.value = 0.0
+                            } else if (regex.matches(newValue)) {
+                                formattedValue.toDoubleOrNull()?.let { doubleValue ->
+                                    if (doubleValue <= 99999.99) {
+                                        state.price.value = doubleValue
+                                    }
+                                }
+                            }
+                        },
+                        placeholder = { Text(text = "Importo") },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.euro_symbol),
+                                contentDescription = "Euro Icon",
+                                modifier = Modifier.size(20.dp)
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Done
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                if (state.date.value.isNotBlank() && state.description.value.isNotBlank()) {
+                                    onEvent(
+                                        RifEvent.SaveRif(
+                                            id = null,
+                                            title = state.title.value,
+                                            type = state.type.value,
+                                            place = state.place.value,
+                                            date = state.date.value,
+                                            kmt = state.kmt.value,
+                                            description = state.description.value,
+                                            price = state.price.value
+                                        )
+                                    )
+                                    navController.popBackStack()
+                                } else {
+                                    showError = true
+                                }
+                            }
+                        )
+                    )
+                }
+
+                //Prezzo
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 8.dp, end = 16.dp),
+                        value = if (state.price.value == 0.0) "" else state.price.value.toString()
+                            .replace('.', ','),
+                        onValueChange = { newValue ->
+                            val regex = Regex("^\\d{0,5}(,\\d{0,2})?\$")
+                            val formattedValue = newValue.replace(',', '.')
+                            if (newValue.isEmpty()) {
+                                state.price.value = 0.0
+                            } else if (regex.matches(newValue)) {
+                                formattedValue.toDoubleOrNull()?.let { doubleValue ->
+                                    if (doubleValue <= 99999.99) {
+                                        state.price.value = doubleValue
+                                    }
+                                }
+                            }
+                        },
+                        placeholder = {if (state.type.value == "Elettrico") Text(text = "€/kWh")
+                        else if (state.type.value.isEmpty() || state.type.value == "Altro") Text(text = "€/l o €/kWh")
+                        else (Text(text = "€/l")) },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.euro_symbol),
+                                contentDescription = "Euro Icon",
+                                modifier = Modifier.size(20.dp)
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Done
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                if (state.date.value.isNotBlank() && state.description.value.isNotBlank()) {
+                                    onEvent(
+                                        RifEvent.SaveRif(
+                                            id = null,
+                                            title = state.title.value,
+                                            type = state.type.value,
+                                            place = state.place.value,
+                                            date = state.date.value,
+                                            kmt = state.kmt.value,
+                                            description = state.description.value,
+                                            price = state.price.value
+                                        )
+                                    )
+                                    navController.popBackStack()
+                                } else {
+                                    showError = true
+                                }
+                            }
+                        )
+                    )
+
+                }
+            }
+
+
+            //Quantità totale
+            Row(
+                modifier = Modifier
+                    .padding(top = 16.dp)
+            ) {
+
                 Column(
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
                         .padding(start = 16.dp, end = 8.dp)
+                ) {
+                    OutlinedTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        value = state.place.value,
+                        onValueChange = { newValue ->
+                            if (newValue.length <= 16) {
+                                state.place.value = newValue
+                            }
+                        },
+                        textStyle = TextStyle(
+                            fontSize = 17.sp
+                        ),
+                        placeholder = {if (state.type.value == "Elettrico") Text(text = "kWh Totali")
+                        else if (state.type.value.isEmpty() || state.type.value == "Altro") Text(text = "Litri o kWh Totali")
+                        else Text(text = "Litri Totali")
+                         },
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            imeAction = ImeAction.Next,
+                            capitalization = KeyboardCapitalization.Sentences
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onNext = { focusManager.moveFocus(FocusDirection.Next) }
+                        )
+                    )
+                }
+
+                //Data
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 8.dp, end = 16.dp)
                         .clickable {
                             showDatePicker = true
                         }
@@ -276,7 +422,7 @@ fun AddRifScreen(
                             contentDescription = "Calendario"
                         )
                         Text(
-                            text = state.date.value.ifEmpty { "Data*" },
+                            text = state.date.value.ifEmpty { formatDate(Instant.now().toEpochMilli()) },
                             fontSize = 17.sp,
                             modifier = Modifier
                                 .padding(start = 8.dp)
@@ -284,37 +430,10 @@ fun AddRifScreen(
                     }
                 }
 
-                //Kilometri
-                Column {
-                    OutlinedTextField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 8.dp, end = 16.dp),
-                        value = if (state.kmt.value == 0) "" else state.kmt.value.toString(),
-                        onValueChange = { newValue ->
-                            if (newValue.isEmpty()) {
-                                state.kmt.value = 0
-                            } else {
-                                newValue.toIntOrNull()?.let { intValue ->
-                                    if (intValue in 1..9_999_999) {
-                                        state.kmt.value = intValue
-                                    }
-                                }
-                            }
-                        },
-                        placeholder = { Text(text = "Kilometri") },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next
-                        ),
-                        keyboardActions = KeyboardActions(
-                            onNext = { focusManager.moveFocus(FocusDirection.Next) }
-                        )
-                    )
-                }
             }
 
-            // 3. Descrizione
+
+            // 3. Note
             Row {
                 Column {
                     // OutlinedTextField
@@ -328,7 +447,7 @@ fun AddRifScreen(
                                 state.description.value = newValue
                             }
                         },
-                        placeholder = { Text(text = "Descrizione*") },
+                        placeholder = { Text(text = "Note") },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             capitalization = KeyboardCapitalization.Sentences
                         ),
@@ -352,11 +471,10 @@ fun AddRifScreen(
                 }
             }
 
-
-            //Prezzo
+            //Kilometri
             Row(
                 modifier = Modifier
-                    .padding(top = 16.dp)
+                    .padding(top = 8.dp)
             ) {
                 Column(
                     horizontalAlignment = Alignment.End,
@@ -367,56 +485,27 @@ fun AddRifScreen(
                         modifier = Modifier
                             .fillMaxWidth(0.5f)
                             .padding(end = 16.dp),
-                        value = if (state.price.value == 0.0) "" else state.price.value.toString()
-                            .replace('.', ','),
+                        value = if (state.kmt.value == 0) "" else state.kmt.value.toString(),
                         onValueChange = { newValue ->
-                            val regex = Regex("^\\d{0,5}(,\\d{0,2})?\$")
-                            val formattedValue = newValue.replace(',', '.')
                             if (newValue.isEmpty()) {
-                                state.price.value = 0.0
-                            } else if (regex.matches(newValue)) {
-                                formattedValue.toDoubleOrNull()?.let { doubleValue ->
-                                    if (doubleValue <= 99999.99) {
-                                        state.price.value = doubleValue
+                                state.kmt.value = 0
+                            } else {
+                                newValue.toIntOrNull()?.let { intValue ->
+                                    if (intValue in 1..9_999_999) {
+                                        state.kmt.value = intValue
                                     }
                                 }
                             }
                         },
-                        placeholder = { Text(text = "Prezzo") },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.euro_symbol),
-                                contentDescription = "Euro Icon",
-                                modifier = Modifier.size(20.dp)
-                            )
-                        },
+                        placeholder = { Text(text = "Kilometri") },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Done
+                            imeAction = ImeAction.Next
                         ),
                         keyboardActions = KeyboardActions(
-                            onDone = {
-                                if (state.title.value.isNotBlank() && state.date.value.isNotBlank() && state.description.value.isNotBlank()) {
-                                    onEvent(
-                                        RifEvent.SaveRif(
-                                            id = null,
-                                            title = state.title.value,
-                                            type = state.type.value,
-                                            place = state.place.value,
-                                            date = state.date.value,
-                                            kmt = state.kmt.value,
-                                            description = state.description.value,
-                                            price = state.price.value
-                                        )
-                                    )
-                                    navController.popBackStack()
-                                } else {
-                                    showError = true
-                                }
-                            }
+                            onNext = { focusManager.moveFocus(FocusDirection.Next) }
                         )
                     )
-
                 }
             }
 
