@@ -1,6 +1,5 @@
 package com.android.mycargenie.pages.rifornimento
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -56,15 +55,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.android.mycargenie.R
 import com.android.mycargenie.pages.manutenzione.TypeDropdownMenu
 import com.android.mycargenie.pages.manutenzione.formatDate
-import com.android.mycargenie.ui.theme.MyCarGenieTheme
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.Date
@@ -142,17 +138,19 @@ fun AddRifScreen(
 
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                if (state.date.value.isNotBlank() && state.description.value.isNotBlank()) {
+                if (state.date.value.isNotBlank() && state.note.value.isNotBlank()) {
                     onEvent(
                         RifEvent.SaveRif(
                             id = null,
-                            title = state.title.value,
                             type = state.type.value,
                             place = state.place.value,
+                            price = state.price.value,
+                            uvalue = state.uvalue.value,
+                            totunit = state.totunit.value,
                             date = state.date.value,
+                            note = state.note.value,
                             kmt = state.kmt.value,
-                            description = state.description.value,
-                            price = state.price.value
+
                         )
                     )
                     navController.popBackStack()
@@ -274,33 +272,28 @@ fun AddRifScreen(
                         },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Done
+                            imeAction = ImeAction.Next
                         ),
                         keyboardActions = KeyboardActions(
-                            onDone = {
-                                if (state.date.value.isNotBlank() && state.description.value.isNotBlank()) {
-                                    onEvent(
-                                        RifEvent.SaveRif(
-                                            id = null,
-                                            title = state.title.value,
-                                            type = state.type.value,
-                                            place = state.place.value,
-                                            date = state.date.value,
-                                            kmt = state.kmt.value,
-                                            description = state.description.value,
-                                            price = state.price.value
-                                        )
-                                    )
-                                    navController.popBackStack()
-                                } else {
-                                    showError = true
-                                }
-                            }
+                            onNext = { focusManager.moveFocus(FocusDirection.Next) }
                         )
                     )
                 }
 
-                //Prezzo
+
+                //Prezzo per unità
+                val leadingIcon: @Composable (() -> Unit)? = if (state.uvalue.value != 0.0) {
+                    {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.euro_symbol),
+                            contentDescription = "Cost per fuel unit",
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                } else {
+                    null
+                }
+
                 Column(
                     horizontalAlignment = Alignment.End,
                     modifier = Modifier
@@ -310,17 +303,17 @@ fun AddRifScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 8.dp, end = 16.dp),
-                        value = if (state.price.value == 0.0) "" else state.price.value.toString()
+                        value = if (state.uvalue.value == 0.0) "" else state.uvalue.value.toString()
                             .replace('.', ','),
                         onValueChange = { newValue ->
                             val regex = Regex("^\\d{0,5}(,\\d{0,2})?\$")
                             val formattedValue = newValue.replace(',', '.')
                             if (newValue.isEmpty()) {
-                                state.price.value = 0.0
+                                state.uvalue.value = 0.0
                             } else if (regex.matches(newValue)) {
                                 formattedValue.toDoubleOrNull()?.let { doubleValue ->
                                     if (doubleValue <= 99999.99) {
-                                        state.price.value = doubleValue
+                                        state.uvalue.value = doubleValue
                                     }
                                 }
                             }
@@ -328,39 +321,17 @@ fun AddRifScreen(
                         placeholder = {if (state.type.value == "Elettrico") Text(text = "€/kWh")
                         else if (state.type.value.isEmpty() || state.type.value == "Altro") Text(text = "€/l o €/kWh")
                         else (Text(text = "€/l")) },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.euro_symbol),
-                                contentDescription = "Euro Icon",
-                                modifier = Modifier.size(20.dp)
-                            )
-                        },
+
+                        leadingIcon = leadingIcon,
+
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Done
+                            imeAction = ImeAction.Next
                         ),
                         keyboardActions = KeyboardActions(
-                            onDone = {
-                                if (state.date.value.isNotBlank() && state.description.value.isNotBlank()) {
-                                    onEvent(
-                                        RifEvent.SaveRif(
-                                            id = null,
-                                            title = state.title.value,
-                                            type = state.type.value,
-                                            place = state.place.value,
-                                            date = state.date.value,
-                                            kmt = state.kmt.value,
-                                            description = state.description.value,
-                                            price = state.price.value
-                                        )
-                                    )
-                                    navController.popBackStack()
-                                } else {
-                                    showError = true
-                                }
-                            }
+                            onNext = { focusManager.moveFocus(FocusDirection.Next) }
                         )
-                    )
+                        )
 
                 }
             }
@@ -379,10 +350,13 @@ fun AddRifScreen(
                 ) {
                     OutlinedTextField(
                         modifier = Modifier.fillMaxWidth(),
-                        value = state.place.value,
+                        value = if (state.totunit.value == 0.0) "" else state.totunit.value.toString(),
                         onValueChange = { newValue ->
                             if (newValue.length <= 16) {
-                                state.place.value = newValue
+                                val parsedValue = newValue.toDoubleOrNull()
+                                if (parsedValue != null) {
+                                    state.totunit.value = parsedValue
+                                }
                             }
                         },
                         textStyle = TextStyle(
@@ -441,10 +415,10 @@ fun AddRifScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                        value = state.description.value,
+                        value = state.note.value,
                         onValueChange = { newValue ->
                             if (newValue.length <= 500) {
-                                state.description.value = newValue
+                                state.note.value = newValue
                             }
                         },
                         placeholder = { Text(text = "Note") },
@@ -461,7 +435,7 @@ fun AddRifScreen(
                     ) {
                         Spacer(Modifier.weight(1f))
                         Text(
-                            text = "${state.description.value.length} / 500",
+                            text = "${state.note.value.length} / 500",
                             style = TextStyle(
                                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                                 fontSize = 12.sp
@@ -500,10 +474,30 @@ fun AddRifScreen(
                         placeholder = { Text(text = "Kilometri") },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next
+                            imeAction = ImeAction.Done
                         ),
                         keyboardActions = KeyboardActions(
-                            onNext = { focusManager.moveFocus(FocusDirection.Next) }
+                            onDone = {
+                                if (state.date.value.isNotBlank() && state.note.value.isNotBlank()) {
+                                    onEvent(
+                                        RifEvent.SaveRif(
+                                            id = null,
+                                            type = state.type.value,
+                                            place = state.place.value,
+                                            price = state.price.value,
+                                            uvalue = state.uvalue.value,
+                                            totunit = state.totunit.value,
+                                            date = state.date.value,
+                                            note = state.note.value,
+                                            kmt = state.kmt.value,
+                                        )
+                                    )
+                                    navController.popBackStack()
+                                } else {
+                                    showError = true
+                                }
+                            }
+
                         )
                     )
                 }
@@ -587,7 +581,7 @@ fun TypeDropdownMenu(types: List<String>, selectedType: MutableState<String>) {
     }
 }
 
-
+/*
 @SuppressLint("UnrememberedMutableState")
 @Preview(
     name = "Light Mode",
@@ -667,3 +661,5 @@ fun PreviewAddCarScreenDark() {
         )
     }
 }
+
+ */

@@ -160,12 +160,9 @@ fun ViewRifScreen(
                 ) {
 
                     //Icona tipo
-
                     val icon = when (rifItem.type) {
-                        "Meccanico" -> ImageVector.vectorResource(id = R.drawable.manufacturing)
-                        "Elettrauto" -> ImageVector.vectorResource(id = R.drawable.lightbulb)
-                        "Carrozziere" -> ImageVector.vectorResource(id = R.drawable.brush)
-                        else -> ImageVector.vectorResource(id = R.drawable.repair)
+                        "Elettrico" -> ImageVector.vectorResource(id = R.drawable.electric)
+                        else -> ImageVector.vectorResource(id = R.drawable.oil)
                     }
 
 
@@ -186,15 +183,15 @@ fun ViewRifScreen(
                             //Titolo
 
                             val fontSize = when {
-                                rifItem.title.length < 20 -> 30.sp
-                                rifItem.title.length < 30 -> 24.sp
-                                rifItem.title.length < 40 -> 17.sp
+                                rifItem.date.length < 20 -> 30.sp
+                                rifItem.date.length < 30 -> 24.sp
+                                rifItem.date.length < 40 -> 17.sp
                                 else -> 14.sp
                             }
 
                             Column {
                                 Text(
-                                    text = rifItem.title,
+                                    text = rifItem.date,
                                     style = MaterialTheme.typography.headlineMedium.copy(
                                         fontSize = fontSize
                                     ),
@@ -269,7 +266,7 @@ fun ViewRifScreen(
 
 
                 Text(
-                    text = "Descrizione: ${rifItem.description}",
+                    text = "Descrizione: ${rifItem.note}",
                     style = MaterialTheme.typography.bodyMedium
                 )
 

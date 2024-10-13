@@ -32,6 +32,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.mycargenie.R
 import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.Locale
 
 @Composable
 fun RifornimentoScreen(
@@ -74,13 +76,14 @@ fun RifornimentoScreen(
 
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                state.title.value = ""
                 state.type.value = ""
                 state.place.value = ""
-                state.date.value = ""
-                state.kmt.value = 0
-                state.description.value = ""
                 state.price.value = 0.0
+                state.uvalue.value = 0.0
+                state.totunit.value = 0.0
+                state.date.value = ""
+                state.note.value = ""
+                state.kmt.value = 0
                 navController.navigate("AddRifScreen")
             }) {
                 Icon(imageVector = Icons.Rounded.Add, contentDescription = "Aggiungi Rifornimento")
@@ -126,17 +129,19 @@ fun RifItem(
                 navController.navigate("ViewRifScreen/$index")
             }
     ) {
+
+        //Icona tipo
         val icon = when (state.rif[index].type) {
-            "Meccanico" -> ImageVector.vectorResource(id = R.drawable.manufacturing)
-            "Elettrauto" -> ImageVector.vectorResource(id = R.drawable.lightbulb)
-            "Carrozziere" -> ImageVector.vectorResource(id = R.drawable.brush)
-            else -> ImageVector.vectorResource(id = R.drawable.repair)
+            "Elettrico" -> ImageVector.vectorResource(id = R.drawable.electric)
+            else -> ImageVector.vectorResource(id = R.drawable.oil)
         }
 
-        Column(
-            verticalArrangement = Arrangement.SpaceEvenly
-        ) {
+        val decimalFormat = DecimalFormat("#,##0.00")
 
+
+        Column(
+            verticalArrangement = Arrangement.SpaceEvenly,
+        ) {
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -154,90 +159,109 @@ fun RifItem(
 
                 Column {
 
-                    //Titolo
+                    //Data
                     Text(
-                        text = state.rif[index].title,
+                        text = state.rif[index].date,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
 
-                //Data
                 Column(
                     horizontalAlignment = Alignment.End,
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    Text(
-                        text = state.rif[index].date,
-                        fontSize = 18.sp,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                }
-            }
 
-
-            //Luogo
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(bottom = 4.dp)
-            ) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.location),
-                    contentDescription = "Luogo",
-                    tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier
-                        .size(34.dp)
-                        .padding(end = 4.dp),
-                )
-                Text(
-                    text = state.rif[index].place,
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            }
-
-
-            //Kilometri
-
-            val formatter = DecimalFormat("#,###")
-            val formattedKmt = formatter.format(state.rif[index].kmt)
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.time_to_leave),
-                    contentDescription = "Data",
-                    tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier
-                        .size(34.dp)
-                        .padding(end = 4.dp),
-                )
-
-                Text(
-                    text = "$formattedKmt km",
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-
-
-                //Prezzo
-                Column(
-                    horizontalAlignment = Alignment.End,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    val decimalFormat = DecimalFormat("#,##0.00")
+                    //Prezzo
                     val price = decimalFormat.format(state.rif[index].price).replace('.', ',')
 
                     Text(
                         text = "$price €",
                         fontSize = 18.sp,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        )
+                }
+            }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(bottom = 4.dp)
+            ) {
+                //Luogo
+                Column {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(bottom = 4.dp)
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.location),
+                            contentDescription = "Luogo",
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier
+                                .size(34.dp)
+                                .padding(end = 4.dp),
+                        )
+                        Text(
+                            text = state.rif[index].place,
+                            fontSize = 18.sp,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
+                }
+
+                //Prezzo per unità
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    val uvalue = decimalFormat.format(state.rif[index].uvalue).replace('.', ',')
+
+                    val unitprice = if (state.rif[index].type == "Elettrico") {
+                        "$uvalue €/kWh"
+                    } else {
+                        "$uvalue €/l"
+                    }
+
+                    Text(
+                        text = unitprice,
+                        fontSize = 18.sp,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
                     )
+                }
+            }
+
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(bottom = 4.dp)
+            ) {
+
+                //Unità totali
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    val totunit = decimalFormat.format(state.rif[index].totunit).replace('.', ',')
+
+                    val showunit = if (state.rif[index].type == "Elettrico") {
+                        "$totunit kWh"
+                    } else {
+                        "$totunit l"
+                    }
+
+                    Text(
+                        text = showunit,
+                        fontSize = 18.sp,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+
                 }
             }
         }

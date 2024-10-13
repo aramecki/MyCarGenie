@@ -184,19 +184,23 @@ fun ManItem(
                 modifier = Modifier
                     .padding(bottom = 4.dp)
             ) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.location),
-                    contentDescription = "Luogo",
-                    tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier
-                        .size(34.dp)
-                        .padding(end = 4.dp),
-                )
-                Text(
-                    text = state.men[index].place,
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
+              //  val place = state.men[index].place
+
+               // if (place.isNotEmpty()) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.location),
+                        contentDescription = "Luogo",
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier
+                            .size(34.dp)
+                            .padding(end = 4.dp),
+                    )
+                    Text(
+                        text = state.men[index].place,
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+            //    }
             }
 
 

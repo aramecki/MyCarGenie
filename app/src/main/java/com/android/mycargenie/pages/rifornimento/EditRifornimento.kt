@@ -47,7 +47,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -56,6 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.mycargenie.R
+import java.time.Instant
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,13 +77,14 @@ fun EditRifScreen(
     if (rifItem != null) {
         LaunchedEffect(rifItem) {
             state.id.value = rifItem.id ?: 0
-            state.title.value = rifItem.title
             state.type.value = rifItem.type
             state.place.value = rifItem.place
-            state.date.value = rifItem.date
-            state.kmt.value = rifItem.kmt
-            state.description.value = rifItem.description
             state.price.value = rifItem.price
+            state.uvalue.value = rifItem.uvalue
+            state.totunit.value = rifItem.totunit
+            state.date.value = rifItem.date
+            state.note.value = rifItem.note
+            state.kmt.value = rifItem.kmt
         }
     }
 
@@ -148,21 +149,25 @@ fun EditRifScreen(
 
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                if (state.title.value.isNotBlank() && state.date.value.isNotBlank() && state.description.value.isNotBlank()) {
+                if (state.date.value.isNotBlank() && state.note.value.isNotBlank()) {
 
-                    Log.d("SaveRif", "Saving: Title: ${state.title.value}, Type: ${state.type.value} id: ${state.id.value}")
+                    Log.d(
+                        "SaveRif",
+                        "Saving: Price: ${state.price.value}, Type: ${state.type.value} id: ${state.id.value}"
+                    )
 
                     onEvent(
                         RifEvent.UpdateRif(
                             id = state.id.value,
-                            title = state.title.value,
                             type = state.type.value,
                             place = state.place.value,
-                            date = state.date.value,
-                            kmt = state.kmt.value,
-                            description = state.description.value,
                             price = state.price.value,
-                            )
+                            uvalue = state.uvalue.value,
+                            totunit = state.totunit.value,
+                            date = state.date.value,
+                            note = state.note.value,
+                            kmt = state.kmt.value,
+                        )
                     )
                     navController.popBackStack()
                 } else {
@@ -193,35 +198,8 @@ fun EditRifScreen(
                     .verticalScroll(scrollState)
             ) {
 
-                //Titolo
-                Row {
-                    OutlinedTextField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        value = state.title.value,
-                        onValueChange = { newValue ->
-                            if (newValue.length <= 50) {
-                                state.title.value = newValue
-                            }
-                        },
-                        textStyle = TextStyle(
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 17.sp
-                        ),
-                        placeholder = {if (state.title.value.isEmpty()) Text(text = "Titolo*") },
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            imeAction = ImeAction.Next,
-                            capitalization = KeyboardCapitalization.Sentences
-                        ),
-                        keyboardActions = KeyboardActions(
-                            onNext = { focusManager.moveFocus(FocusDirection.Next) }
-                        )
-                    )
-                }
 
-
-                val types = listOf("Meccanico", "Elettrauto", "Carrozziere", "Altro")
+                val types = listOf("Benzina", "Gasolio", "GPL", "Metano", "Elettrico", "Altro")
 
                 Row {
                     Column {
@@ -272,118 +250,22 @@ fun EditRifScreen(
                 }
 
 
-                //Data
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth(0.5f)
-                            .padding(start = 16.dp, end = 8.dp)
-                            .clickable {
-                                showDatePicker = true
-                            }
-                            .clip(RoundedCornerShape(4.dp))
-                            .background(MaterialTheme.colorScheme.secondaryContainer)
-                            .padding(16.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.DateRange,
-                                contentDescription = "Calendario"
-                            )
-                            Text(
-                                text = state.date.value.ifEmpty { "Data*" },
-                                fontSize = 17.sp,
-                                modifier = Modifier
-                                    .padding(start = 8.dp)
-                            )
-                        }
-                    }
-
-                    //Kilometri
-                    Column {
-                        OutlinedTextField(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 8.dp, end = 16.dp),
-                            value = if (state.kmt.value == 0) "" else state.kmt.value.toString(),
-                            onValueChange = { newValue ->
-                                if (newValue.isEmpty()) {
-                                    state.kmt.value = 0
-                                } else {
-                                    newValue.toIntOrNull()?.let { intValue ->
-                                        if (intValue in 1..9_999_999) {
-                                            state.kmt.value = intValue
-                                        }
-                                    }
-                                }
-                            },
-                            placeholder = {if (state.kmt.value == 0) Text(text = "Kilometri") },
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number,
-                                imeAction = ImeAction.Next
-                            ),
-                            keyboardActions = KeyboardActions(
-                                onNext = { focusManager.moveFocus(FocusDirection.Next) }
-                            )
-                        )
-                    }
-                }
-
-                // 3. Descrizione
-                Row {
-                    Column {
-                        OutlinedTextField(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-                            value = state.description.value,
-                            onValueChange = { newValue ->
-                                if (newValue.length <= 500) {
-                                    state.description.value = newValue
-                                }
-                            },
-                            placeholder = {if (state.description.value.isEmpty()) Text(text = "Descrizione*") },
-                            keyboardOptions = KeyboardOptions.Default.copy(
-                                capitalization = KeyboardCapitalization.Sentences
-                            ),
-                        )
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 4.dp, end = 16.dp)
-                        ) {
-                            Spacer(Modifier.weight(1f))
-                            Text(
-                                text = "${state.description.value.length} / 500",
-                                style = TextStyle(
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                    fontSize = 12.sp
-                                )
-                            )
-                        }
-                    }
-                }
-
-
-                //Prezzo
-                Row(
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .padding(top = 16.dp)
+                        .padding(top = 8.dp)
                 ) {
+                    //Prezzo
                     Column(
                         horizontalAlignment = Alignment.End,
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .fillMaxWidth(0.5f)
+                            .padding(start = 16.dp)
                     ) {
                         OutlinedTextField(
                             modifier = Modifier
-                                .fillMaxWidth(0.5f)
-                                .padding(end = 16.dp),
+                                .fillMaxWidth()
+                                .padding(end = 8.dp),
                             value = if (state.price.value == 0.0) "" else state.price.value.toString()
                                 .replace('.', ','),
                             onValueChange = { newValue ->
@@ -399,7 +281,7 @@ fun EditRifScreen(
                                     }
                                 }
                             },
-                            placeholder = {if (state.price.value == 0.0) Text(text = "Prezzo") },
+                            placeholder = { Text(text = "Importo") },
                             leadingIcon = {
                                 Icon(
                                     imageVector = ImageVector.vectorResource(id = R.drawable.euro_symbol),
@@ -409,70 +291,265 @@ fun EditRifScreen(
                             },
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Number,
+                                imeAction = ImeAction.Next
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onNext = { focusManager.moveFocus(FocusDirection.Next) }
+                            )
+                        )
+                    }
+
+
+                    //Prezzo per unità
+                    val leadingIcon: @Composable (() -> Unit)? = if (state.uvalue.value != 0.0) {
+                        {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.euro_symbol),
+                                contentDescription = "Cost per fuel unit",
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    } else {
+                        null
+                    }
+
+                    Column(
+                        horizontalAlignment = Alignment.End,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        OutlinedTextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 8.dp, end = 16.dp),
+                            value = if (state.uvalue.value == 0.0) "" else state.uvalue.value.toString()
+                                .replace('.', ','),
+                            onValueChange = { newValue ->
+                                val regex = Regex("^\\d{0,5}(,\\d{0,2})?\$")
+                                val formattedValue = newValue.replace(',', '.')
+                                if (newValue.isEmpty()) {
+                                    state.uvalue.value = 0.0
+                                } else if (regex.matches(newValue)) {
+                                    formattedValue.toDoubleOrNull()?.let { doubleValue ->
+                                        if (doubleValue <= 99999.99) {
+                                            state.uvalue.value = doubleValue
+                                        }
+                                    }
+                                }
+                            },
+                            placeholder = {if (state.type.value == "Elettrico") Text(text = "€/kWh")
+                            else if (state.type.value.isEmpty() || state.type.value == "Altro") Text(text = "€/l o €/kWh")
+                            else (Text(text = "€/l")) },
+
+                            leadingIcon = leadingIcon,
+
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number,
+                                imeAction = ImeAction.Next
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onNext = { focusManager.moveFocus(FocusDirection.Next) }
+                            )
+                        )
+
+                    }
+                }
+
+                //Quantità totale
+                Row(
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                ) {
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f)
+                            .padding(start = 16.dp, end = 8.dp)
+                    ) {
+                        OutlinedTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = if (state.totunit.value == 0.0) "" else state.totunit.value.toString(),
+                            onValueChange = { newValue ->
+                                if (newValue.length <= 16) {
+                                    val parsedValue = newValue.toDoubleOrNull()
+                                    if (parsedValue != null) {
+                                        state.totunit.value = parsedValue
+                                    }
+                                }
+                            },
+                            textStyle = TextStyle(
+                                fontSize = 17.sp
+                            ),
+                            placeholder = {if (state.type.value == "Elettrico") Text(text = "kWh Totali")
+                            else if (state.type.value.isEmpty() || state.type.value == "Altro") Text(text = "Litri o kWh Totali")
+                            else Text(text = "Litri Totali")
+                            },
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                imeAction = ImeAction.Next,
+                                capitalization = KeyboardCapitalization.Sentences
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onNext = { focusManager.moveFocus(FocusDirection.Next) }
+                            )
+                        )
+                    }
+
+                    //Data
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 8.dp, end = 16.dp)
+                            .clickable {
+                                showDatePicker = true
+                            }
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                            .padding(16.dp)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.DateRange,
+                                contentDescription = "Calendario"
+                            )
+                            Text(
+                                text = state.date.value.ifEmpty {
+                                    com.android.mycargenie.pages.manutenzione.formatDate(
+                                        Instant.now().toEpochMilli()
+                                    )
+                                },
+                                fontSize = 17.sp,
+                                modifier = Modifier
+                                    .padding(start = 8.dp)
+                            )
+                        }
+                    }
+
+                }
+
+
+                // 3. Note
+                Row {
+                    Column {
+                        // OutlinedTextField
+                        OutlinedTextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                            value = state.note.value,
+                            onValueChange = { newValue ->
+                                if (newValue.length <= 500) {
+                                    state.note.value = newValue
+                                }
+                            },
+                            placeholder = { Text(text = "Note") },
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                capitalization = KeyboardCapitalization.Sentences
+                            ),
+                        )
+
+                        // Contatore dei caratteri
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 4.dp, end = 16.dp)
+                        ) {
+                            Spacer(Modifier.weight(1f))
+                            Text(
+                                text = "${state.note.value.length} / 500",
+                                style = TextStyle(
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    fontSize = 12.sp
+                                )
+                            )
+                        }
+                    }
+                }
+
+                //Kilometri
+                Row(
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.End,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        OutlinedTextField(
+                            modifier = Modifier
+                                .fillMaxWidth(0.5f)
+                                .padding(end = 16.dp),
+                            value = if (state.kmt.value == 0) "" else state.kmt.value.toString(),
+                            onValueChange = { newValue ->
+                                if (newValue.isEmpty()) {
+                                    state.kmt.value = 0
+                                } else {
+                                    newValue.toIntOrNull()?.let { intValue ->
+                                        if (intValue in 1..9_999_999) {
+                                            state.kmt.value = intValue
+                                        }
+                                    }
+                                }
+                            },
+                            placeholder = { Text(text = "Kilometri") },
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Done
                             ),
                             keyboardActions = KeyboardActions(
                                 onDone = {
-                                    if (state.title.value.isNotBlank() && state.date.value.isNotBlank() && state.description.value.isNotBlank()) {
+                                    if (state.date.value.isNotBlank() && state.note.value.isNotBlank()) {
                                         onEvent(
                                             RifEvent.UpdateRif(
                                                 id = state.id.value,
-                                                title = state.title.value,
                                                 type = state.type.value,
                                                 place = state.place.value,
-                                                date = state.date.value,
-                                                kmt = state.kmt.value,
-                                                description = state.description.value,
                                                 price = state.price.value,
+                                                uvalue = state.uvalue.value,
+                                                totunit = state.totunit.value,
+                                                date = state.date.value,
+                                                note = state.note.value,
+                                                kmt = state.kmt.value,
                                             )
                                         )
                                         navController.popBackStack()
                                     } else {
                                         showError = true
                                     }
-                                })
-                            )
+                                }
 
+                            )
+                        )
                     }
                 }
 
-                Row(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(16.dp)
-                ) {
-                    Text(
-                        text = "I campi contrassegnati da * sono obbligatori.",
-                        fontSize = 14.sp,
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
-                }
 
+                    Row(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(16.dp)
+                    ) {
+                        Text(
+                            text = "I campi contrassegnati da * sono obbligatori.",
+                            fontSize = 14.sp,
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                }
             }
-        } else {
-            Column(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .padding(16.dp)
-            ) {
+
+            if (showError) {
                 Text(
-                    text = "Errore: Elemento non trovato.",
+                    text = "Compila tutti i campi obbligatori.",
                     color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodyLarge
+                    modifier = Modifier.padding(16.dp)
                 )
             }
         }
 
-
-        if (showError) {
-            Text(
-                text = "Compila tutti i campi obbligatori.",
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(16.dp)
-            )
-        }
     }
-
-}

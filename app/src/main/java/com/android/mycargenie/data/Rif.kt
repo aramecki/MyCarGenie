@@ -6,13 +6,15 @@ import androidx.room.PrimaryKey
 @Entity
 data class Rif(
 
-    val title: String,
     val type: String,
     val place: String,
-    val date: String,
-    val kmt: Int,
-    val description: String,
     val price: Double,
+    val uvalue: Double,
+    val totunit: Double,
+    val date: String,
+    val note: String,
+    val kmt: Int,
+
 
     @PrimaryKey(autoGenerate = true)
     val id: Int? = null

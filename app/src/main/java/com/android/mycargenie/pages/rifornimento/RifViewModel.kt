@@ -65,13 +65,15 @@ class RifViewModel(
 
             is RifEvent.SaveRif -> {
                 val rif = Rif(
-                    title = state.value.title.value,
                     type = state.value.type.value,
                     place = state.value.place.value,
-                    date = state.value.date.value,
-                    kmt = state.value.kmt.value,
-                    description = state.value.description.value,
                     price = state.value.price.value,
+                    uvalue = state.value.uvalue.value,
+                    totunit = state.value.totunit.value,
+                    date = state.value.date.value,
+                    note = state.value.note.value,
+                    kmt = state.value.kmt.value,
+
                 )
 
                 viewModelScope.launch {
@@ -80,27 +82,29 @@ class RifViewModel(
 
                 _state.update {
                     it.copy(
-                        title = mutableStateOf(""),
                         type = mutableStateOf(""),
                         place = mutableStateOf(""),
+                        price = mutableDoubleStateOf(0.0),
+                        uvalue = mutableDoubleStateOf(0.0),
+                        totunit = mutableDoubleStateOf(0.0),
                         date = mutableStateOf(""),
+                        note = mutableStateOf(""),
                         kmt = mutableIntStateOf(0),
-                        description = mutableStateOf(""),
-                        price = mutableDoubleStateOf(0.0)
-                    )
+                        )
                 }
             }
 
             is RifEvent.UpdateRif -> {
                 val rif = Rif(
                     id = state.value.id.value,
-                    title = state.value.title.value,
                     type = state.value.type.value,
                     place = state.value.place.value,
-                    date = state.value.date.value,
-                    kmt = state.value.kmt.value,
-                    description = state.value.description.value,
                     price = state.value.price.value,
+                    uvalue = state.value.uvalue.value,
+                    totunit = state.value.totunit.value,
+                    date = state.value.date.value,
+                    note = state.value.note.value,
+                    kmt = state.value.kmt.value,
                 )
 
                 viewModelScope.launch {
@@ -110,13 +114,14 @@ class RifViewModel(
                 _state.update {
                     it.copy(
                         id = mutableIntStateOf(0),
-                        title = mutableStateOf(""),
                         type = mutableStateOf(""),
                         place = mutableStateOf(""),
+                        price = mutableDoubleStateOf(0.0),
+                        uvalue = mutableDoubleStateOf(0.0),
+                        totunit = mutableDoubleStateOf(0.0),
                         date = mutableStateOf(""),
+                        note = mutableStateOf(""),
                         kmt = mutableIntStateOf(0),
-                        description = mutableStateOf(""),
-                        price = mutableDoubleStateOf(0.0)
                     )
                 }
             }

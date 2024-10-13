@@ -67,7 +67,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
 
-            deleteExistingDatabase()
+            //deleteExistingDatabase()
 
             MyCarGenieTheme {
                 Surface(

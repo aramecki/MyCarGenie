@@ -38,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,6 +65,7 @@ import androidx.navigation.compose.rememberNavController
 import com.android.mycargenie.R
 import com.android.mycargenie.ui.theme.MyCarGenieTheme
 import java.text.SimpleDateFormat
+import java.time.Instant
 import java.util.Date
 import java.util.Locale
 
@@ -74,6 +76,10 @@ fun AddManScreen(
     navController: NavController,
     onEvent: (ManEvent) -> Unit
 ) {
+
+    LaunchedEffect(Unit) {
+        state.date.value = formatDate(Instant.now().toEpochMilli())
+    }
 
     var showError by remember { mutableStateOf(false) }
     var showDatePicker by remember { mutableStateOf(false) }
@@ -276,7 +282,7 @@ fun AddManScreen(
                             contentDescription = "Calendario"
                         )
                         Text(
-                            text = state.date.value.ifEmpty { "Data*" },
+                            text = state.date.value.ifEmpty { formatDate(Instant.now().toEpochMilli()) },
                             fontSize = 17.sp,
                             modifier = Modifier
                                 .padding(start = 8.dp)
