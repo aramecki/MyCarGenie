@@ -133,6 +133,7 @@ fun MainApp(viewModel: ManViewModel, rifViewModel: RifViewModel) {
                 composable("LibrettoScreen") {
                     LibrettoScreen(
                         state = viewModel.state.collectAsState().value,
+                        rifState = rifViewModel.state.collectAsState().value,
                         navController = navController
                     )
                 }

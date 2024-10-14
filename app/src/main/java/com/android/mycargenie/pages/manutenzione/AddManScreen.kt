@@ -362,7 +362,7 @@ fun AddManScreen(
             //Prezzo
             Row(
                 modifier = Modifier
-                    .padding(top = 16.dp)
+                    .padding(top = 8.dp)
             ) {
                 Column(
                     horizontalAlignment = Alignment.End,

@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,9 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.mycargenie.R
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.Locale
+import com.android.mycargenie.shared.formatPrice
 
 @Composable
 fun RifornimentoScreen(
@@ -99,7 +98,7 @@ fun RifornimentoScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
-            items(state.rif.size) { index ->
+            items(state.rifs.size) { index ->
                 RifItem(
                     state = state,
                     index = index,
@@ -131,37 +130,36 @@ fun RifItem(
     ) {
 
         //Icona tipo
-        val icon = when (state.rif[index].type) {
+        val icon = when (state.rifs[index].type) {
             "Elettrico" -> ImageVector.vectorResource(id = R.drawable.electric)
             else -> ImageVector.vectorResource(id = R.drawable.oil)
         }
-
-        val decimalFormat = DecimalFormat("#,##0.00")
 
 
         Column(
             verticalArrangement = Arrangement.SpaceEvenly,
         ) {
-
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .padding(bottom = 4.dp)
             ) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = state.rif[index].type,
-                    modifier = Modifier
-                        .size(34.dp)
-                        .padding(end = 4.dp),
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
+                Column {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(34.dp)
+                            .padding(end = 4.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
 
                 Column {
 
                     //Data
                     Text(
-                        text = state.rif[index].date,
+                        text = state.rifs[index].date,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.primary
@@ -175,7 +173,7 @@ fun RifItem(
                 ) {
 
                     //Prezzo
-                    val price = decimalFormat.format(state.rif[index].price).replace('.', ',')
+                    val price = formatPrice(state.rifs[index].price)
 
                     Text(
                         text = "$price €",
@@ -185,43 +183,21 @@ fun RifItem(
                 }
             }
 
+            //Prezzo per unità
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .padding(bottom = 4.dp)
             ) {
-                //Luogo
-                Column {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .padding(bottom = 4.dp)
-                    ) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.location),
-                            contentDescription = "Luogo",
-                            tint = MaterialTheme.colorScheme.onPrimary,
-                            modifier = Modifier
-                                .size(34.dp)
-                                .padding(end = 4.dp),
-                        )
-                        Text(
-                            text = state.rif[index].place,
-                            fontSize = 18.sp,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
-                }
-
-                //Prezzo per unità
                 Column(
                     horizontalAlignment = Alignment.End,
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    val uvalue = decimalFormat.format(state.rif[index].uvalue).replace('.', ',')
+                    val uvalue =
+                        formatPrice(state.rifs[index].uvalue)
 
-                    val unitprice = if (state.rif[index].type == "Elettrico") {
+                    val unitprice = if (state.rifs[index].type == "Elettrico") {
                         "$uvalue €/kWh"
                     } else {
                         "$uvalue €/l"
@@ -235,12 +211,32 @@ fun RifItem(
                 }
             }
 
-
+            //Luogo
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(bottom = 4.dp)
+
             ) {
+                val place = state.rifs[index].place
+
+                if (place.isNotEmpty()) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.location),
+                            contentDescription = "Luogo",
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier
+                                .size(34.dp)
+                                .padding(end = 4.dp),
+                        )
+                        Text(
+                            text = state.rifs[index].place,
+                            fontSize = 18.sp,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                } else {
+                    Spacer(modifier = Modifier
+                        .height(34.dp)
+                    )
+                }
 
                 //Unità totali
                 Column(
@@ -248,9 +244,9 @@ fun RifItem(
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    val totunit = decimalFormat.format(state.rif[index].totunit).replace('.', ',')
+                    val totunit = formatPrice(state.rifs[index].totunit)
 
-                    val showunit = if (state.rif[index].type == "Elettrico") {
+                    val showunit = if (state.rifs[index].type == "Elettrico") {
                         "$totunit kWh"
                     } else {
                         "$totunit l"
@@ -261,7 +257,6 @@ fun RifItem(
                         fontSize = 18.sp,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                     )
-
                 }
             }
         }

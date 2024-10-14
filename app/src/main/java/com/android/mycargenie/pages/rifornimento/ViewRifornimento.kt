@@ -35,7 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.mycargenie.R
-import java.text.DecimalFormat
+import com.android.mycargenie.shared.formatKmt
+import com.android.mycargenie.shared.formatPrice
 
 @Composable
 fun ViewRifScreen(
@@ -45,7 +46,7 @@ fun ViewRifScreen(
 ) {
     val rifIndex = navController.currentBackStackEntry?.arguments?.getInt("index")
 
-    val rifItem = rifIndex?.takeIf { it in state.rif.indices }?.let { state.rif[it] }
+    val rifItem = rifIndex?.takeIf { it in state.rifs.indices }?.let { state.rifs[it] }
 
     var showDeleteDialog by remember { mutableStateOf(false) }
 
@@ -180,20 +181,12 @@ fun ViewRifScreen(
                                 )
                             }
 
-                            //Titolo
-
-                            val fontSize = when {
-                                rifItem.date.length < 20 -> 30.sp
-                                rifItem.date.length < 30 -> 24.sp
-                                rifItem.date.length < 40 -> 17.sp
-                                else -> 14.sp
-                            }
-
+                            //Data
                             Column {
                                 Text(
                                     text = rifItem.date,
                                     style = MaterialTheme.typography.headlineMedium.copy(
-                                        fontSize = fontSize
+                                        fontSize = 30.sp
                                     ),
                                     fontWeight = FontWeight.SemiBold,
                                     color = MaterialTheme.colorScheme.primary,
@@ -281,11 +274,10 @@ fun ViewRifScreen(
                     ) {
                         //Kilometri
 
-                        val formatter = DecimalFormat("#,###")
-                        val formattedKmt = formatter.format(rifItem.kmt)
+                        val kmt = formatKmt(rifItem.kmt)
 
                         Text(
-                            text = "$formattedKmt km",
+                            text = "$kmt km",
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontSize = 16.sp
                             )
@@ -294,8 +286,7 @@ fun ViewRifScreen(
 
                     //Prezzo
 
-                    val decimalFormat = DecimalFormat("#,##0.00")
-                    val price = decimalFormat.format(rifItem.price).replace('.', ',')
+                    val price = formatPrice(rifItem.price)
 
                     Column(
                         modifier = Modifier
@@ -327,8 +318,6 @@ fun ViewRifScreen(
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
-            // Valutare se tornare automaticamente indietro:
-            // navController.popBackStack()
         }
     }
 }

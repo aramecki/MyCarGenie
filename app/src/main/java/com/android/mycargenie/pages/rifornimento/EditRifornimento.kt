@@ -66,7 +66,7 @@ fun EditRifScreen(
 ) {
     val rifIndex = navController.currentBackStackEntry?.arguments?.getInt("rifIndex")
 
-    val rifItem = rifIndex?.takeIf { it in state.rif.indices }?.let { state.rif[it] }
+    val rifItem = rifIndex?.takeIf { it in state.rifs.indices }?.let { state.rifs[it] }
 
 
     Log.d("rifIndex", "rifIndex: $rifIndex")
@@ -368,12 +368,18 @@ fun EditRifScreen(
                     ) {
                         OutlinedTextField(
                             modifier = Modifier.fillMaxWidth(),
-                            value = if (state.totunit.value == 0.0) "" else state.totunit.value.toString(),
+                            value = if (state.totunit.value == 0.0) "" else state.totunit.value.toString()
+                                .replace('.', ','),
                             onValueChange = { newValue ->
-                                if (newValue.length <= 16) {
-                                    val parsedValue = newValue.toDoubleOrNull()
-                                    if (parsedValue != null) {
-                                        state.totunit.value = parsedValue
+                                val regex = Regex("^\\d{0,5}(,\\d{0,2})?\$")
+                                val formattedValue = newValue.replace(',', '.')
+                                if (newValue.isEmpty()) {
+                                    state.totunit.value = 0.0
+                                } else if (regex.matches(newValue)) {
+                                    formattedValue.toDoubleOrNull()?.let { doubleValue ->
+                                        if (doubleValue <= 9999.99) {
+                                            state.totunit.value = doubleValue
+                                        }
                                     }
                                 }
                             },
@@ -384,9 +390,9 @@ fun EditRifScreen(
                             else if (state.type.value.isEmpty() || state.type.value == "Altro") Text(text = "Litri o kWh Totali")
                             else Text(text = "Litri Totali")
                             },
-                            keyboardOptions = KeyboardOptions.Default.copy(
-                                imeAction = ImeAction.Next,
-                                capitalization = KeyboardCapitalization.Sentences
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number,
+                                imeAction = ImeAction.Next
                             ),
                             keyboardActions = KeyboardActions(
                                 onNext = { focusManager.moveFocus(FocusDirection.Next) }

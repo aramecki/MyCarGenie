@@ -49,9 +49,9 @@ class RifViewModel(
         _state,
         isSortedByDateAdded,
         rifs
-    ) { state: RifState, _: Boolean, rif: List<Rif> ->
+    ) { state: RifState, _: Boolean, rifs: List<Rif> ->
         state.copy(
-            rif = rif
+            rifs = rifs
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), RifState())
 

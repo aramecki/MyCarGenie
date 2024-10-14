@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,7 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.mycargenie.R
-import java.text.DecimalFormat
+import com.android.mycargenie.shared.formatKmt
+import com.android.mycargenie.shared.formatPrice
 
 @Composable
 fun ManutenzioneScreen(
@@ -184,9 +186,9 @@ fun ManItem(
                 modifier = Modifier
                     .padding(bottom = 4.dp)
             ) {
-              //  val place = state.men[index].place
+                val place = state.men[index].place
 
-               // if (place.isNotEmpty()) {
+                if (place.isNotEmpty()) {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.location),
                         contentDescription = "Luogo",
@@ -200,14 +202,17 @@ fun ManItem(
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
-            //    }
+                } else {
+                    Spacer(modifier = Modifier
+                        .height(34.dp)
+                    )
+                }
             }
 
 
             //Kilometri
 
-            val formatter = DecimalFormat("#,###")
-            val formattedKmt = formatter.format(state.men[index].kmt)
+            val kmt = formatKmt(state.men[index].kmt)
 
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -222,7 +227,7 @@ fun ManItem(
                 )
 
                 Text(
-                    text = "$formattedKmt km",
+                    text = "$kmt km",
                     fontSize = 16.sp,
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
@@ -234,8 +239,7 @@ fun ManItem(
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    val decimalFormat = DecimalFormat("#,##0.00")
-                    val price = decimalFormat.format(state.men[index].price).replace('.', ',')
+                    val price = formatPrice(state.men[index].price)
 
                     Text(
                         text = "$price €",

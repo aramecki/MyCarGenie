@@ -8,7 +8,7 @@ import com.android.mycargenie.data.Rif
 
 data class RifState(
 
-    val rif: List<Rif> = emptyList(),
+    val rifs: List<Rif> = emptyList(),
     val id: MutableState<Int>  = mutableIntStateOf(0),
     val type: MutableState<String> = mutableStateOf(""),
     val place: MutableState<String> = mutableStateOf(""),

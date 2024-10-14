@@ -31,15 +31,20 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.mycargenie.R
 import com.android.mycargenie.pages.manutenzione.ManState
-import java.text.DecimalFormat
+import com.android.mycargenie.pages.rifornimento.RifState
+import com.android.mycargenie.shared.formatKmt
+import com.android.mycargenie.shared.formatPrice
 
 @Composable
 fun LibrettoScreen(
     state: ManState,
+    rifState: RifState,
     navController: NavController
 ) {
 
     val sortedMen = state.men.sortedByDescending { it.id }
+    val sortedRif = rifState.rifs.sortedByDescending { it.id }
+
 
     Column {
 
@@ -121,19 +126,168 @@ fun LibrettoScreen(
                 textAlign = TextAlign.Center
             )
             return@Column
-        } else {
-            sortedMen.forEachIndexed { _, _ ->
+        }
+
+        val currentItem = sortedMen.first()
+        val index = state.men.indexOf(currentItem)
+
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(MaterialTheme.colorScheme.primaryContainer)
+                .padding(12.dp)
+                .clickable {
+                    navController.navigate("ViewManScreen/$index")
+                }
+        ) {
+
+            val icon = when (currentItem.type) {
+                "Meccanico" -> ImageVector.vectorResource(id = R.drawable.manufacturing)
+                "Elettrauto" -> ImageVector.vectorResource(id = R.drawable.lightbulb)
+                "Carrozziere" -> ImageVector.vectorResource(id = R.drawable.brush)
+                else -> ImageVector.vectorResource(id = R.drawable.repair)
+            }
+
+            Column(
+                verticalArrangement = Arrangement.SpaceEvenly
+            ) {
+
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .padding(bottom = 4.dp)
+                ) {
+                    Column {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = currentItem.type,
+                            modifier = Modifier
+                                .size(34.dp)
+                                .padding(end = 4.dp),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+
+
+                    Column {
+
+                        //Titolo
+                        Text(
+                            text = currentItem.title,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
+                    Column(
+                        horizontalAlignment = Alignment.End,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Text(
+                            text = currentItem.date,
+                            fontSize = 18.sp,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    }
+                }
+
+
+                //Luogo
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .padding(bottom = 4.dp)
+                ) {
+                    val place = currentItem.place
+
+                    if (place.isNotEmpty()) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.location),
+                            contentDescription = "Luogo",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .size(34.dp)
+                                .padding(end = 4.dp),
+                        )
+
+                        Text(
+                            text = currentItem.place,
+                            fontSize = 18.sp,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    } else {
+                        Spacer(modifier = Modifier
+                            .height(34.dp)
+                        )
+                    }
+                }
+
+                //Kilometri
+
+                val kmt = formatKmt(currentItem.kmt)
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                ) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.time_to_leave),
+                        contentDescription = "Icona automobile",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .size(34.dp)
+                            .padding(end = 4.dp),
+                    )
+
+                    Text(
+                        text = "$kmt km",
+                        fontSize = 18.sp,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+
+                    Column(
+                        horizontalAlignment = Alignment.End,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        val price = formatPrice(state.men[index].price)
+
+                        Text(
+                            text = "$price €",
+                            fontSize = 18.sp,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        )
+                    }
+                }
             }
         }
 
-        if (sortedMen.isNotEmpty()) {
-            val currentItem = sortedMen.first()
-            val index = state.men.indexOf(currentItem)
+
+        Row {
+
+            if (sortedRif.isEmpty()) {
+                Text(
+                    text = "Aggiungi il tuo primo rifornimento per visualizzare un resoconto.",
+                    modifier = Modifier.padding(16.dp),
+                    fontSize = 18.sp,
+                    textAlign = TextAlign.Center
+                )
+                return@Column
+            }
+
+            val currentRifItem = sortedRif.first()
+            val rifIndex = rifState.rifs.indexOf(currentRifItem)
 
 
-            Spacer(modifier = Modifier.height(30.dp))
-
-                Row(
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp)
@@ -141,136 +295,144 @@ fun LibrettoScreen(
                     .background(MaterialTheme.colorScheme.primaryContainer)
                     .padding(12.dp)
                     .clickable {
-                        navController.navigate("ViewManScreen/$index")
+                        navController.navigate("ViewRifScreen/$rifIndex")
                     }
             ) {
 
-                val icon = when (currentItem.type) {
-                    "Meccanico" -> ImageVector.vectorResource(id = R.drawable.manufacturing)
-                    "Elettrauto" -> ImageVector.vectorResource(id = R.drawable.lightbulb)
-                    "Carrozziere" -> ImageVector.vectorResource(id = R.drawable.brush)
-                    else -> ImageVector.vectorResource(id = R.drawable.repair)
+                //Icona tipo
+                val icon = when (currentRifItem.type) {
+                    "Elettrico" -> ImageVector.vectorResource(id = R.drawable.electric)
+                    else -> ImageVector.vectorResource(id = R.drawable.oil)
                 }
 
-                    Column(
-                        verticalArrangement = Arrangement.SpaceEvenly
+                Column(
+                    verticalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(bottom = 4.dp)
                     ) {
-
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .padding(bottom = 4.dp)
-                        ) {
-                            Column {
-                                Icon(
-                                    imageVector = icon,
-                                    contentDescription = currentItem.type,
-                                    modifier = Modifier
-                                        .size(34.dp)
-                                        .padding(end = 4.dp),
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                            }
-
-
-                            Column {
-
-                                //Titolo
-                                Text(
-                                    text = currentItem.title,
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                                )
-                            }
-                            Column(
-                                horizontalAlignment = Alignment.End,
+                        Column {
+                            Icon(
+                                imageVector = icon,
+                                contentDescription = null,
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                            ) {
-                                Text(
-                                    text = currentItem.date,
-                                    fontSize = 18.sp,
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer
-                                )
-                            }
+                                    .size(34.dp)
+                                    .padding(end = 4.dp),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
                         }
 
 
-                            //Luogo
 
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier
-                                     .padding(bottom = 4.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = ImageVector.vectorResource(id = R.drawable.location),
-                                        contentDescription = "Luogo",
-                                        tint = MaterialTheme.colorScheme.primary,
-                                        modifier = Modifier
-                                            .size(34.dp)
-                                            .padding(end = 4.dp),
-                                    )
+                        Column {
 
-                                    Text(
-                                        text = currentItem.place,
-                                        fontSize = 18.sp,
-                                        color = MaterialTheme.colorScheme.onSecondaryContainer
-                                    )
-                                }
-
-                        //Kilometri
-
-                        val formatter = DecimalFormat("#,###")
-                        val formattedKmt = formatter.format(currentItem.kmt)
-
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
+                            //Data
+                            Text(
+                                text = currentRifItem.date,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        Column(
+                            horizontalAlignment = Alignment.End,
                             modifier = Modifier
+                                .fillMaxWidth()
                         ) {
+
+                            //Prezzo
+                            val price = formatPrice(currentRifItem.price)
+
+                            Text(
+                                text = "$price €",
+                                fontSize = 18.sp,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            )
+                        }
+                    }
+
+                    //Prezzo per unità
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(bottom = 4.dp)
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.End,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            val uvalue =
+                                formatPrice(currentRifItem.uvalue).replace('.', ',')
+
+                            val unitprice = if (currentRifItem.type == "Elettrico") {
+                                "$uvalue €/kWh"
+                            } else {
+                                "$uvalue €/l"
+                            }
+
+                            Text(
+                                text = unitprice,
+                                fontSize = 18.sp,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            )
+                        }
+                    }
+
+
+                    //Luogo
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        val place = currentRifItem.place
+
+                        if (place.isNotEmpty()) {
+
                             Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.time_to_leave),
-                                contentDescription = "Data",
+                                imageVector = ImageVector.vectorResource(id = R.drawable.location),
+                                contentDescription = "Luogo",
                                 tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier
                                     .size(34.dp)
                                     .padding(end = 4.dp),
-                                )
+                            )
 
                             Text(
-                                text = "$formattedKmt km",
+                                text = currentRifItem.place,
                                 fontSize = 18.sp,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer
                             )
+                        } else {
+                            Spacer(modifier = Modifier
+                                .height(34.dp)
+                            )
+                        }
 
-                            Column(
-                                horizontalAlignment = Alignment.End,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                            ) {
-                                val decimalFormat = DecimalFormat("#,##0.00")
-                                val price = decimalFormat.format(state.men[index].price).replace('.', ',')
+                        //Unità totali
+                        Column(
+                            horizontalAlignment = Alignment.End,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            val totunit = formatPrice(currentRifItem.totunit)
 
-                                Text(
-                                    text = "$price €",
-                                    fontSize = 18.sp,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                )
+                            val showunit = if (currentRifItem.type == "Elettrico") {
+                                "$totunit kWh"
+                            } else {
+                                "$totunit l"
                             }
+
+                            Text(
+                                text = showunit,
+                                fontSize = 18.sp,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            )
                         }
                     }
                 }
-
-        } else {
-            Text(
-                text = "Aggiungi la tua prima manutenzione per mostrare un riepilogo.",
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(top = 60.dp)
-            )
+            }
         }
     }
 }

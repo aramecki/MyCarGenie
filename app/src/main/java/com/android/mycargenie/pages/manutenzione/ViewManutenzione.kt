@@ -35,6 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.mycargenie.R
+import com.android.mycargenie.shared.formatKmt
+import com.android.mycargenie.shared.formatPrice
 import java.text.DecimalFormat
 
 @Composable
@@ -284,11 +286,10 @@ fun ViewManScreen(
                     ) {
                         //Kilometri
 
-                        val formatter = DecimalFormat("#,###")
-                        val formattedKmt = formatter.format(manItem.kmt)
+                        val kmt = formatKmt(manItem.kmt)
 
                         Text(
-                            text = "$formattedKmt km",
+                            text = "$kmt km",
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontSize = 16.sp
                             )
@@ -297,8 +298,7 @@ fun ViewManScreen(
 
                     //Prezzo
 
-                    val decimalFormat = DecimalFormat("#,##0.00")
-                    val price = decimalFormat.format(manItem.price).replace('.', ',')
+                    val price = formatPrice(manItem.price)
 
                     Column(
                         modifier = Modifier

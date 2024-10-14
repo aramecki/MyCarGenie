@@ -182,7 +182,10 @@ fun AddRifScreen(
 
             val types = listOf("Benzina", "Gasolio", "GPL", "Metano", "Elettrico", "Altro")
 
-            Row {
+            Row(
+                modifier = Modifier
+                    .padding(top = 8.dp)
+            ) {
                 Column {
                     Row(
                         modifier = Modifier
@@ -350,12 +353,18 @@ fun AddRifScreen(
                 ) {
                     OutlinedTextField(
                         modifier = Modifier.fillMaxWidth(),
-                        value = if (state.totunit.value == 0.0) "" else state.totunit.value.toString(),
+                        value = if (state.totunit.value == 0.0) "" else state.totunit.value.toString()
+                            .replace('.', ','),
                         onValueChange = { newValue ->
-                            if (newValue.length <= 16) {
-                                val parsedValue = newValue.toDoubleOrNull()
-                                if (parsedValue != null) {
-                                    state.totunit.value = parsedValue
+                            val regex = Regex("^\\d{0,5}(,\\d{0,2})?\$")
+                            val formattedValue = newValue.replace(',', '.')
+                            if (newValue.isEmpty()) {
+                                state.totunit.value = 0.0
+                            } else if (regex.matches(newValue)) {
+                                formattedValue.toDoubleOrNull()?.let { doubleValue ->
+                                    if (doubleValue <= 9999.99) {
+                                        state.totunit.value = doubleValue
+                                    }
                                 }
                             }
                         },
@@ -366,9 +375,9 @@ fun AddRifScreen(
                         else if (state.type.value.isEmpty() || state.type.value == "Altro") Text(text = "Litri o kWh Totali")
                         else Text(text = "Litri Totali")
                          },
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            imeAction = ImeAction.Next,
-                            capitalization = KeyboardCapitalization.Sentences
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next
                         ),
                         keyboardActions = KeyboardActions(
                             onNext = { focusManager.moveFocus(FocusDirection.Next) }
