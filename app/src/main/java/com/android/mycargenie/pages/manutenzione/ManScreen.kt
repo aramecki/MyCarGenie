@@ -4,8 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,7 +20,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -28,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -39,24 +42,27 @@ import com.android.mycargenie.shared.formatPrice
 fun ManutenzioneScreen(
     state: ManState,
     navController: NavController,
-    onEvent: (ManEvent) -> Unit
+    //onEvent: (ManEvent) -> Unit
 ) {
-
 
     Scaffold(
 
+        /*
         topBar = {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(55.dp)
                     .background(MaterialTheme.colorScheme.primary)
-                    .padding(16.dp),
+                    .padding(top = 16.dp, start = 16.dp, end = 16.dp) // Padding solo a sinistra, destra e in basso
+                    .windowInsetsPadding(WindowInsets.statusBars) // Ignora il padding della barra di stato
+                    .offset(y = -statusBarHeight), // Sposta la top bar verso l'alto
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = "Manutenzione", //Da inserire in strings
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onPrimary
@@ -73,6 +79,8 @@ fun ManutenzioneScreen(
                 }
             }
         },
+
+         */
 
         floatingActionButton = {
             FloatingActionButton(onClick = {
@@ -91,8 +99,12 @@ fun ManutenzioneScreen(
     ) { paddingValues ->
 
         LazyColumn(
-            contentPadding = paddingValues,
-            modifier = Modifier
+            contentPadding = PaddingValues(
+                top = 8.dp,
+                start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
+                end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+                bottom = paddingValues.calculateBottomPadding()
+            ),            modifier = Modifier
                 .fillMaxSize()
                 .padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)

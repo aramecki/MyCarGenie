@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
@@ -65,24 +68,40 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+
         setContent {
 
             //deleteExistingDatabase()
 
             MyCarGenieTheme {
+
+
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainApp(viewModel = viewModel, rifViewModel = rifViewModel)
+
+                    val state by viewModel.state.collectAsState()
+                    val rifState by rifViewModel.state.collectAsState()
+
+                    MainApp(
+                        viewModel = viewModel,
+                        rifViewModel = rifViewModel,
+                        onManEvent = viewModel::onEvent,
+                        onRifEvent = rifViewModel::onEvent,
+                        state = state,
+                        rifState = rifState
+                    )
                 }
             }
         }
     }
 
+
     private fun deleteExistingDatabase() {
 
-        val databaseName = "rif.db"
+        val databaseName = "man.db"
 
 
         val deleted = this.deleteDatabase(databaseName)

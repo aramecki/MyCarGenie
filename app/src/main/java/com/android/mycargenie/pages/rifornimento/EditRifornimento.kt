@@ -7,9 +7,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -18,7 +19,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.DateRange
 import androidx.compose.material3.DatePicker
@@ -26,7 +26,6 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -51,10 +50,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.mycargenie.R
+import com.android.mycargenie.shared.formatPrice
 import java.time.Instant
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -120,6 +121,7 @@ fun EditRifScreen(
     }
 
     Scaffold(
+        /*
         topBar = {
             Row(
                 modifier = Modifier
@@ -146,6 +148,8 @@ fun EditRifScreen(
                 }
             }
         },
+
+         */
 
         floatingActionButton = {
             FloatingActionButton(onClick = {
@@ -193,7 +197,13 @@ fun EditRifScreen(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.Start,
                 modifier = Modifier
-                    .padding(paddingValues)
+                    .padding(
+                        top = 16.dp,
+                        start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
+
+                        end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+                        bottom = paddingValues.calculateBottomPadding()
+                    )
                     .fillMaxSize()
                     .verticalScroll(scrollState)
             ) {
@@ -356,6 +366,16 @@ fun EditRifScreen(
                 }
 
                 //Quantità totale
+                val totUnitLeadingIcon: @Composable (() -> Unit)? = when {
+                    state.uvalue.value != 0.0 && state.type.value == "Elettrico" -> {
+                        { Text(text = "kWh") }
+                    }
+                    state.uvalue.value == 0.0 || state.type.value.isEmpty() || state.type.value == "Altro" -> null
+                    else -> {
+                        { Text(text = "l") }
+                    }
+                }
+
                 Row(
                     modifier = Modifier
                         .padding(top = 16.dp)
@@ -366,19 +386,38 @@ fun EditRifScreen(
                             .fillMaxWidth(0.5f)
                             .padding(start = 16.dp, end = 8.dp)
                     ) {
+                        val totUnit = remember { mutableStateOf("") }
+                        val isManualInput = remember { mutableStateOf(false) }
+
+                        LaunchedEffect(state.price.value, state.uvalue.value) {
+                            if (state.price.value > 0.0 && state.uvalue.value > 0.0) {
+                                val totUnitCalc = state.price.value / state.uvalue.value
+                                totUnit.value = formatPrice(totUnitCalc)
+                                state.totunit.value = totUnitCalc
+                                isManualInput.value = false // Se i valori sono calcolati, disabilita l'input manuale
+                            } else {
+                                totUnit.value = "" // Imposta totUnit a una stringa vuota quando non sono validi
+                                state.totunit.value = 0.0
+                                isManualInput.value = true // Permetti l'input manuale
+                            }
+                        }
+
                         OutlinedTextField(
                             modifier = Modifier.fillMaxWidth(),
-                            value = if (state.totunit.value == 0.0) "" else state.totunit.value.toString()
-                                .replace('.', ','),
+                            value = totUnit.value,
                             onValueChange = { newValue ->
                                 val regex = Regex("^\\d{0,5}(,\\d{0,2})?\$")
                                 val formattedValue = newValue.replace(',', '.')
                                 if (newValue.isEmpty()) {
                                     state.totunit.value = 0.0
+                                    totUnit.value = ""
+                                    isManualInput.value = true // Imposta l'input manuale
                                 } else if (regex.matches(newValue)) {
                                     formattedValue.toDoubleOrNull()?.let { doubleValue ->
                                         if (doubleValue <= 9999.99) {
                                             state.totunit.value = doubleValue
+                                            totUnit.value = newValue
+                                            isManualInput.value = true // Imposta l'input manuale
                                         }
                                     }
                                 }
@@ -386,10 +425,16 @@ fun EditRifScreen(
                             textStyle = TextStyle(
                                 fontSize = 17.sp
                             ),
-                            placeholder = {if (state.type.value == "Elettrico") Text(text = "kWh Totali")
-                            else if (state.type.value.isEmpty() || state.type.value == "Altro") Text(text = "Litri o kWh Totali")
-                            else Text(text = "Litri Totali")
+                            placeholder = {
+                                if (totUnit.value.isEmpty()) {
+                                    // Visualizza il placeholder solo se l'input è manuale
+                                    if (state.type.value == "Elettrico") Text(text = "kWh Totali")
+                                    else if (state.type.value.isEmpty() || state.type.value == "Altro") Text(text = "Litri o kWh Totali")
+                                    else Text(text = "Litri Totali")
+                                }
                             },
+                            leadingIcon = totUnitLeadingIcon,
+                            enabled = !(state.price.value > 0.0 && state.uvalue.value > 0.0), // Disabilita l'input se price e uvalue sono > 0.0
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Next

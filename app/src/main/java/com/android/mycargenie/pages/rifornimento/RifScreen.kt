@@ -4,8 +4,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,7 +20,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -28,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -38,12 +41,13 @@ import com.android.mycargenie.shared.formatPrice
 fun RifornimentoScreen(
     state: RifState,
     navController: NavController,
-    onEvent: (RifEvent) -> Unit
+    //onEvent: (RifEvent) -> Unit
 ) {
 
 
     Scaffold(
 
+        /*
         topBar = {
             Row(
                 modifier = Modifier
@@ -73,6 +77,8 @@ fun RifornimentoScreen(
             }
         },
 
+         */
+
         floatingActionButton = {
             FloatingActionButton(onClick = {
                 state.type.value = ""
@@ -91,7 +97,12 @@ fun RifornimentoScreen(
     ) { paddingValues ->
 
         LazyColumn(
-            contentPadding = paddingValues,
+            contentPadding = PaddingValues(
+                top = 8.dp,
+                start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
+                end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+                bottom = paddingValues.calculateBottomPadding()
+            ),
             modifier = Modifier
                 .fillMaxSize()
                 .padding(8.dp),
