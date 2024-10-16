@@ -41,18 +41,21 @@ fun ViewManScreen(
         if (manItem != null) {
             Column(
                 modifier = Modifier
-                    .padding(paddingValues)
-                    .padding(16.dp)
-            ) {
+                    .padding(
+                        top = 16.dp,
+                        start = 16.dp,
+                        end = 16.dp,
+                        bottom = paddingValues.calculateBottomPadding()
+                    )
+                ) {
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .fillMaxWidth(1f)
+                        .fillMaxWidth()
                 ) {
 
                     //Icona tipo
-
                     val icon = when (manItem.type) {
                         "Meccanico" -> ImageVector.vectorResource(id = R.drawable.manufacturing)
                         "Elettrauto" -> ImageVector.vectorResource(id = R.drawable.lightbulb)

@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.DateRange
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -42,14 +40,18 @@ fun ViewRifScreen(
         if (rifItem != null) {
             Column(
                 modifier = Modifier
-                    .padding(paddingValues)
-                    .padding(16.dp)
+                    .padding(
+                        top = 16.dp,
+                        start = 16.dp,
+                        end = 16.dp,
+                        bottom = paddingValues.calculateBottomPadding()
+                    )
             ) {
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .fillMaxWidth(1f)
+                        .fillMaxWidth()
                 ) {
 
                     //Icona tipo
@@ -59,84 +61,92 @@ fun ViewRifScreen(
                     }
 
 
-                        Row(
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Column {
-                                Icon(
-                                    imageVector = icon,
-                                    contentDescription = rifItem.type,
-                                    modifier = Modifier
-                                        .size(45.dp),
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                            }
-
-                            //Data
-                            Column {
-                                Text(
-                                    text = rifItem.date,
-                                    style = MaterialTheme.typography.headlineMedium.copy(
-                                        fontSize = 30.sp
-                                    ),
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(start = 8.dp)
-                                )
-                            }
-
-                        }
-                    }
-
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-
-
-                    Column {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.Bottom,
+                    ) {
+                        Column {
                             Icon(
-                                imageVector = Icons.Rounded.DateRange,
-                                contentDescription = "Data",
-                                tint = MaterialTheme.colorScheme.primary,
+                                imageVector = icon,
+                                contentDescription = rifItem.type,
                                 modifier = Modifier
-                                    .size(30.dp)
+                                    .size(45.dp),
+                                tint = MaterialTheme.colorScheme.primary
                             )
+                        }
+
+                        //Data
+                        Column {
                             Text(
                                 text = rifItem.date,
-                                style = MaterialTheme.typography.bodyMedium,
+                                style = MaterialTheme.typography.headlineMedium.copy(
+                                    fontSize = 30.sp
+                                ),
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier
-                                    .padding(start = 4.dp)
+                                    .padding(start = 8.dp)
                             )
                         }
-                    }
 
-                    Column(
-                        horizontalAlignment = Alignment.End,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
+
+                        //Spacer(modifier = Modifier.height(30.dp))
+
+                        /*
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                ) {
+
+
+                                    Column {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Rounded.DateRange,
+                                                contentDescription = "Data",
+                                                tint = MaterialTheme.colorScheme.primary,
+                                                modifier = Modifier
+                                                    .size(30.dp)
+                                            )
+                                            Text(
+                                                text = rifItem.date,
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                modifier = Modifier
+                                                    .padding(start = 4.dp)
+                                            )
+                                        }
+                                    }
+
+
+                        Column(
+                            horizontalAlignment = Alignment.End,
+                            modifier = Modifier
+                                //.fillMaxWidth()
+                        ) {
+                            /*
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
+
+                             */
                             Icon(
                                 imageVector = ImageVector.vectorResource(id = R.drawable.location),
                                 contentDescription = "Luogo",
                                 tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier
-                                    .size(30.dp)
+                                    .size(24.dp)
                             )
+                        }
+
+                         */
+
+                        Column(
+                            modifier = Modifier
+                                .padding(start = 4.dp)
+                        ) {
                             Text(
                                 text = rifItem.place,
                                 style = MaterialTheme.typography.bodyMedium
@@ -144,16 +154,37 @@ fun ViewRifScreen(
                         }
 
                     }
+
                 }
+
 
 
                 Spacer(modifier = Modifier.height(32.dp))
 
+                Row {
+                    //Prezzo
+                    val price = formatPrice(rifItem.price)
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "$price €",
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontSize = 20.sp
+                            )
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(32.dp))
 
                 Text(
-                    text = "Descrizione: ${rifItem.note}",
+                    text = "Note: ${rifItem.note}",
                     style = MaterialTheme.typography.bodyMedium
                 )
+
 
 
                 Spacer(modifier = Modifier.height(32.dp))
@@ -176,23 +207,7 @@ fun ViewRifScreen(
                         )
                     }
 
-                    //Prezzo
 
-                    val price = formatPrice(rifItem.price)
-
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "$price €",
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                fontSize = 16.sp
-                            ),
-                            modifier = Modifier
-                                .align(Alignment.End)
-                        )
-                    }
                 }
 
 

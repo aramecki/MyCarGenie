@@ -117,101 +117,137 @@ fun LibrettoScreen(
             }
         }
 
+        Spacer(modifier = Modifier.height(38.dp))
+
 
         if (sortedMen.isEmpty()) {
-            Text(
-                text = "Aggiungi la tua prima manutenzione per visualizzare un resoconto.",
-                modifier = Modifier.padding(16.dp),
-                fontSize = 18.sp,
-                textAlign = TextAlign.Center
-            )
-            return@Column
+            Row(
+                modifier = Modifier
+                    .padding(top = 32.dp)
+            ) {
+                Text(
+                    text = "Aggiungi la tua prima manutenzione per visualizzare un resoconto.",
+                    modifier = Modifier.padding(16.dp),
+                    fontSize = 18.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
 
-        val currentItem = sortedMen.first()
-        val index = state.men.indexOf(currentItem)
 
+        if (sortedMen.isNotEmpty()) {
 
-        Spacer(modifier = Modifier.height(30.dp))
+            val currentItem = sortedMen.first()
+            val index = state.men.indexOf(currentItem)
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp)
-                .clip(RoundedCornerShape(10.dp))
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .padding(12.dp)
-                .clickable {
-                    navController.navigate("ViewManScreen/$index")
-                }
-        ) {
-
-            val icon = when (currentItem.type) {
-                "Meccanico" -> ImageVector.vectorResource(id = R.drawable.manufacturing)
-                "Elettrauto" -> ImageVector.vectorResource(id = R.drawable.lightbulb)
-                "Carrozziere" -> ImageVector.vectorResource(id = R.drawable.brush)
-                else -> ImageVector.vectorResource(id = R.drawable.repair)
-            }
-
-            Column(
-                verticalArrangement = Arrangement.SpaceEvenly
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .padding(12.dp)
+                    .clickable {
+                        navController.navigate("ViewManScreen/$index")
+                    }
             ) {
 
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(bottom = 4.dp)
-                ) {
-                    Column {
-                        Icon(
-                            imageVector = icon,
-                            contentDescription = currentItem.type,
-                            modifier = Modifier
-                                .size(34.dp)
-                                .padding(end = 4.dp),
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
-
-
-                    Column {
-
-                        //Titolo
-                        Text(
-                            text = currentItem.title,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
-                    Column(
-                        horizontalAlignment = Alignment.End,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        Text(
-                            text = currentItem.date,
-                            fontSize = 18.sp,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
-                        )
-                    }
+                val icon = when (currentItem.type) {
+                    "Meccanico" -> ImageVector.vectorResource(id = R.drawable.manufacturing)
+                    "Elettrauto" -> ImageVector.vectorResource(id = R.drawable.lightbulb)
+                    "Carrozziere" -> ImageVector.vectorResource(id = R.drawable.brush)
+                    else -> ImageVector.vectorResource(id = R.drawable.repair)
                 }
 
-
-                //Luogo
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(bottom = 4.dp)
+                Column(
+                    verticalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    val place = currentItem.place
 
-                    if (place.isNotEmpty()) {
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(bottom = 4.dp)
+                    ) {
+                        Column {
+                            Icon(
+                                imageVector = icon,
+                                contentDescription = currentItem.type,
+                                modifier = Modifier
+                                    .size(34.dp)
+                                    .padding(end = 4.dp),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+
+
+                        Column {
+
+                            //Titolo
+                            Text(
+                                text = currentItem.title,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        }
+                        Column(
+                            horizontalAlignment = Alignment.End,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            Text(
+                                text = currentItem.date,
+                                fontSize = 18.sp,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                        }
+                    }
+
+
+                    //Luogo
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(bottom = 4.dp)
+                    ) {
+                        val place = currentItem.place
+
+                        if (place.isNotEmpty()) {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.location),
+                                contentDescription = "Luogo",
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier
+                                    .size(34.dp)
+                                    .padding(end = 4.dp),
+                            )
+
+                            Text(
+                                text = currentItem.place,
+                                fontSize = 18.sp,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                        } else {
+                            Spacer(
+                                modifier = Modifier
+                                    .height(34.dp)
+                            )
+                        }
+                    }
+
+                    //Kilometri
+
+                    val kmt = formatKmt(currentItem.kmt)
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                    ) {
                         Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.location),
-                            contentDescription = "Luogo",
+                            imageVector = ImageVector.vectorResource(id = R.drawable.time_to_leave),
+                            contentDescription = "Icona automobile",
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier
                                 .size(34.dp)
@@ -219,70 +255,48 @@ fun LibrettoScreen(
                         )
 
                         Text(
-                            text = currentItem.place,
+                            text = "$kmt km",
                             fontSize = 18.sp,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
-                    } else {
-                        Spacer(modifier = Modifier
-                            .height(34.dp)
-                        )
-                    }
-                }
 
-                //Kilometri
+                        Column(
+                            horizontalAlignment = Alignment.End,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            val price = formatPrice(state.men[index].price)
 
-                val kmt = formatKmt(currentItem.kmt)
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.time_to_leave),
-                        contentDescription = "Icona automobile",
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier
-                            .size(34.dp)
-                            .padding(end = 4.dp),
-                    )
-
-                    Text(
-                        text = "$kmt km",
-                        fontSize = 18.sp,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-
-                    Column(
-                        horizontalAlignment = Alignment.End,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        val price = formatPrice(state.men[index].price)
-
-                        Text(
-                            text = "$price €",
-                            fontSize = 18.sp,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        )
+                            Text(
+                                text = "$price €",
+                                fontSize = 18.sp,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            )
+                        }
                     }
                 }
             }
         }
 
 
-        Row {
+        Spacer(modifier = Modifier.height(16.dp))
 
-            if (sortedRif.isEmpty()) {
+        if (sortedRif.isEmpty()) {
+            Row(
+                modifier = Modifier
+                    .padding(top = 32.dp)
+            ) {
                 Text(
                     text = "Aggiungi il tuo primo rifornimento per visualizzare un resoconto.",
                     modifier = Modifier.padding(16.dp),
                     fontSize = 18.sp,
                     textAlign = TextAlign.Center
                 )
-                return@Column
             }
+            //return@Column
+        }
 
+        if (sortedRif.isNotEmpty()) {
             val currentRifItem = sortedRif.first()
             val rifIndex = rifState.rifs.indexOf(currentRifItem)
 
@@ -435,4 +449,4 @@ fun LibrettoScreen(
             }
         }
     }
-}
+    }

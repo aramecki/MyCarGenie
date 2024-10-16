@@ -151,7 +151,8 @@ fun MainApp(
                             Box(
                                 modifier = Modifier
                                     .size(48.dp)
-                                    .clickable {
+                                    .offset(y = 12.dp)
+                                .clickable {
                                         navController.popBackStack()
                                     },
                                 contentAlignment = Alignment.Center
@@ -160,8 +161,7 @@ fun MainApp(
                                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                     contentDescription = "Indietro",
                                     modifier = Modifier
-                                        .size(35.dp)
-                                        .offset(y = 12.dp),
+                                        .size(35.dp),
                                     tint = MaterialTheme.colorScheme.onPrimary
                                 )
                             }
@@ -176,6 +176,7 @@ fun MainApp(
                         Box(
                             modifier = Modifier
                                 .size(48.dp)
+                                .offset(y = 12.dp)
                                 .clickable {
                                     when (currentDestination) {
                                         "ManutenzioneScreen" -> onManEvent(ManEvent.SortMan)
@@ -188,8 +189,7 @@ fun MainApp(
                                 imageVector = ImageVector.vectorResource(id = R.drawable.sort),
                                 contentDescription = "Ordina",
                                 modifier = Modifier
-                                    .size(35.dp)
-                                    .offset(y = 12.dp),
+                                    .size(35.dp),
                                 tint = MaterialTheme.colorScheme.onPrimary
                             )
                         }
@@ -255,6 +255,7 @@ fun MainApp(
                                 Box(
                                     modifier = Modifier
                                         .size(48.dp)
+                                        .offset(y = 12.dp)
                                         .clickable {
                                             when (currentDestination) {
                                                 "ViewManScreen/{index}" -> navController.navigate("EditManScreen/$manIndex")
@@ -268,8 +269,7 @@ fun MainApp(
                                         imageVector = Icons.Filled.Edit,
                                         contentDescription = "Modifica",
                                         modifier = Modifier
-                                            .size(30.dp)
-                                            .offset(y = 12.dp),
+                                            .size(30.dp),
                                         tint = MaterialTheme.colorScheme.onPrimary
                                     )
                                 }
@@ -277,6 +277,7 @@ fun MainApp(
                                 Box(
                                     modifier = Modifier
                                         .size(48.dp)
+                                        .offset(y = 12.dp)
                                         .clickable {
                                                 showDeleteDialog = true
                                         },
@@ -286,8 +287,7 @@ fun MainApp(
                                         imageVector = Icons.Filled.Delete,
                                         contentDescription = "Elimina",
                                         modifier = Modifier
-                                            .size(30.dp)
-                                            .offset(y = 12.dp),
+                                            .size(30.dp),
                                         tint = MaterialTheme.colorScheme.onPrimary
                                     )
                                 }

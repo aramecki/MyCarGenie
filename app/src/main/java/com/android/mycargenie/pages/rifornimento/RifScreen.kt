@@ -233,7 +233,7 @@ fun RifItem(
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.location),
                             contentDescription = "Luogo",
-                            tint = MaterialTheme.colorScheme.onPrimary,
+                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier
                                 .size(34.dp)
                                 .padding(end = 4.dp),
