@@ -268,7 +268,7 @@ fun MainApp(
                                         imageVector = Icons.Filled.Edit,
                                         contentDescription = "Modifica",
                                         modifier = Modifier
-                                            .size(35.dp)
+                                            .size(30.dp)
                                             .offset(y = 12.dp),
                                         tint = MaterialTheme.colorScheme.onPrimary
                                     )
@@ -278,11 +278,7 @@ fun MainApp(
                                     modifier = Modifier
                                         .size(48.dp)
                                         .clickable {
-                                            when (currentDestination) {
-                                                "ViewManScreen/{index}" -> showDeleteDialog = true
-                                                "ViewRifScreen/{index}" -> showDeleteDialog = true
-
-                                            }
+                                                showDeleteDialog = true
                                         },
                                     contentAlignment = Alignment.Center
                                 ) {
@@ -290,7 +286,7 @@ fun MainApp(
                                         imageVector = Icons.Filled.Delete,
                                         contentDescription = "Elimina",
                                         modifier = Modifier
-                                            .size(35.dp)
+                                            .size(30.dp)
                                             .offset(y = 12.dp),
                                         tint = MaterialTheme.colorScheme.onPrimary
                                     )
@@ -403,7 +399,6 @@ fun MainApp(
                     ViewManScreen(
                         state = viewModel.state.collectAsState().value,
                         navController = navController,
-                        viewModel = viewModel
                     )
 
                     }
@@ -457,7 +452,6 @@ fun MainApp(
                     ViewRifScreen(
                         state = rifViewModel.state.collectAsState().value,
                         navController = navController,
-                        viewModel = rifViewModel
                     )
 
                 }
