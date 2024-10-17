@@ -223,8 +223,6 @@ fun ViewManScreen(
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
-            // Valutare se tornare automaticamente indietro:
-            // navController.popBackStack()
         }
     }
 }

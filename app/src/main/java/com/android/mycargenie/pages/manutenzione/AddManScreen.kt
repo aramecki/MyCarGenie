@@ -63,12 +63,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.android.mycargenie.R
-import com.android.mycargenie.pages.rifornimento.formatDate
+import com.android.mycargenie.shared.formatDate
 import com.android.mycargenie.ui.theme.MyCarGenieTheme
-import java.text.SimpleDateFormat
 import java.time.Instant
-import java.util.Date
-import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,6 +81,7 @@ fun AddManScreen(
 
     var showError by remember { mutableStateOf(false) }
     var showDatePicker by remember { mutableStateOf(false) }
+
 
     // DatePickerDialog
     if (showDatePicker) {
@@ -113,36 +111,6 @@ fun AddManScreen(
     }
 
     Scaffold(
-
-        /*
-        topBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(55.dp)
-                    .background(MaterialTheme.colorScheme.primary)
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                ) {
-                    IconButton(onClick = {
-                        navController.popBackStack()
-                    }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Indietro",
-                            modifier = Modifier.size(35.dp),
-                            tint = MaterialTheme.colorScheme.onPrimary
-                        )
-                    }
-                }
-            }
-        },
-
-         */
 
         floatingActionButton = {
             FloatingActionButton(onClick = {
@@ -330,7 +298,7 @@ fun AddManScreen(
                 }
             }
 
-            // 3. Descrizione
+            //Descrizione
             Row {
                 Column {
                     // OutlinedTextField
@@ -379,18 +347,21 @@ fun AddManScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
+                    var userPriceInput by remember { mutableStateOf("") }
+
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth(0.5f)
                             .padding(end = 16.dp),
-                        value = if (state.price.value == 0.0) "" else state.price.value.toString()
-                            .replace('.', ','),
+                        value = userPriceInput,
                         onValueChange = { newValue ->
                             val regex = Regex("^\\d{0,5}(,\\d{0,2})?\$")
                             val formattedValue = newValue.replace(',', '.')
                             if (newValue.isEmpty()) {
+                                userPriceInput = ""
                                 state.price.value = 0.0
                             } else if (regex.matches(newValue)) {
+                                userPriceInput = newValue
                                 formattedValue.toDoubleOrNull()?.let { doubleValue ->
                                     if (doubleValue <= 99999.99) {
                                         state.price.value = doubleValue
@@ -462,14 +433,6 @@ fun AddManScreen(
             }
         }
 
-
-
-
-// Formattazione data
-fun formatDate(timestamp: Long): String {
-    val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-    return formatter.format(Date(timestamp))
-}
 
 
 @Composable

@@ -1,6 +1,5 @@
 package com.android.mycargenie.pages.rifornimento
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -49,7 +48,7 @@ fun ViewRifScreen(
             ) {
 
                 Row(
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalAlignment = Alignment.Bottom,
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
@@ -62,7 +61,6 @@ fun ViewRifScreen(
 
 
                     Row(
-                        horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.Bottom,
                     ) {
                         Column {
@@ -86,62 +84,9 @@ fun ViewRifScreen(
                                 color = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier
                                     .padding(start = 8.dp)
+
                             )
                         }
-
-
-                        //Spacer(modifier = Modifier.height(30.dp))
-
-                        /*
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                ) {
-
-
-                                    Column {
-                                        Row(
-                                            verticalAlignment = Alignment.CenterVertically
-                                        ) {
-                                            Icon(
-                                                imageVector = Icons.Rounded.DateRange,
-                                                contentDescription = "Data",
-                                                tint = MaterialTheme.colorScheme.primary,
-                                                modifier = Modifier
-                                                    .size(30.dp)
-                                            )
-                                            Text(
-                                                text = rifItem.date,
-                                                style = MaterialTheme.typography.bodyMedium,
-                                                modifier = Modifier
-                                                    .padding(start = 4.dp)
-                                            )
-                                        }
-                                    }
-
-
-                        Column(
-                            horizontalAlignment = Alignment.End,
-                            modifier = Modifier
-                                //.fillMaxWidth()
-                        ) {
-                            /*
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-
-                             */
-                            Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.location),
-                                contentDescription = "Luogo",
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier
-                                    .size(24.dp)
-                            )
-                        }
-
-                         */
 
                         Column(
                             modifier = Modifier
@@ -163,46 +108,92 @@ fun ViewRifScreen(
 
                 Row {
                     //Prezzo
-                    val price = formatPrice(rifItem.price)
-
                     Column(
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f)
+                    ) {
+                        val price = formatPrice(rifItem.price)
+                        Text(
+                            text = "Importo: $price €",
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontSize = 18.sp
+                            )
+                        )
+
+                    }
+
+                    //Prezzo per unità
+                    Column(
+                        horizontalAlignment = Alignment.End,
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
+                        val uPrice = formatPrice(rifItem.uvalue)
+
+                        val unitValue = when (rifItem.type) {
+                            "Elettrico" -> "€/kWh: $uPrice"
+                            else -> "€/l: $uPrice"
+                        }
+
                         Text(
-                            text = "$price €",
+                            text = unitValue,
                             style = MaterialTheme.typography.bodyMedium.copy(
-                                fontSize = 20.sp
+                                fontSize = 16.sp
                             )
                         )
+
+                        //Unità totali
+
+                        val units = formatPrice(rifItem.totunit)
+
+                        val unitsText = when (rifItem.type) {
+                            "Elettrico" -> "kWh ricaricati: $units"
+                            else -> "l riforniti: $units"
+                        }
+
+                        Text(
+                            text = unitsText,
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontSize = 20.sp
+                            ),
+                            modifier = Modifier
+                                .padding(top = 32.dp)
+                        )
+
                     }
                 }
 
-                Spacer(modifier = Modifier.height(32.dp))
+                //Note
+                if (rifItem.note.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(52.dp))
 
-                Text(
-                    text = "Note: ${rifItem.note}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                    Text(
+                        text = "Note: ${rifItem.note}",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontSize = 16.sp
+                        )
+                    )
+                }
 
 
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(52.dp))
 
 
                 Row {
                     Column(
+                        horizontalAlignment = Alignment.End,
                         modifier = Modifier
-                            .fillMaxWidth(0.5f)
+                            .fillMaxWidth()
                     ) {
                         //Kilometri
 
                         val kmt = formatKmt(rifItem.kmt)
 
                         Text(
-                            text = "$kmt km",
+                            text = "Km veicolo: $kmt km",
                             style = MaterialTheme.typography.bodyMedium.copy(
-                                fontSize = 16.sp
+                                fontSize = 14.sp
                             )
                         )
                     }

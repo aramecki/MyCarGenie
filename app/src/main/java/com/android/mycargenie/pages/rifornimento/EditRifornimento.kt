@@ -57,6 +57,7 @@ import androidx.navigation.NavController
 import com.android.mycargenie.R
 import com.android.mycargenie.shared.formatPrice
 import java.time.Instant
+import com.android.mycargenie.shared.formatDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -266,6 +267,10 @@ fun EditRifScreen(
                         .padding(top = 8.dp)
                 ) {
                     //Prezzo
+                    var userPriceInput by remember {
+                        mutableStateOf(if (state.price.value == 0.0) "" else state.price.value.toString().replace('.', ','))
+                    }
+
                     Column(
                         horizontalAlignment = Alignment.End,
                         modifier = Modifier
@@ -276,14 +281,18 @@ fun EditRifScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(end = 8.dp),
-                            value = if (state.price.value == 0.0) "" else state.price.value.toString()
-                                .replace('.', ','),
+                            // Mostra il valore inserito dall'utente
+                            value = userPriceInput,
                             onValueChange = { newValue ->
+                                // Regex per validare il formato del prezzo
                                 val regex = Regex("^\\d{0,5}(,\\d{0,2})?\$")
-                                val formattedValue = newValue.replace(',', '.')
                                 if (newValue.isEmpty()) {
+                                    userPriceInput = ""
                                     state.price.value = 0.0
                                 } else if (regex.matches(newValue)) {
+                                    userPriceInput = newValue
+                                    val formattedValue = newValue.replace(',', '.')
+                                    // Aggiorna lo stato solo se il valore numerico è valido
                                     formattedValue.toDoubleOrNull()?.let { doubleValue ->
                                         if (doubleValue <= 99999.99) {
                                             state.price.value = doubleValue
@@ -310,7 +319,11 @@ fun EditRifScreen(
                     }
 
 
-                    //Prezzo per unità
+                    var userUValueInput by remember {
+                        mutableStateOf(if (state.uvalue.value == 0.0) "" else state.uvalue.value.toString().replace('.', ','))
+                    }
+
+// Leading icon
                     val leadingIcon: @Composable (() -> Unit)? = if (state.uvalue.value != 0.0) {
                         {
                             Icon(
@@ -332,14 +345,18 @@ fun EditRifScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(start = 8.dp, end = 16.dp),
-                            value = if (state.uvalue.value == 0.0) "" else state.uvalue.value.toString()
-                                .replace('.', ','),
+                            // Mostra il valore inserito dall'utente
+                            value = userUValueInput,
                             onValueChange = { newValue ->
+                                // Regex per validare il formato del valore
                                 val regex = Regex("^\\d{0,5}(,\\d{0,2})?\$")
-                                val formattedValue = newValue.replace(',', '.')
                                 if (newValue.isEmpty()) {
+                                    userUValueInput = ""
                                     state.uvalue.value = 0.0
                                 } else if (regex.matches(newValue)) {
+                                    userUValueInput = newValue
+                                    val formattedValue = newValue.replace(',', '.')
+                                    // Aggiorna lo stato solo se il valore numerico è valido
                                     formattedValue.toDoubleOrNull()?.let { doubleValue ->
                                         if (doubleValue <= 99999.99) {
                                             state.uvalue.value = doubleValue
@@ -347,12 +364,12 @@ fun EditRifScreen(
                                     }
                                 }
                             },
-                            placeholder = {if (state.type.value == "Elettrico") Text(text = "€/kWh")
-                            else if (state.type.value.isEmpty() || state.type.value == "Altro") Text(text = "€/l o €/kWh")
-                            else (Text(text = "€/l")) },
-
+                            placeholder = {
+                                if (state.type.value == "Elettrico") Text(text = "€/kWh")
+                                else if (state.type.value.isEmpty() || state.type.value == "Altro") Text(text = "€/l o €/kWh")
+                                else Text(text = "€/l")
+                            },
                             leadingIcon = leadingIcon,
-
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Next
@@ -361,16 +378,15 @@ fun EditRifScreen(
                                 onNext = { focusManager.moveFocus(FocusDirection.Next) }
                             )
                         )
-
                     }
                 }
 
                 //Quantità totale
                 val totUnitLeadingIcon: @Composable (() -> Unit)? = when {
-                    state.uvalue.value != 0.0 && state.type.value == "Elettrico" -> {
+                    state.totunit.value != 0.0 && state.type.value == "Elettrico" -> {
                         { Text(text = "kWh") }
                     }
-                    state.uvalue.value == 0.0 || state.type.value.isEmpty() || state.type.value == "Altro" -> null
+                    state.totunit.value == 0.0 || state.type.value.isEmpty() || state.type.value == "Altro" -> null
                     else -> {
                         { Text(text = "l") }
                     }
@@ -386,38 +402,40 @@ fun EditRifScreen(
                             .fillMaxWidth(0.5f)
                             .padding(start = 16.dp, end = 8.dp)
                     ) {
-                        val totUnit = remember { mutableStateOf("") }
+                        var totUnit by remember {
+                            mutableStateOf(if (state.totunit.value == 0.0) "" else state.totunit.value.toString().replace('.', ','))
+                        }
                         val isManualInput = remember { mutableStateOf(false) }
 
                         LaunchedEffect(state.price.value, state.uvalue.value) {
                             if (state.price.value > 0.0 && state.uvalue.value > 0.0) {
                                 val totUnitCalc = state.price.value / state.uvalue.value
-                                totUnit.value = formatPrice(totUnitCalc)
+                                totUnit = formatPrice(totUnitCalc)
                                 state.totunit.value = totUnitCalc
-                                isManualInput.value = false // Se i valori sono calcolati, disabilita l'input manuale
+                                isManualInput.value = false
                             } else {
-                                totUnit.value = "" // Imposta totUnit a una stringa vuota quando non sono validi
+                                totUnit = ""
                                 state.totunit.value = 0.0
-                                isManualInput.value = true // Permetti l'input manuale
+                                isManualInput.value = true
                             }
                         }
 
                         OutlinedTextField(
                             modifier = Modifier.fillMaxWidth(),
-                            value = totUnit.value,
+                            value = totUnit,
                             onValueChange = { newValue ->
                                 val regex = Regex("^\\d{0,5}(,\\d{0,2})?\$")
                                 val formattedValue = newValue.replace(',', '.')
                                 if (newValue.isEmpty()) {
                                     state.totunit.value = 0.0
-                                    totUnit.value = ""
-                                    isManualInput.value = true // Imposta l'input manuale
+                                    totUnit = ""
+                                    isManualInput.value = true
                                 } else if (regex.matches(newValue)) {
                                     formattedValue.toDoubleOrNull()?.let { doubleValue ->
                                         if (doubleValue <= 9999.99) {
                                             state.totunit.value = doubleValue
-                                            totUnit.value = newValue
-                                            isManualInput.value = true // Imposta l'input manuale
+                                            totUnit = newValue
+                                            isManualInput.value = true
                                         }
                                     }
                                 }
@@ -426,15 +444,14 @@ fun EditRifScreen(
                                 fontSize = 17.sp
                             ),
                             placeholder = {
-                                if (totUnit.value.isEmpty()) {
-                                    // Visualizza il placeholder solo se l'input è manuale
+                                if (totUnit.isEmpty()) {
                                     if (state.type.value == "Elettrico") Text(text = "kWh Totali")
                                     else if (state.type.value.isEmpty() || state.type.value == "Altro") Text(text = "Litri o kWh Totali")
                                     else Text(text = "Litri Totali")
                                 }
                             },
                             leadingIcon = totUnitLeadingIcon,
-                            enabled = !(state.price.value > 0.0 && state.uvalue.value > 0.0), // Disabilita l'input se price e uvalue sono > 0.0
+                            enabled = !(state.price.value > 0.0 && state.uvalue.value > 0.0),
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Next
@@ -466,7 +483,7 @@ fun EditRifScreen(
                             )
                             Text(
                                 text = state.date.value.ifEmpty {
-                                    com.android.mycargenie.pages.manutenzione.formatDate(
+                                    formatDate(
                                         Instant.now().toEpochMilli()
                                     )
                                 },

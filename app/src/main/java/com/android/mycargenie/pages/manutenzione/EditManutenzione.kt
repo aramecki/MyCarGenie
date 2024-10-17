@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.mycargenie.R
+import com.android.mycargenie.shared.formatDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -101,7 +102,8 @@ fun EditManScreen(
                 TextButton(onClick = {
                     val selectedDateMillis = datePickerState.selectedDateMillis
                     if (selectedDateMillis != null) {
-                        state.date.value = formatDate(selectedDateMillis)
+                        state.date.value = formatDate(selectedDateMillis
+                        )
                     }
                     showDatePicker = false
                 }) {
@@ -119,35 +121,6 @@ fun EditManScreen(
     }
 
     Scaffold(
-        /*
-        topBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(55.dp)
-                    .background(MaterialTheme.colorScheme.primary)
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                ) {
-                    IconButton(onClick = {
-                        navController.popBackStack()
-                    }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Indietro",
-                            modifier = Modifier.size(35.dp),
-                            tint = MaterialTheme.colorScheme.onPrimary
-                        )
-                    }
-                }
-            }
-        },
-
-         */
 
         floatingActionButton = {
             FloatingActionButton(onClick = {
@@ -389,18 +362,23 @@ fun EditManScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
+                        var userPriceInput by remember {
+                            mutableStateOf(if (state.price.value == 0.0) "" else state.price.value.toString().replace('.', ','))
+                        }
+
                         OutlinedTextField(
                             modifier = Modifier
                                 .fillMaxWidth(0.5f)
                                 .padding(end = 16.dp),
-                            value = if (state.price.value == 0.0) "" else state.price.value.toString()
-                                .replace('.', ','),
+                            value = userPriceInput,
                             onValueChange = { newValue ->
                                 val regex = Regex("^\\d{0,5}(,\\d{0,2})?\$")
-                                val formattedValue = newValue.replace(',', '.')
                                 if (newValue.isEmpty()) {
+                                    userPriceInput = ""
                                     state.price.value = 0.0
                                 } else if (regex.matches(newValue)) {
+                                    userPriceInput = newValue
+                                    val formattedValue = newValue.replace(',', '.')
                                     formattedValue.toDoubleOrNull()?.let { doubleValue ->
                                         if (doubleValue <= 99999.99) {
                                             state.price.value = doubleValue
@@ -408,7 +386,7 @@ fun EditManScreen(
                                     }
                                 }
                             },
-                            placeholder = {if (state.price.value == 0.0) Text(text = "Prezzo") },
+                            placeholder = { Text(text = "Importo") },
                             leadingIcon = {
                                 Icon(
                                     imageVector = ImageVector.vectorResource(id = R.drawable.euro_symbol),
@@ -432,15 +410,16 @@ fun EditManScreen(
                                                 date = state.date.value,
                                                 kmt = state.kmt.value,
                                                 description = state.description.value,
-                                                price = state.price.value,
+                                                price = state.price.value
                                             )
                                         )
                                         navController.popBackStack()
                                     } else {
                                         showError = true
                                     }
-                                })
+                                }
                             )
+                        )
 
                     }
                 }

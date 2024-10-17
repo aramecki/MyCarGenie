@@ -60,12 +60,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.mycargenie.R
 import com.android.mycargenie.pages.manutenzione.TypeDropdownMenu
-import com.android.mycargenie.pages.manutenzione.formatDate
+import com.android.mycargenie.shared.formatDate
 import com.android.mycargenie.shared.formatPrice
-import java.text.SimpleDateFormat
 import java.time.Instant
-import java.util.Date
-import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -110,36 +107,6 @@ fun AddRifScreen(
     }
 
     Scaffold(
-
-        /*
-        topBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(55.dp)
-                    .background(MaterialTheme.colorScheme.primary)
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                ) {
-                    IconButton(onClick = {
-                        navController.popBackStack()
-                    }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Indietro",
-                            modifier = Modifier.size(35.dp),
-                            tint = MaterialTheme.colorScheme.onPrimary
-                        )
-                    }
-                }
-            }
-        },
-
-         */
 
         floatingActionButton = {
             FloatingActionButton(onClick = {
@@ -249,6 +216,8 @@ fun AddRifScreen(
                     .padding(top = 16.dp)
             ) {
                 //Prezzo
+                var userPriceInput by remember { mutableStateOf("") }
+
                 Column(
                     horizontalAlignment = Alignment.End,
                     modifier = Modifier
@@ -259,14 +228,15 @@ fun AddRifScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(end = 8.dp),
-                        value = if (state.price.value == 0.0) "" else state.price.value.toString()
-                            .replace('.', ','),
+                        value = userPriceInput,
                         onValueChange = { newValue ->
                             val regex = Regex("^\\d{0,5}(,\\d{0,2})?\$")
-                            val formattedValue = newValue.replace(',', '.')
                             if (newValue.isEmpty()) {
+                                userPriceInput = ""
                                 state.price.value = 0.0
                             } else if (regex.matches(newValue)) {
+                                userPriceInput = newValue
+                                val formattedValue = newValue.replace(',', '.')
                                 formattedValue.toDoubleOrNull()?.let { doubleValue ->
                                     if (doubleValue <= 99999.99) {
                                         state.price.value = doubleValue
@@ -294,6 +264,8 @@ fun AddRifScreen(
 
 
                 //Prezzo per unità
+                var uValueInput by remember { mutableStateOf("") }
+
                 val uValueLeadingIcon: @Composable (() -> Unit)? = if (state.uvalue.value != 0.0) {
                     {
                         Icon(
@@ -315,14 +287,15 @@ fun AddRifScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 8.dp, end = 16.dp),
-                        value = if (state.uvalue.value == 0.0) "" else state.uvalue.value.toString()
-                            .replace('.', ','),
+                        value = uValueInput,
                         onValueChange = { newValue ->
                             val regex = Regex("^\\d{0,5}(,\\d{0,2})?\$")
-                            val formattedValue = newValue.replace(',', '.')
                             if (newValue.isEmpty()) {
+                                uValueInput = ""
                                 state.uvalue.value = 0.0
                             } else if (regex.matches(newValue)) {
+                                uValueInput = newValue
+                                val formattedValue = newValue.replace(',', '.')
                                 formattedValue.toDoubleOrNull()?.let { doubleValue ->
                                     if (doubleValue <= 99999.99) {
                                         state.uvalue.value = doubleValue
@@ -330,9 +303,11 @@ fun AddRifScreen(
                                 }
                             }
                         },
-                        placeholder = {if (state.type.value == "Elettrico") Text(text = "€/kWh")
-                        else if (state.type.value.isEmpty() || state.type.value == "Altro") Text(text = "€/l o €/kWh")
-                        else (Text(text = "€/l")) },
+                        placeholder = {
+                            if (state.type.value == "Elettrico") Text(text = "€/kWh")
+                            else if (state.type.value.isEmpty() || state.type.value == "Altro") Text(text = "€/l o €/kWh")
+                            else Text(text = "€/l")
+                        },
                         leadingIcon = uValueLeadingIcon,
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
@@ -341,18 +316,17 @@ fun AddRifScreen(
                         keyboardActions = KeyboardActions(
                             onNext = { focusManager.moveFocus(FocusDirection.Next) }
                         )
-                        )
-
+                    )
                 }
             }
 
 
             //Quantità totale
             val totUnitLeadingIcon: @Composable (() -> Unit)? = when {
-                state.uvalue.value != 0.0 && state.type.value == "Elettrico" -> {
+                state.totunit.value != 0.0 && state.type.value == "Elettrico" -> {
                     { Text(text = "kWh") }
                 }
-                state.uvalue.value == 0.0 || state.type.value.isEmpty() || state.type.value == "Altro" -> null
+                state.totunit.value == 0.0 || state.type.value.isEmpty() || state.type.value == "Altro" -> null
                 else -> {
                     { Text(text = "l") }
                 }
@@ -394,13 +368,13 @@ fun AddRifScreen(
                             if (newValue.isEmpty()) {
                                 state.totunit.value = 0.0
                                 totUnit.value = ""
-                                isManualInput.value = true // Imposta l'input manuale
+                                isManualInput.value = true
                             } else if (regex.matches(newValue)) {
                                 formattedValue.toDoubleOrNull()?.let { doubleValue ->
                                     if (doubleValue <= 9999.99) {
                                         state.totunit.value = doubleValue
                                         totUnit.value = newValue
-                                        isManualInput.value = true // Imposta l'input manuale
+                                        isManualInput.value = true
                                     }
                                 }
                             }
@@ -580,15 +554,6 @@ fun AddRifScreen(
                 )
             }
         }
-
-
-
-
-// Formattazione data
-fun formatDate(timestamp: Long): String {
-    val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-    return formatter.format(Date(timestamp))
-}
 
 
 @Composable
