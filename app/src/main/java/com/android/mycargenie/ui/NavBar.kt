@@ -68,6 +68,7 @@ import com.android.mycargenie.pages.rifornimento.RifState
 import com.android.mycargenie.pages.rifornimento.RifViewModel
 import com.android.mycargenie.pages.rifornimento.RifornimentoScreen
 import com.android.mycargenie.pages.rifornimento.ViewRifScreen
+import com.android.mycargenie.pages.settings.SettingsScreen
 
 
 // Screens
@@ -472,7 +473,16 @@ fun MainApp(
                     )
                 }
 
-
+                composable("Settings",
+                    enterTransition = {
+                        slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500))
+                    },
+                    exitTransition = {
+                        slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
+                    }
+                ) {
+                    SettingsScreen()
+                }
 
             }
             }

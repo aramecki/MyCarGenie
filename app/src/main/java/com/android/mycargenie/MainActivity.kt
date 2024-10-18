@@ -1,8 +1,10 @@
 package com.android.mycargenie
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -96,6 +98,17 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    // Logica per API 33+
+                    finish() // Gestisci la chiusura dell'attività come desiderato
+                }
+            })
+        }
+
+
     }
 
 

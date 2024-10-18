@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,7 +49,30 @@ fun LibrettoScreen(
 
     Column {
 
-        Spacer(modifier = Modifier.height(70.dp))
+
+        Row {
+            Column(
+                horizontalAlignment = Alignment.End,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                IconButton(onClick = {
+                    navController.navigate("Settings")
+                }) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.settings),
+                        contentDescription = "Impostazioni",
+                        modifier = Modifier
+                            .size(42.dp)
+                            .padding(top = 8.dp, end = 8.dp),
+                    )
+                }
+            }
+        }
+
+
+
+        Spacer(modifier = Modifier.height(40.dp))
 
         Row(
             verticalAlignment = Alignment.CenterVertically

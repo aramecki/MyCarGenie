@@ -68,6 +68,19 @@ dependencies {
     implementation(libs.voyager.koin)
     implementation(libs.androidx.compiler)
 
+    // DataStore
+    implementation(libs.androidx.datastore.preferences) // Per DataStore con Preferences
+    implementation(libs.androidx.datastore.core) // Per DataStore Core (opzionale)
+
+    // Kotlin Coroutines
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+
+    // Lifecycle
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx.v260)
+
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit.v115)
     androidTestImplementation(libs.androidx.espresso.core.v351)
