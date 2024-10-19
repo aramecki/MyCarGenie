@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -31,6 +32,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -118,7 +120,8 @@ fun MainApp(
     val topBarHeight = statusBarHeight + 90.dp
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize(),
 
 
         topBar = {
@@ -153,7 +156,7 @@ fun MainApp(
                                 modifier = Modifier
                                     .size(48.dp)
                                     .offset(y = 12.dp)
-                                .clickable {
+                                    .clickable {
                                         navController.popBackStack()
                                     },
                                 contentAlignment = Alignment.Center
@@ -280,7 +283,7 @@ fun MainApp(
                                         .size(48.dp)
                                         .offset(y = 12.dp)
                                         .clickable {
-                                                showDeleteDialog = true
+                                            showDeleteDialog = true
                                         },
                                     contentAlignment = Alignment.Center
                                 ) {
@@ -301,61 +304,88 @@ fun MainApp(
         },
 
         bottomBar = {
-            if (shouldShowBottomBar) {
-                BottomNavigationBar(
-                    items = listOf(
-                        BottomNavItem(
-                            "Libretto",
-                            ImageVector.vectorResource(id = R.drawable.assignment)
-                        ) {
-                            selectedTabIndex = 0
-                            navController.navigate(("LibrettoScreen")
 
-                            )
-                          },
-                        BottomNavItem(
-                            "Manutenzione",
-                            ImageVector.vectorResource(id = R.drawable.time_to_leave)
-                        ) {
-                            selectedTabIndex = 1
-                            navController.navigate("ManutenzioneScreen")
-                        },
-                        BottomNavItem(
-                            "Rifornimento",
-                            ImageVector.vectorResource(id = R.drawable.gas_station)
-                        ) {
-                            selectedTabIndex = 2
-                            navController.navigate("RifornimentoScreen")
-                          },
-                        BottomNavItem(
-                            "Professionisti",
-                            ImageVector.vectorResource(id = R.drawable.store)
-                        ) { ProfessionistiScreen() },
-                        BottomNavItem(
-                            "Carburanti",
-                            ImageVector.vectorResource(id = R.drawable.location)
-                        ) { TODO() }
-                    ),
-                    selectedIndex = selectedTabIndex,
-                    onTabSelected = { index ->
-                        selectedTabIndex = index
-
-                        when (index) {
-                            0 -> navController.navigate("LibrettoScreen")
-                            1 -> navController.navigate("ManutenzioneScreen")
-                            2 -> navController.navigate("RifornimentoScreen")
-                            3 -> navController.navigate("ProfessionistiScreen")
-                            4 -> navController.navigate("CarburantiScreen")
-                        }
+            LaunchedEffect(navController) {
+                navController.addOnDestinationChangedListener { _, destination, _ ->
+                    selectedTabIndex = when (destination.route) {
+                        "LibrettoScreen" -> 0
+                        "ManutenzioneScreen" -> 1
+                        "RifornimentoScreen" -> 2
+                        "ScadenzeScreen" -> 3
+                        "ProfiloScreen" -> 4
+                        else -> 0
                     }
-                )
+                }
+            }
+
+            if (shouldShowBottomBar) {
+                Box(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.surfaceContainer)
+                ) {
+                    BottomNavigationBar(
+                        items = listOf(
+                            BottomNavItem(
+                                "Libretto",
+                                ImageVector.vectorResource(id = R.drawable.assignment)
+                            ) {
+                                selectedTabIndex = 0
+                                navController.navigate(
+                                    ("LibrettoScreen")
+
+                                )
+                            },
+                            BottomNavItem(
+                                "Manutenzione",
+                                ImageVector.vectorResource(id = R.drawable.time_to_leave)
+                            ) {
+                                selectedTabIndex = 1
+                                navController.navigate("ManutenzioneScreen")
+                            },
+                            BottomNavItem(
+                                "Rifornimento",
+                                ImageVector.vectorResource(id = R.drawable.gas_station)
+                            ) {
+                                selectedTabIndex = 2
+                                navController.navigate("RifornimentoScreen")
+                            },
+                            BottomNavItem(
+                                "Scadenze",
+                                ImageVector.vectorResource(id = R.drawable.calendar)
+                            ) {
+                                selectedTabIndex = 3
+                                ProfessionistiScreen()
+                            },
+                            BottomNavItem(
+                                "Profilo",
+                                ImageVector.vectorResource(id = R.drawable.profile)
+                            ) {
+                                selectedTabIndex = 4
+                                TODO()
+                            }
+                        ),
+                        selectedIndex = selectedTabIndex,
+                        onTabSelected = { index ->
+                            selectedTabIndex = index
+
+                            when (index) {
+                                0 -> navController.navigate("LibrettoScreen")
+                                1 -> navController.navigate("ManutenzioneScreen")
+                                2 -> navController.navigate("RifornimentoScreen")
+                                3 -> navController.navigate("ScadenzeScreen")
+                                4 -> navController.navigate("ProfiloScreen")
+                            }
+                        }
+                    )
+                }
             }
         }
     ) { innerPadding ->
 
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding),
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
         ) {
             NavHost(navController = navController, startDestination = "LibrettoScreen") {
 
@@ -496,7 +526,12 @@ fun BottomNavigationBar(
     selectedIndex: Int,
     onTabSelected: (Int) -> Unit
 ) {
-    NavigationBar {
+
+
+    NavigationBar(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
         items.forEachIndexed { index, item ->
             NavigationBarItem(
                 icon = { Icon(item.icon, contentDescription = item.title) },

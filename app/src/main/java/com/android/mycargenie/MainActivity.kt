@@ -3,10 +3,10 @@ package com.android.mycargenie
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -47,25 +47,36 @@ class MainActivity : ComponentActivity() {
 
 
 
-    private val viewModel by viewModels<ManViewModel>(
-        factoryProducer = {
-            object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+    private val viewModel by viewModels<ManViewModel> {
+        object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                if (modelClass.isAssignableFrom(ManViewModel::class.java)) {
                     return ManViewModel(database.dao()) as T
                 }
+                throw IllegalArgumentException("Unknown ViewModel class ManViewModel")
             }
         }
-    )
+    }
 
-    private val rifViewModel by viewModels<RifViewModel>(
-        factoryProducer = {
-            object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+    private val rifViewModel by viewModels<RifViewModel> {
+        object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                if (modelClass.isAssignableFrom(RifViewModel::class.java)) {
                     return RifViewModel(rifdatabase.dao()) as T
                 }
+                throw IllegalArgumentException("Unknown ViewModel class RifViewModel")
             }
         }
-    )
+    }
+
+    private fun enableEdgeToEdge() {
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -93,20 +104,23 @@ class MainActivity : ComponentActivity() {
                         onManEvent = viewModel::onEvent,
                         onRifEvent = rifViewModel::onEvent,
                         state = state,
-                        rifState = rifState
+                        rifState = rifState,
                     )
                 }
             }
         }
 
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     // Logica per API 33+
-                    finish() // Gestisci la chiusura dell'attività come desiderato
+                    finish()
                 }
             })
         }
+
+
 
 
     }
