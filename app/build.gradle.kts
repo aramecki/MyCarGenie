@@ -71,15 +71,15 @@ dependencies {
     //Datastore
     implementation(libs.androidx.datastore.preferences)
 
-
-
-
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit.v115)
     androidTestImplementation(libs.androidx.espresso.core.v351)
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
+
+    implementation(libs.coil.compose)
+
 
     // Room
     implementation(libs.androidx.room.ktx)

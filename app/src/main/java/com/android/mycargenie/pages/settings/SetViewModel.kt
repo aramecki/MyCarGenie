@@ -16,8 +16,7 @@ class SetViewModel(private val application: Application) : ViewModel() {
 
     init {
         viewModelScope.launch {
-            // Carica il profilo dell'auto all'inizio
-            getCarProfile(application).collect { profile -> // Usa application qui
+            getCarProfile(application).collect { profile ->
                 _carProfile.value = profile
             }
         }
@@ -27,7 +26,7 @@ class SetViewModel(private val application: Application) : ViewModel() {
         _carProfile.value = updatedProfile
         viewModelScope.launch {
             // Salva il profilo aggiornato
-            saveCarProfile(application, updatedProfile) // Usa application qui
+            saveCarProfile(application, updatedProfile)
         }
     }
 }

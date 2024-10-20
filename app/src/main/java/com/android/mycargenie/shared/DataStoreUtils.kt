@@ -1,6 +1,7 @@
 package com.android.mycargenie.shared
 
 import android.content.Context
+import android.net.Uri
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -17,6 +18,7 @@ private val MODEL_KEY = stringPreferencesKey("model")
 private val ENGINE_KEY = stringPreferencesKey("engine")
 private val POWER_KEY = stringPreferencesKey("power")
 private val HORSEPOWER_KEY = stringPreferencesKey("horsepower")
+private val IMAGE_URI_KEY = stringPreferencesKey("image_uri")
 
 // Funzione per salvare il profilo
 suspend fun saveCarProfile(context: Context, carProfile: CarProfile) {
@@ -26,6 +28,7 @@ suspend fun saveCarProfile(context: Context, carProfile: CarProfile) {
         preferences[ENGINE_KEY] = carProfile.engine
         preferences[POWER_KEY] = carProfile.power
         preferences[HORSEPOWER_KEY] = carProfile.horsepower
+        preferences[IMAGE_URI_KEY] = carProfile.imageUri?.toString() ?: ""
     }
 }
 
@@ -37,7 +40,8 @@ fun getCarProfile(context: Context): Flow<CarProfile> {
             model = preferences[MODEL_KEY] ?: "Baracca",
             engine = preferences[ENGINE_KEY] ?: "2.0",
             power = preferences[POWER_KEY] ?: "170kW",
-            horsepower = preferences[HORSEPOWER_KEY] ?: "230CV"
+            horsepower = preferences[HORSEPOWER_KEY] ?: "230CV",
+            imageUri = preferences[IMAGE_URI_KEY]?.takeIf { it.isNotEmpty() }?.let { Uri.parse(it) }
         )
     }
 }

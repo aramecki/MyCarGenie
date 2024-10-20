@@ -121,7 +121,7 @@ fun MainApp(
     val shouldShowTopBar = currentDestination !in listOf("LibrettoScreen")
 
     val statusBarHeight = with(LocalDensity.current) {
-        WindowInsets.statusBars.getBottom(this).toDp() // Ottieni l'altezza della status bar
+        WindowInsets.statusBars.getBottom(this).toDp()
     }
 
     val topBarHeight = statusBarHeight + 90.dp
@@ -142,11 +142,12 @@ fun MainApp(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     when (currentDestination) {
-                        "ManutenzioneScreen", "RifornimentoScreen" -> {
+                        "ManutenzioneScreen", "RifornimentoScreen", "ProfileScreen" -> {
                             Text(
                                 text = when (currentDestination) {
                                     "ManutenzioneScreen" -> "Manutenzione"
                                     "RifornimentoScreen" -> "Rifornimento"
+                                    "ProfileScreen" -> "Profilo"
                                     else -> ""
                                 },
                                 modifier = Modifier

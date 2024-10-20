@@ -1,5 +1,6 @@
 package com.android.mycargenie.pages.profile
 
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.android.mycargenie.R
 
 data class CarProfile(
@@ -37,7 +39,8 @@ data class CarProfile(
     var model: String,
     var engine: String,
     var power: String,
-    var horsepower: String
+    var horsepower: String,
+    var imageUri: Uri? = null
 )
 
 @Composable
@@ -52,94 +55,112 @@ fun ProfileScreen(
         localCarProfile = carProfile
     }
 
-    Row {
-        Column(
-            horizontalAlignment = Alignment.End,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            IconButton(onClick = {
-                navController.navigate("ProfileSettings")
-            }) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.settings),
-                    contentDescription = "Impostazioni",
-                    modifier = Modifier
-                        .size(42.dp)
-                        .padding(top = 8.dp, end = 8.dp),
-                )
-            }
-        }
-    }
+    Column {
 
 
-    Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth(0.5f)
-                .padding(start = 32.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.subaru_baracca),
-                contentDescription = "Automobile",
+        Row {
+            Column(
+                horizontalAlignment = Alignment.End,
                 modifier = Modifier
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
+                    .fillMaxWidth()
+            ) {
+                IconButton(onClick = {
+                    navController.navigate("ProfileSettings")
+                }) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.settings),
+                        contentDescription = "Impostazioni",
+                        modifier = Modifier
+                            .size(42.dp)
+                            .padding(top = 8.dp, end = 8.dp),
+                    )
+                }
+            }
         }
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 32.dp)
+
+        Spacer(modifier = Modifier.height(40.dp))
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row {
-                Text(
-                    text = carProfile.brand,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier
-                        .padding(top = 16.dp)
-                )
-            }
 
-            Row(
-                horizontalArrangement = Arrangement.Start
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(0.5f)
+                    .padding(start = 32.dp)
             ) {
-                Text(
-                    text = carProfile.model,
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                carProfile.imageUri?.let { uri ->
+                    Image(
+                        painter = rememberAsyncImagePainter(uri),
+                        contentDescription = "Automobile",
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(160.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                } ?: run {
+                    // Fallback image if no imageUri is provided
+                    Image(
+                        painter = painterResource(id = R.drawable.subaru_baracca),
+                        contentDescription = "Automobile",
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(160.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
 
-            Row {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    //.padding(start = 32.dp)
+            ) {
+                Row {
+                    Text(
+                        text = carProfile.brand,
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier
+                            .padding(top = 16.dp)
+                    )
+                }
 
-                Text(
-                    text = carProfile.engine,
-                    fontSize = 16.sp,
-                    modifier = Modifier
-                        .padding(end = 4.dp)
-                )
+                Row(
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Text(
+                        text = carProfile.model,
+                        fontSize = 38.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
 
-                Text(
-                    text = carProfile.power,
-                    fontSize = 16.sp,
-                    modifier = Modifier
-                        .padding(end = 4.dp)
-                )
+                Row {
 
-                Text(
-                    text = carProfile.horsepower,
-                    fontSize = 16.sp
-                )
+                    Text(
+                        text = carProfile.engine,
+                        fontSize = 24.sp,
+                        modifier = Modifier
+                            .padding(end = 4.dp)
+                    )
+
+                    Text(
+                        text = carProfile.power,
+                        fontSize = 24.sp,
+                        modifier = Modifier
+                            .padding(end = 4.dp)
+                    )
+
+                    Text(
+                        text = carProfile.horsepower,
+                        fontSize = 24.sp
+                    )
+                }
             }
         }
     }
-
 }
