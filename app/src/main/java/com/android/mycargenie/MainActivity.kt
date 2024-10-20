@@ -1,5 +1,6 @@
 package com.android.mycargenie
 
+import android.app.Application
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -21,6 +22,7 @@ import com.android.mycargenie.data.ManDatabase
 import com.android.mycargenie.data.RifDatabase
 import com.android.mycargenie.pages.manutenzione.ManViewModel
 import com.android.mycargenie.pages.rifornimento.RifViewModel
+import com.android.mycargenie.pages.settings.SetViewModel
 import com.android.mycargenie.ui.MainApp
 import com.android.mycargenie.ui.theme.MyCarGenieTheme
 
@@ -71,6 +73,19 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    class SetViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(SetViewModel::class.java)) {
+                @Suppress("UNCHECKED_CAST")
+                return SetViewModel(application) as T // Passa l'application qui
+            }
+            throw IllegalArgumentException("Unknown ViewModel class")
+        }
+    }
+
+    private val setViewModel: SetViewModel by viewModels { SetViewModelFactory(application) }
+
+
     private fun enableEdgeToEdge() {
         window.setFlags(
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
@@ -97,14 +112,17 @@ class MainActivity : ComponentActivity() {
 
                     val state by viewModel.state.collectAsState()
                     val rifState by rifViewModel.state.collectAsState()
+                    val carProfile by setViewModel.carProfile.collectAsState() // Usa il carProfile di setViewModel
 
                     MainApp(
                         viewModel = viewModel,
                         rifViewModel = rifViewModel,
+                        setViewModel = setViewModel,
                         onManEvent = viewModel::onEvent,
                         onRifEvent = rifViewModel::onEvent,
                         state = state,
                         rifState = rifState,
+                        carProfile = carProfile
                     )
                 }
             }

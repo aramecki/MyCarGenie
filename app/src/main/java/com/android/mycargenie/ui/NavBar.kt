@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -63,6 +62,9 @@ import com.android.mycargenie.pages.manutenzione.ManState
 import com.android.mycargenie.pages.manutenzione.ManViewModel
 import com.android.mycargenie.pages.manutenzione.ManutenzioneScreen
 import com.android.mycargenie.pages.manutenzione.ViewManScreen
+import com.android.mycargenie.pages.profile.CarProfile
+import com.android.mycargenie.pages.profile.ProfileScreen
+import com.android.mycargenie.pages.profile.ProfileSettingsScreen
 import com.android.mycargenie.pages.rifornimento.AddRifScreen
 import com.android.mycargenie.pages.rifornimento.EditRifScreen
 import com.android.mycargenie.pages.rifornimento.RifEvent
@@ -70,7 +72,7 @@ import com.android.mycargenie.pages.rifornimento.RifState
 import com.android.mycargenie.pages.rifornimento.RifViewModel
 import com.android.mycargenie.pages.rifornimento.RifornimentoScreen
 import com.android.mycargenie.pages.rifornimento.ViewRifScreen
-import com.android.mycargenie.pages.settings.SettingsScreen
+import com.android.mycargenie.pages.settings.SetViewModel
 
 
 // Screens
@@ -91,18 +93,23 @@ data class BottomNavItem(
     val screen: @Composable () -> Unit
 )
 
+
 @Composable
 fun MainApp(
     viewModel: ManViewModel,
     rifViewModel: RifViewModel,
+    setViewModel: SetViewModel,
     onManEvent: (ManEvent) -> Unit,
     onRifEvent: (RifEvent) -> Unit,
     state: ManState,
-    rifState: RifState
+    rifState: RifState,
+    carProfile: CarProfile
 ) {
 
 
     val navController = rememberNavController()
+
+    val observedCarProfile by setViewModel.carProfile.collectAsState()
 
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
 
@@ -151,7 +158,7 @@ fun MainApp(
                             )
                         }
 
-                        "AddManScreen", "AddRifScreen", "ViewManScreen/{index}", "ViewRifScreen/{index}", "EditManScreen/{manIndex}", "EditRifScreen/{rifIndex}" -> {
+                        "AddManScreen", "AddRifScreen", "ViewManScreen/{index}", "ViewRifScreen/{index}", "EditManScreen/{manIndex}", "EditRifScreen/{rifIndex}", "ProfileSettings" -> {
                             Box(
                                 modifier = Modifier
                                     .size(48.dp)
@@ -312,7 +319,7 @@ fun MainApp(
                         "ManutenzioneScreen" -> 1
                         "RifornimentoScreen" -> 2
                         "ScadenzeScreen" -> 3
-                        "ProfiloScreen" -> 4
+                        "ProfileScreen" -> 4
                         else -> 0
                     }
                 }
@@ -330,10 +337,7 @@ fun MainApp(
                                 ImageVector.vectorResource(id = R.drawable.assignment)
                             ) {
                                 selectedTabIndex = 0
-                                navController.navigate(
-                                    ("LibrettoScreen")
-
-                                )
+                                navController.navigate("LibrettoScreen")
                             },
                             BottomNavItem(
                                 "Manutenzione",
@@ -353,7 +357,7 @@ fun MainApp(
                                 "Scadenze",
                                 ImageVector.vectorResource(id = R.drawable.calendar)
                             ) {
-                                selectedTabIndex = 3
+                                selectedTabIndex = 4
                                 ProfessionistiScreen()
                             },
                             BottomNavItem(
@@ -361,7 +365,7 @@ fun MainApp(
                                 ImageVector.vectorResource(id = R.drawable.profile)
                             ) {
                                 selectedTabIndex = 4
-                                TODO()
+                                navController.navigate("ProfileScreen")
                             }
                         ),
                         selectedIndex = selectedTabIndex,
@@ -373,7 +377,7 @@ fun MainApp(
                                 1 -> navController.navigate("ManutenzioneScreen")
                                 2 -> navController.navigate("RifornimentoScreen")
                                 3 -> navController.navigate("ScadenzeScreen")
-                                4 -> navController.navigate("ProfiloScreen")
+                                4 -> navController.navigate("ProfileScreen")
                             }
                         }
                     )
@@ -382,20 +386,24 @@ fun MainApp(
         }
     ) { innerPadding ->
 
+
         Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
+
             NavHost(navController = navController, startDestination = "LibrettoScreen") {
 
                 composable("LibrettoScreen") {
                     LibrettoScreen(
                         state = viewModel.state.collectAsState().value,
                         rifState = rifViewModel.state.collectAsState().value,
+                        carProfile = observedCarProfile,
                         navController = navController
                     )
                 }
+
                 composable("ManutenzioneScreen") {
                     ManutenzioneScreen(
                         state = viewModel.state.collectAsState().value,
@@ -403,6 +411,7 @@ fun MainApp(
                         //onEvent = viewModel::onEvent
                     )
                 }
+
                 composable("AddManScreen",
                     enterTransition = {
                         slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500))
@@ -503,7 +512,14 @@ fun MainApp(
                     )
                 }
 
-                composable("Settings",
+                composable("ProfileScreen") {
+                    ProfileScreen(
+                        carProfile = observedCarProfile,
+                        navController = navController
+                    )
+                }
+
+                composable("ProfileSettings",
                     enterTransition = {
                         slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500))
                     },
@@ -511,7 +527,15 @@ fun MainApp(
                         slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
                     }
                 ) {
-                    SettingsScreen()
+                    ProfileSettingsScreen(
+                        carProfile = carProfile, // Passa il profilo corrente
+                        onProfileChange = { profile ->
+                            setViewModel.updateCarProfile(profile) // Aggiorna il profilo nel ViewModel
+                            navController.popBackStack() // Torna indietro
+                        },
+                        navController = navController,
+                        setViewModel = setViewModel
+                    )
                 }
 
             }

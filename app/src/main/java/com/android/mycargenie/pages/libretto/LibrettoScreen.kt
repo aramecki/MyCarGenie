@@ -18,6 +18,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.mycargenie.R
 import com.android.mycargenie.pages.manutenzione.ManState
+import com.android.mycargenie.pages.profile.CarProfile
 import com.android.mycargenie.pages.rifornimento.RifState
 import com.android.mycargenie.shared.formatKmt
 import com.android.mycargenie.shared.formatPrice
@@ -40,11 +46,19 @@ import com.android.mycargenie.shared.formatPrice
 fun LibrettoScreen(
     state: ManState,
     rifState: RifState,
+    carProfile: CarProfile,
     navController: NavController
 ) {
 
+    
     val sortedMen = state.men.sortedByDescending { it.id }
     val sortedRif = rifState.rifs.sortedByDescending { it.id }
+
+    var localCarProfile by remember { mutableStateOf(carProfile) }
+
+    LaunchedEffect(carProfile) {
+        localCarProfile = carProfile
+    }
 
 
     Column {
@@ -57,7 +71,7 @@ fun LibrettoScreen(
                     .fillMaxWidth()
             ) {
                 IconButton(onClick = {
-                    navController.navigate("Settings")
+                    navController.navigate("ProfileSettings")
                 }) {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.settings),
@@ -69,6 +83,7 @@ fun LibrettoScreen(
                 }
             }
         }
+
 
 
 
@@ -99,7 +114,7 @@ fun LibrettoScreen(
             ) {
                 Row {
                     Text(
-                        text = "Subaru",
+                        text = carProfile.brand,
                         fontSize = 22.sp,
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier
@@ -111,7 +126,7 @@ fun LibrettoScreen(
                     horizontalArrangement = Arrangement.Start
                 ) {
                     Text(
-                        text = "Baracca",
+                        text = carProfile.model,
                         fontSize = 32.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -120,21 +135,21 @@ fun LibrettoScreen(
                 Row {
 
                     Text(
-                        text = "2.0",
+                        text = carProfile.engine,
                         fontSize = 16.sp,
                         modifier = Modifier
                             .padding(end = 4.dp)
                     )
 
                     Text(
-                        text = "170kW",
+                        text = carProfile.power,
                         fontSize = 16.sp,
                         modifier = Modifier
                             .padding(end = 4.dp)
                     )
 
                     Text(
-                        text = "230CV",
+                        text = carProfile.horsepower,
                         fontSize = 16.sp
                     )
                 }
