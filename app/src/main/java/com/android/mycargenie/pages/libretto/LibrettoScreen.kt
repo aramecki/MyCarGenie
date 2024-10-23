@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,13 +27,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.android.mycargenie.R
 import com.android.mycargenie.pages.manutenzione.ManState
 import com.android.mycargenie.pages.profile.CarProfile
@@ -63,7 +62,7 @@ fun LibrettoScreen(
 
     Column {
 
-
+/*
         Row {
             Column(
                 horizontalAlignment = Alignment.End,
@@ -84,6 +83,8 @@ fun LibrettoScreen(
             }
         }
 
+ */
+
 
 
 
@@ -98,13 +99,19 @@ fun LibrettoScreen(
                     .fillMaxWidth(0.5f)
                     .padding(start = 32.dp)
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.subaru_baracca),
-                    contentDescription = "Automobile",
-                    modifier = Modifier
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop
-                )
+                if (carProfile.imageUri != null) {
+                    val imagePainter = rememberAsyncImagePainter(model = carProfile.imageUri)
+
+
+                    Image(
+                        painter = imagePainter,
+                        contentDescription = "Automobile",
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(160.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
 
             Column(
@@ -154,6 +161,24 @@ fun LibrettoScreen(
                     )
                 }
             }
+        }
+
+        if (carProfile.brand == "") {
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = "Configura le informazioni sul tuo veicolo per visualizzare il profilo.",
+                    fontSize = 18.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(8.dp)
+                )
+            }
+
         }
 
         Spacer(modifier = Modifier.height(38.dp))

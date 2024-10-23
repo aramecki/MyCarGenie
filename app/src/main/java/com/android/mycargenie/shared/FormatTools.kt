@@ -1,5 +1,11 @@
 package com.android.mycargenie.shared
 
+import android.content.Context
+import android.net.Uri
+import androidx.datastore.core.IOException
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.SimpleDateFormat
@@ -32,4 +38,25 @@ fun formatKmt(kmt: Int): String {
 fun formatDate(timestamp: Long): String {
     val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     return formatter.format(Date(timestamp))
+}
+
+//Funzione per salvare l'immagine del profilo
+fun saveImgToMmry(context: Context, uri: Uri): String? {
+    val contentResolver = context.contentResolver
+    val inputStream = contentResolver.openInputStream(uri) ?: return null
+    val fileName = "profile_image_${System.currentTimeMillis()}.jpg"
+    val file = File(context.filesDir, fileName)
+
+    try {
+        val outputStream: OutputStream = FileOutputStream(file)
+        inputStream.use { input ->
+            outputStream.use { output ->
+                input.copyTo(output)
+            }
+        }
+        return file.absolutePath
+    } catch (e: IOException) {
+        e.printStackTrace()
+    }
+    return null
 }

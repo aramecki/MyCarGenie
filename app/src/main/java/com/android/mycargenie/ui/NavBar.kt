@@ -116,9 +116,9 @@ fun MainApp(
     val currentBackStackEntry = navController.currentBackStackEntryAsState().value
     val currentDestination = currentBackStackEntry?.destination?.route
 
-    val shouldShowBottomBar = currentDestination !in listOf("ViewManScreen/{index}", "AddManScreen", "EditManScreen/{manIndex}", "ViewRifScreen/{index}", "AddRifScreen", "EditRifScreen/{rifIndex}")
+    val shouldShowBottomBar = currentDestination !in listOf("ViewManScreen/{index}", "AddManScreen", "EditManScreen/{manIndex}", "ViewRifScreen/{index}", "AddRifScreen", "EditRifScreen/{rifIndex}", "ProfileSettings")
 
-    val shouldShowTopBar = currentDestination !in listOf("LibrettoScreen")
+    val shouldShowTopBar = currentDestination !in listOf("LibrettoScreen", "ProfileScreen")
 
     val statusBarHeight = with(LocalDensity.current) {
         WindowInsets.statusBars.getBottom(this).toDp()
@@ -142,12 +142,11 @@ fun MainApp(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     when (currentDestination) {
-                        "ManutenzioneScreen", "RifornimentoScreen", "ProfileScreen" -> {
+                        "ManutenzioneScreen", "RifornimentoScreen" -> {
                             Text(
                                 text = when (currentDestination) {
                                     "ManutenzioneScreen" -> "Manutenzione"
                                     "RifornimentoScreen" -> "Rifornimento"
-                                    "ProfileScreen" -> "Profilo"
                                     else -> ""
                                 },
                                 modifier = Modifier
@@ -177,10 +176,6 @@ fun MainApp(
                                     tint = MaterialTheme.colorScheme.onPrimary
                                 )
                             }
-                        }
-
-                        else -> {
-                            // Altre eventuali azioni o un blocco vuoto se non è richiesto nulla
                         }
                     }
 
@@ -307,6 +302,8 @@ fun MainApp(
 
                         }
                     }
+
+
                 }
             }
         },
@@ -529,13 +526,9 @@ fun MainApp(
                     }
                 ) {
                     ProfileSettingsScreen(
-                        carProfile = carProfile, // Passa il profilo corrente
-                        onProfileChange = { profile ->
-                            setViewModel.updateCarProfile(profile) // Aggiorna il profilo nel ViewModel
-                            navController.popBackStack() // Torna indietro
-                        },
-                        navController = navController,
-                        setViewModel = setViewModel
+                        carProfile = carProfile,
+                        setViewModel = setViewModel,
+                        navController = navController
                     )
                 }
 

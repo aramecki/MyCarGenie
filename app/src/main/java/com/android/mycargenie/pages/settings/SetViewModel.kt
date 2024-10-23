@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class SetViewModel(private val application: Application) : ViewModel() {
-    private val _carProfile = MutableStateFlow(CarProfile("Subaru", "Baracca", "2.0", "170kW", "230CV"))
+    private val _carProfile = MutableStateFlow(CarProfile("", "", "", "", ""))
     val carProfile: StateFlow<CarProfile> = _carProfile
 
     init {
@@ -25,7 +25,6 @@ class SetViewModel(private val application: Application) : ViewModel() {
     fun updateCarProfile(updatedProfile: CarProfile) {
         _carProfile.value = updatedProfile
         viewModelScope.launch {
-            // Salva il profilo aggiornato
             saveCarProfile(application, updatedProfile)
         }
     }
