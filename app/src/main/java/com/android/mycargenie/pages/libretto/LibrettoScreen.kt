@@ -39,6 +39,7 @@ import com.android.mycargenie.R
 import com.android.mycargenie.pages.manutenzione.ManState
 import com.android.mycargenie.pages.profile.CarProfile
 import com.android.mycargenie.pages.rifornimento.RifState
+import com.android.mycargenie.shared.formatDisplacement
 import com.android.mycargenie.shared.formatKmt
 import com.android.mycargenie.shared.formatPrice
 
@@ -143,8 +144,10 @@ fun LibrettoScreen(
 
                     Row {
 
+                        val displacement = formatDisplacement(carProfile.displacement)
+
                         Text(
-                            text = carProfile.displacement.toString(),
+                            text = displacement,
                             fontSize = 16.sp,
                             modifier = Modifier
                                 .padding(end = 4.dp)

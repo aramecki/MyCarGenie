@@ -34,6 +34,13 @@ fun formatKmt(kmt: Int): String {
     return kmtFormat.format(kmt)
 }
 
+//Funzione per formattare la cilindrata nell'orine di unità e decimi
+fun formatDisplacement(displacement: Int): String {
+    val formatted = (displacement / 1000.0)
+    return "%.1f".format(formatted).replace(",", ".")
+}
+
+
 //Funzione per formattare la data in gg/MM/yyyy
 fun formatDate(timestamp: Long): String {
     val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())

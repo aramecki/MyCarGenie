@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -96,28 +98,61 @@ fun RifornimentoScreen(
         }
     ) { paddingValues ->
 
-        LazyColumn(
-            contentPadding = PaddingValues(
-                top = 8.dp,
-                start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
-                end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
-                bottom = paddingValues.calculateBottomPadding()
-            ),
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-
-            items(state.rifs.size) { index ->
-                RifItem(
-                    state = state,
-                    index = index,
-                    navController = navController
+        if (state.rifs.isEmpty()) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Aggiungi il tuo primo rifornimento per visualizzare una card.",
+                    fontSize = 18.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(start = 32.dp, top = 82.dp, bottom = 15.dp, end = 32.dp)
                 )
-            }
 
-        }
+                Button(onClick = {
+                    state.type.value = ""
+                    state.place.value = ""
+                    state.price.value = 0.0
+                    state.uvalue.value = 0.0
+                    state.totunit.value = 0.0
+                    state.date.value = ""
+                    state.note.value = ""
+                    state.kmt.value = 0
+                    navController.navigate("AddRifScreen")
+                }) {
+                    Text(
+                        text = "Inserisci",
+                        fontSize = 16.sp
+                    )
+                }
+            }
+        } else {
+
+                LazyColumn(
+                    contentPadding = PaddingValues(
+                        top = 8.dp,
+                        start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
+                        end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+                        bottom = paddingValues.calculateBottomPadding()
+                    ),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+
+                    items(state.rifs.size) { index ->
+                        RifItem(
+                            state = state,
+                            index = index,
+                            navController = navController
+                        )
+                    }
+
+                }
+
+            }
 
     }
 
