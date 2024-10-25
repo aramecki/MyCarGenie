@@ -17,7 +17,7 @@ fun formatPrice(price: Double): String {
     val decimalFormat = DecimalFormat("#,##0.00").apply {
         decimalFormatSymbols = DecimalFormatSymbols().apply {
             groupingSeparator = '.'
-            decimalSeparator = ','
+            decimalSeparator = '.'
         }
     }
     return decimalFormat.format(price)

@@ -110,7 +110,7 @@ fun AddRifScreen(
 
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                if (state.date.value.isNotBlank() && state.note.value.isNotBlank()) {
+                if (state.price.value > 0) {
                     onEvent(
                         RifEvent.SaveRif(
                             id = null,
@@ -230,21 +230,20 @@ fun AddRifScreen(
                             .padding(end = 8.dp),
                         value = userPriceInput,
                         onValueChange = { newValue ->
-                            val regex = Regex("^\\d{0,5}(,\\d{0,2})?\$")
+                            val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?\$")
                             if (newValue.isEmpty()) {
                                 userPriceInput = ""
                                 state.price.value = 0.0
                             } else if (regex.matches(newValue)) {
                                 userPriceInput = newValue
-                                val formattedValue = newValue.replace(',', '.')
-                                formattedValue.toDoubleOrNull()?.let { doubleValue ->
+                                newValue.toDoubleOrNull()?.let { doubleValue ->
                                     if (doubleValue <= 99999.99) {
                                         state.price.value = doubleValue
                                     }
                                 }
                             }
                         },
-                        placeholder = { Text(text = "Importo") },
+                        placeholder = { Text(text = "Importo*") },
                         leadingIcon = {
                             Icon(
                                 imageVector = ImageVector.vectorResource(id = R.drawable.euro_symbol),
@@ -253,7 +252,7 @@ fun AddRifScreen(
                             )
                         },
                         keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
+                            keyboardType = KeyboardType.Decimal,
                             imeAction = ImeAction.Next
                         ),
                         keyboardActions = KeyboardActions(
@@ -289,14 +288,13 @@ fun AddRifScreen(
                             .padding(start = 8.dp, end = 16.dp),
                         value = uValueInput,
                         onValueChange = { newValue ->
-                            val regex = Regex("^\\d{0,5}(,\\d{0,2})?\$")
+                            val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?\$")
                             if (newValue.isEmpty()) {
                                 uValueInput = ""
                                 state.uvalue.value = 0.0
                             } else if (regex.matches(newValue)) {
                                 uValueInput = newValue
-                                val formattedValue = newValue.replace(',', '.')
-                                formattedValue.toDoubleOrNull()?.let { doubleValue ->
+                                newValue.toDoubleOrNull()?.let { doubleValue ->
                                     if (doubleValue <= 99999.99) {
                                         state.uvalue.value = doubleValue
                                     }
@@ -310,7 +308,7 @@ fun AddRifScreen(
                         },
                         leadingIcon = uValueLeadingIcon,
                         keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
+                            keyboardType = KeyboardType.Decimal,
                             imeAction = ImeAction.Next
                         ),
                         keyboardActions = KeyboardActions(
@@ -363,14 +361,13 @@ fun AddRifScreen(
                         modifier = Modifier.fillMaxWidth(),
                         value = totUnit.value,
                         onValueChange = { newValue ->
-                            val regex = Regex("^\\d{0,5}(,\\d{0,2})?\$")
-                            val formattedValue = newValue.replace(',', '.')
+                            val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?\$")
                             if (newValue.isEmpty()) {
                                 state.totunit.value = 0.0
                                 totUnit.value = ""
                                 isManualInput.value = true
                             } else if (regex.matches(newValue)) {
-                                formattedValue.toDoubleOrNull()?.let { doubleValue ->
+                                newValue.toDoubleOrNull()?.let { doubleValue ->
                                     if (doubleValue <= 9999.99) {
                                         state.totunit.value = doubleValue
                                         totUnit.value = newValue
@@ -393,7 +390,7 @@ fun AddRifScreen(
                         leadingIcon = totUnitLeadingIcon,
                         enabled = !(state.price.value > 0.0 && state.uvalue.value > 0.0), // Disabilita l'input se price e uvalue sono > 0.0
                         keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
+                            keyboardType = KeyboardType.Decimal,
                             imeAction = ImeAction.Next
                         ),
                         keyboardActions = KeyboardActions(
@@ -504,7 +501,7 @@ fun AddRifScreen(
                         ),
                         keyboardActions = KeyboardActions(
                             onDone = {
-                                if (state.date.value.isNotBlank() && state.note.value.isNotBlank()) {
+                                if (state.price.value > 0) {
                                     onEvent(
                                         RifEvent.SaveRif(
                                             id = null,
@@ -534,6 +531,9 @@ fun AddRifScreen(
                     .weight(1f)
                     .padding(16.dp)
             ) {
+
+
+
                 Text(
                     text = "I campi contrassegnati da * sono obbligatori.",
                     fontSize = 14.sp,
@@ -547,12 +547,19 @@ fun AddRifScreen(
     }
 
             if (showError) {
-                Text(
-                    text = "Compila tutti i campi obbligatori.",
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(16.dp)
-                )
+
+                    Text(
+                        text = "Compila tutti i campi obbligatori.",
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp),
+                        textAlign = TextAlign.Center
+
+                    )
+
             }
+
         }
 
 

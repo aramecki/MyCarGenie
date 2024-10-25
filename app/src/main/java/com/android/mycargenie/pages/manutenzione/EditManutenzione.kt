@@ -362,8 +362,10 @@ fun EditManScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
-                        var userPriceInput by remember {
-                            mutableStateOf(if (state.price.value == 0.0) "" else state.price.value.toString().replace('.', ','))
+                        var userPriceInput by remember { mutableStateOf("") }
+
+                        LaunchedEffect(state.price.value) {
+                            userPriceInput = if (state.price.value == 0.0) "" else state.price.value.toString().replace('.', ',')
                         }
 
                         OutlinedTextField(
@@ -372,14 +374,13 @@ fun EditManScreen(
                                 .padding(end = 16.dp),
                             value = userPriceInput,
                             onValueChange = { newValue ->
-                                val regex = Regex("^\\d{0,5}(,\\d{0,2})?\$")
+                                val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?\$")
                                 if (newValue.isEmpty()) {
                                     userPriceInput = ""
                                     state.price.value = 0.0
                                 } else if (regex.matches(newValue)) {
                                     userPriceInput = newValue
-                                    val formattedValue = newValue.replace(',', '.')
-                                    formattedValue.toDoubleOrNull()?.let { doubleValue ->
+                                    newValue.toDoubleOrNull()?.let { doubleValue ->
                                         if (doubleValue <= 99999.99) {
                                             state.price.value = doubleValue
                                         }
@@ -395,7 +396,7 @@ fun EditManScreen(
                                 )
                             },
                             keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number,
+                                keyboardType = KeyboardType.Decimal,
                                 imeAction = ImeAction.Done
                             ),
                             keyboardActions = KeyboardActions(

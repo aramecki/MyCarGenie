@@ -351,14 +351,13 @@ fun AddManScreen(
                             .padding(end = 16.dp),
                         value = userPriceInput,
                         onValueChange = { newValue ->
-                            val regex = Regex("^\\d{0,5}(,\\d{0,2})?\$")
-                            val formattedValue = newValue.replace(',', '.')
+                            val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?\$")
                             if (newValue.isEmpty()) {
                                 userPriceInput = ""
                                 state.price.value = 0.0
                             } else if (regex.matches(newValue)) {
                                 userPriceInput = newValue
-                                formattedValue.toDoubleOrNull()?.let { doubleValue ->
+                                newValue.toDoubleOrNull()?.let { doubleValue ->
                                     if (doubleValue <= 99999.99) {
                                         state.price.value = doubleValue
                                     }
@@ -374,7 +373,7 @@ fun AddManScreen(
                             )
                         },
                         keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
+                            keyboardType = KeyboardType.Decimal,
                             imeAction = ImeAction.Done
                         ),
                         keyboardActions = KeyboardActions(
@@ -432,7 +431,7 @@ fun AddManScreen(
 
 
 @Composable
-fun TypeDropdownMenu(types: List<String>, selectedType: MutableState<String>) {
+fun TypeDropdownMenu(types: List<String>, selectedType: MutableState<String>, placeholder: String = "Tipo") {
     var isDropDownExpanded by remember { mutableStateOf(false) }
 
     Box(
@@ -449,7 +448,7 @@ fun TypeDropdownMenu(types: List<String>, selectedType: MutableState<String>) {
                 .padding(16.dp)
                 .fillMaxWidth()
         ) {
-            Text(text = selectedType.value.ifEmpty { "Tipo" })
+            Text(text = selectedType.value.ifEmpty { placeholder })
             Icon(
                 imageVector = Icons.Rounded.ArrowDropDown,
                 contentDescription = "Dropdown Arrow"

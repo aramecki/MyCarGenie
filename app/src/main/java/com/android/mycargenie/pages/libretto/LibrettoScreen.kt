@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -90,80 +91,83 @@ fun LibrettoScreen(
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth(0.5f)
-                    .padding(start = 32.dp)
+        if (carProfile.brand.isNotEmpty()) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                if (carProfile.imageUri != null) {
-                    val imagePainter = rememberAsyncImagePainter(model = carProfile.imageUri)
 
-
-                    Image(
-                        painter = imagePainter,
-                        contentDescription = "Automobile",
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .size(160.dp),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-            }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 32.dp)
-            ) {
-                Row {
-                    Text(
-                        text = carProfile.brand,
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier
-                            .padding(top = 16.dp)
-                    )
-                }
-
-                Row(
-                    horizontalArrangement = Arrangement.Start
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .padding(start = 32.dp)
                 ) {
-                    Text(
-                        text = carProfile.model,
-                        fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    if (carProfile.imageUri != null) {
+                        val imagePainter = rememberAsyncImagePainter(model = carProfile.imageUri)
+
+
+                        Image(
+                            painter = imagePainter,
+                            contentDescription = "Automobile",
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .size(160.dp),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
                 }
 
-                Row {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 32.dp)
+                ) {
+                    Row {
+                        Text(
+                            text = carProfile.brand,
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier
+                                .padding(top = 16.dp)
+                        )
+                    }
 
-                    Text(
-                        text = carProfile.engine,
-                        fontSize = 16.sp,
-                        modifier = Modifier
-                            .padding(end = 4.dp)
-                    )
+                    Row(
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        Text(
+                            text = carProfile.model,
+                            fontSize = 32.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
 
-                    Text(
-                        text = carProfile.power,
-                        fontSize = 16.sp,
-                        modifier = Modifier
-                            .padding(end = 4.dp)
-                    )
+                    Row {
 
-                    Text(
-                        text = carProfile.horsepower,
-                        fontSize = 16.sp
-                    )
+                        Text(
+                            text = carProfile.displacement.toString(),
+                            fontSize = 16.sp,
+                            modifier = Modifier
+                                .padding(end = 4.dp)
+                        )
+
+                        Text(
+                            text = carProfile.power.toString(),
+                            fontSize = 16.sp,
+                            modifier = Modifier
+                                .padding(end = 4.dp)
+                        )
+
+                        Text(
+                            text = carProfile.horsepower.toString(),
+                            fontSize = 16.sp
+                        )
+                    }
                 }
             }
         }
 
         if (carProfile.brand == "") {
+            Spacer(modifier = Modifier.height(80.dp))
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -171,12 +175,28 @@ fun LibrettoScreen(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "Configura le informazioni sul tuo veicolo per visualizzare il profilo.",
+                    text = "Configura le informazioni sul tuo veicolo per visualizzarne un resoconto.",
                     fontSize = 18.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .padding(8.dp)
                 )
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Button(onClick = {
+                        navController.navigate("ProfileSettings")
+                    }) {
+                        Text(
+                            text = "Imposta",
+                            fontSize = 16.sp
+                        )
+                    }
+                }
+
             }
 
         }

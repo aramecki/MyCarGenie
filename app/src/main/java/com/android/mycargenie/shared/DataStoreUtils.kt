@@ -2,6 +2,8 @@ package com.android.mycargenie.shared
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.android.mycargenie.pages.profile.CarProfile
@@ -14,20 +16,30 @@ val Context.dataStore by preferencesDataStore(name = "car_profile")
 // Campi del profilo
 private val BRAND_KEY = stringPreferencesKey("brand")
 private val MODEL_KEY = stringPreferencesKey("model")
-private val ENGINE_KEY = stringPreferencesKey("engine")
-private val POWER_KEY = stringPreferencesKey("power")
-private val HORSEPOWER_KEY = stringPreferencesKey("horsepower")
+private val DISPLACEMENT_KEY = intPreferencesKey("displacement")
+private val POWER_KEY = floatPreferencesKey("power")
+private val HORSEPOWER_KEY = floatPreferencesKey("horsepower")
 private val IMAGE_URI_KEY = stringPreferencesKey("image_uri")
+private val TYPE_KEY = stringPreferencesKey("type")
+private val FUEL_KEY = stringPreferencesKey("fuel")
+private val YEAR_KEY = intPreferencesKey("year")
+private val ECO_KEY = stringPreferencesKey("eco")
+private val CONF_KEY = stringPreferencesKey("conf")
 
 // Salvare il profilo
 suspend fun saveCarProfile(context: Context, carProfile: CarProfile) {
     context.dataStore.edit { preferences ->
         preferences[BRAND_KEY] = carProfile.brand
         preferences[MODEL_KEY] = carProfile.model
-        preferences[ENGINE_KEY] = carProfile.engine
+        preferences[DISPLACEMENT_KEY] = carProfile.displacement
         preferences[POWER_KEY] = carProfile.power
         preferences[HORSEPOWER_KEY] = carProfile.horsepower
         preferences[IMAGE_URI_KEY] = carProfile.imageUri ?: ""
+        preferences[TYPE_KEY] = carProfile.type
+        preferences[FUEL_KEY] = carProfile.fuel
+        preferences[YEAR_KEY] = carProfile.year
+        preferences[ECO_KEY] = carProfile.eco
+        preferences[CONF_KEY] = carProfile.conf
     }
 }
 
@@ -37,10 +49,15 @@ fun getCarProfile(context: Context): Flow<CarProfile> {
         CarProfile(
             brand = preferences[BRAND_KEY] ?: "",
             model = preferences[MODEL_KEY] ?: "",
-            engine = preferences[ENGINE_KEY] ?: "",
-            power = preferences[POWER_KEY] ?: "",
-            horsepower = preferences[HORSEPOWER_KEY] ?: "",
-            imageUri = preferences[IMAGE_URI_KEY]?.takeIf { it.isNotEmpty() }
+            displacement = preferences[DISPLACEMENT_KEY] ?: 0,
+            power = preferences[POWER_KEY] ?: 0.0f,
+            horsepower = preferences[HORSEPOWER_KEY] ?: 0.0f,
+            imageUri = preferences[IMAGE_URI_KEY]?.takeIf { it.isNotEmpty() },
+            type = preferences[TYPE_KEY] ?: "",
+            fuel = preferences[FUEL_KEY] ?: "",
+            year = preferences[YEAR_KEY] ?: 0,
+            eco = preferences[ECO_KEY] ?: "",
+            conf = preferences[CONF_KEY] ?: ""
         )
     }
 }

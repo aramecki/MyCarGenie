@@ -122,39 +122,9 @@ fun EditRifScreen(
     }
 
     Scaffold(
-        /*
-        topBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(55.dp)
-                    .background(MaterialTheme.colorScheme.primary)
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                ) {
-                    IconButton(onClick = {
-                        navController.popBackStack()
-                    }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Indietro",
-                            modifier = Modifier.size(35.dp),
-                            tint = MaterialTheme.colorScheme.onPrimary
-                        )
-                    }
-                }
-            }
-        },
-
-         */
-
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                if (state.date.value.isNotBlank() && state.note.value.isNotBlank()) {
+                if (state.price.value > 0) {
 
                     Log.d(
                         "SaveRif",
@@ -267,8 +237,10 @@ fun EditRifScreen(
                         .padding(top = 8.dp)
                 ) {
                     //Prezzo
-                    var userPriceInput by remember {
-                        mutableStateOf(if (state.price.value == 0.0) "" else state.price.value.toString().replace('.', ','))
+                    var userPriceInput by remember { mutableStateOf("") }
+
+                    LaunchedEffect(state.price.value) {
+                        userPriceInput = if (state.price.value == 0.0) "" else state.price.value.toString().replace('.', ',')
                     }
 
                     Column(
@@ -281,26 +253,22 @@ fun EditRifScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(end = 8.dp),
-                            // Mostra il valore inserito dall'utente
                             value = userPriceInput,
                             onValueChange = { newValue ->
-                                // Regex per validare il formato del prezzo
-                                val regex = Regex("^\\d{0,5}(,\\d{0,2})?\$")
+                                val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?\$")
                                 if (newValue.isEmpty()) {
                                     userPriceInput = ""
                                     state.price.value = 0.0
                                 } else if (regex.matches(newValue)) {
                                     userPriceInput = newValue
-                                    val formattedValue = newValue.replace(',', '.')
-                                    // Aggiorna lo stato solo se il valore numerico è valido
-                                    formattedValue.toDoubleOrNull()?.let { doubleValue ->
+                                    newValue.toDoubleOrNull()?.let { doubleValue ->
                                         if (doubleValue <= 99999.99) {
                                             state.price.value = doubleValue
                                         }
                                     }
                                 }
                             },
-                            placeholder = { Text(text = "Importo") },
+                            placeholder = { Text(text = "Importo*") },
                             leadingIcon = {
                                 Icon(
                                     imageVector = ImageVector.vectorResource(id = R.drawable.euro_symbol),
@@ -309,7 +277,7 @@ fun EditRifScreen(
                                 )
                             },
                             keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number,
+                                keyboardType = KeyboardType.Decimal,
                                 imeAction = ImeAction.Next
                             ),
                             keyboardActions = KeyboardActions(
@@ -319,11 +287,12 @@ fun EditRifScreen(
                     }
 
 
-                    var userUValueInput by remember {
-                        mutableStateOf(if (state.uvalue.value == 0.0) "" else state.uvalue.value.toString().replace('.', ','))
+                    var userUValueInput by remember { mutableStateOf("") }
+
+                    LaunchedEffect(state.uvalue.value) {
+                        userUValueInput = if (state.uvalue.value == 0.0) "" else state.uvalue.value.toString().replace('.', ',')
                     }
 
-// Leading icon
                     val leadingIcon: @Composable (() -> Unit)? = if (state.uvalue.value != 0.0) {
                         {
                             Icon(
@@ -349,15 +318,13 @@ fun EditRifScreen(
                             value = userUValueInput,
                             onValueChange = { newValue ->
                                 // Regex per validare il formato del valore
-                                val regex = Regex("^\\d{0,5}(,\\d{0,2})?\$")
+                                val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?\$")
                                 if (newValue.isEmpty()) {
                                     userUValueInput = ""
                                     state.uvalue.value = 0.0
                                 } else if (regex.matches(newValue)) {
                                     userUValueInput = newValue
-                                    val formattedValue = newValue.replace(',', '.')
-                                    // Aggiorna lo stato solo se il valore numerico è valido
-                                    formattedValue.toDoubleOrNull()?.let { doubleValue ->
+                                    newValue.toDoubleOrNull()?.let { doubleValue ->
                                         if (doubleValue <= 99999.99) {
                                             state.uvalue.value = doubleValue
                                         }
@@ -371,7 +338,7 @@ fun EditRifScreen(
                             },
                             leadingIcon = leadingIcon,
                             keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number,
+                                keyboardType = KeyboardType.Decimal,
                                 imeAction = ImeAction.Next
                             ),
                             keyboardActions = KeyboardActions(
@@ -424,14 +391,13 @@ fun EditRifScreen(
                             modifier = Modifier.fillMaxWidth(),
                             value = totUnit,
                             onValueChange = { newValue ->
-                                val regex = Regex("^\\d{0,5}(,\\d{0,2})?\$")
-                                val formattedValue = newValue.replace(',', '.')
+                                val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?\$")
                                 if (newValue.isEmpty()) {
                                     state.totunit.value = 0.0
                                     totUnit = ""
                                     isManualInput.value = true
                                 } else if (regex.matches(newValue)) {
-                                    formattedValue.toDoubleOrNull()?.let { doubleValue ->
+                                    newValue.toDoubleOrNull()?.let { doubleValue ->
                                         if (doubleValue <= 9999.99) {
                                             state.totunit.value = doubleValue
                                             totUnit = newValue
@@ -453,7 +419,7 @@ fun EditRifScreen(
                             leadingIcon = totUnitLeadingIcon,
                             enabled = !(state.price.value > 0.0 && state.uvalue.value > 0.0),
                             keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number,
+                                keyboardType = KeyboardType.Decimal,
                                 imeAction = ImeAction.Next
                             ),
                             keyboardActions = KeyboardActions(
@@ -568,7 +534,7 @@ fun EditRifScreen(
                             ),
                             keyboardActions = KeyboardActions(
                                 onDone = {
-                                    if (state.date.value.isNotBlank() && state.note.value.isNotBlank()) {
+                                    if (state.price.value > 0) {
                                         onEvent(
                                             RifEvent.UpdateRif(
                                                 id = state.id.value,
@@ -611,13 +577,19 @@ fun EditRifScreen(
                 }
             }
 
-            if (showError) {
-                Text(
-                    text = "Compila tutti i campi obbligatori.",
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(16.dp)
-                )
-            }
+        if (showError) {
+
+            Text(
+                text = "Compila tutti i campi obbligatori.",
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                textAlign = TextAlign.Center
+
+            )
+
+        }
         }
 
     }
