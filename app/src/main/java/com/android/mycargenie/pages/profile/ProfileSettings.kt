@@ -65,12 +65,15 @@ fun ProfileSettingsScreen(
     var displacement by remember { mutableIntStateOf(carProfile.displacement) }
     var power by remember { mutableFloatStateOf(carProfile.power) }
     var horsepower by remember { mutableFloatStateOf(carProfile.horsepower) }
-    var imageUri by remember { mutableStateOf(carProfile.imageUri?.let { Uri.parse(it) }) }
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
     var type by remember { mutableStateOf(carProfile.type) }
     var fuel by remember { mutableStateOf(carProfile.fuel) }
     var year by remember { mutableIntStateOf(carProfile.year) }
     var eco by remember { mutableStateOf(carProfile.eco) }
     var conf by remember { mutableStateOf(carProfile.conf) }
+
+
+    var permissionRequested by remember { mutableStateOf(false) }
 
     var showError by remember { mutableStateOf(false) }
 
@@ -78,8 +81,8 @@ fun ProfileSettingsScreen(
 
     // Selezione immagine
     val galleryLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri: Uri? ->
             if (uri != null) {
                 val savedImagePath = saveImgToMmry(context, uri)
                 if (savedImagePath != null) {
@@ -91,29 +94,35 @@ fun ProfileSettingsScreen(
                 Toast.makeText(context, "Nessuna immagine selezionata", Toast.LENGTH_SHORT).show()
             }
         }
-
+    )
 
     // Richiesta del permesso
     val permissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-            // Permesso concesso, apri la galleria
-            galleryLauncher.launch("image/*")
-        } else {
-            // Mostra un messaggio che informa l'utente che il permesso è stato negato
-            Toast.makeText(context, "Permesso negato", Toast.LENGTH_SHORT).show()
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            if (isGranted) {
+                // Apri la galleria solo se non è stata richiesta di recente
+                if (!permissionRequested) {
+                    permissionRequested = true
+                    galleryLauncher.launch("image/*")
+                }
+            } else {
+                // Errore se permesso non concesso
+                Toast.makeText(
+                    context,
+                    "Consenti l'accesso alla galleria nelle impostazioni.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
-    }
-
-
+    )
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .padding(16.dp)
             .imePadding()
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState()) // Rendi la colonna scrollabile
     ) {
 
         if (imageUri != null) {
@@ -439,6 +448,26 @@ fun ProfileSettingsScreen(
 
             }
 
+            OutlinedTextField(
+                value = brand,
+                onValueChange = { newValue ->
+                    if (newValue.length <= 12) {
+                        brand = newValue
+                    }
+                },
+                textStyle = TextStyle(
+                    fontSize = 19.sp
+                ),
+                label = { Text("Marca*") },
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Next,
+                    capitalization = KeyboardCapitalization.Sentences
+                ),
+                modifier = Modifier
+                    .fillMaxWidth(0.4f)
+                    .padding(end = 8.dp)
+            )
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -498,7 +527,9 @@ fun ProfileSettingsScreen(
             }
         }
     }
+
 }
+
 
 
 

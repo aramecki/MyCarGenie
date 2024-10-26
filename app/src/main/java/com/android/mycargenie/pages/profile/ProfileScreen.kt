@@ -1,6 +1,5 @@
 package com.android.mycargenie.pages.profile
 
-import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -72,6 +71,7 @@ fun ProfileScreen(
         modifier = Modifier
             .imePadding()
             .verticalScroll(rememberScrollState())
+
     ) {
 
 
