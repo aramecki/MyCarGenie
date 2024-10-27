@@ -448,26 +448,6 @@ fun ProfileSettingsScreen(
 
             }
 
-            OutlinedTextField(
-                value = brand,
-                onValueChange = { newValue ->
-                    if (newValue.length <= 12) {
-                        brand = newValue
-                    }
-                },
-                textStyle = TextStyle(
-                    fontSize = 19.sp
-                ),
-                label = { Text("Marca*") },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Next,
-                    capitalization = KeyboardCapitalization.Sentences
-                ),
-                modifier = Modifier
-                    .fillMaxWidth(0.4f)
-                    .padding(end = 8.dp)
-            )
-
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
