@@ -2,10 +2,9 @@ package com.android.mycargenie.shared
 
 import android.content.Context
 import android.net.Uri
-import androidx.datastore.core.IOException
 import java.io.File
 import java.io.FileOutputStream
-import java.io.OutputStream
+import java.io.InputStream
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.SimpleDateFormat
@@ -47,23 +46,19 @@ fun formatDate(timestamp: Long): String {
     return formatter.format(Date(timestamp))
 }
 
-//Funzione per salvare l'immagine del profilo
-fun saveImgToMmry(context: Context, uri: Uri): String? {
-    val contentResolver = context.contentResolver
-    val inputStream = contentResolver.openInputStream(uri) ?: return null
-    val fileName = "profile_image_${System.currentTimeMillis()}.jpg"
-    val file = File(context.filesDir, fileName)
 
-    try {
-        val outputStream: OutputStream = FileOutputStream(file)
-        inputStream.use { input ->
-            outputStream.use { output ->
-                input.copyTo(output)
-            }
-        }
-        return file.absolutePath
-    } catch (e: IOException) {
+//Funzione per salvare l'immagine del profilo
+fun saveImageToMmry(context: Context, imageUri: Uri): String {
+    return try {
+        val inputStream: InputStream? = context.contentResolver.openInputStream(imageUri)
+        val file = File(context.filesDir, "profile_image.jpg")
+        val outputStream = FileOutputStream(file)
+        inputStream?.copyTo(outputStream)
+        inputStream?.close()
+        outputStream.close()
+        file.absolutePath
+    } catch (e: Exception) {
         e.printStackTrace()
+        ""
     }
-    return null
 }

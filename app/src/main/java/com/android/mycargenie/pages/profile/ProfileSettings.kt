@@ -1,13 +1,11 @@
 package com.android.mycargenie.pages.profile
 
-import android.Manifest
-import android.content.pm.PackageManager
+import android.content.Context
 import android.net.Uri
 import android.os.Build
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,81 +37,45 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.AsyncImage
 import com.android.mycargenie.pages.manutenzione.TypeDropdownMenu
 import com.android.mycargenie.pages.settings.SetViewModel
-import com.android.mycargenie.shared.saveImgToMmry
-import java.io.File
+import com.android.mycargenie.shared.saveImageToMmry
 
 @Composable
 fun ProfileSettingsScreen(
     carProfile: CarProfile,
     setViewModel: SetViewModel,
-    navController: NavController
+    navController: NavController,
+    context: Context
 ) {
     var brand by remember { mutableStateOf(carProfile.brand) }
     var model by remember { mutableStateOf(carProfile.model) }
     var displacement by remember { mutableIntStateOf(carProfile.displacement) }
     var power by remember { mutableFloatStateOf(carProfile.power) }
     var horsepower by remember { mutableFloatStateOf(carProfile.horsepower) }
-    var imageUri by remember { mutableStateOf<Uri?>(null) }
+    var savedImagePath by remember { mutableStateOf(carProfile.savedImagePath) }
     var type by remember { mutableStateOf(carProfile.type) }
     var fuel by remember { mutableStateOf(carProfile.fuel) }
     var year by remember { mutableIntStateOf(carProfile.year) }
     var eco by remember { mutableStateOf(carProfile.eco) }
     var conf by remember { mutableStateOf(carProfile.conf) }
 
-
-    var permissionRequested by remember { mutableStateOf(false) }
+println(savedImagePath)
 
     var showError by remember { mutableStateOf(false) }
 
-    val context = LocalContext.current
-
-    // Selezione immagine
-    val galleryLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent(),
-        onResult = { uri: Uri? ->
-            if (uri != null) {
-                val savedImagePath = saveImgToMmry(context, uri)
-                if (savedImagePath != null) {
-                    imageUri = Uri.parse(savedImagePath)
-                } else {
-                    Toast.makeText(context, "Errore durante il salvataggio dell'immagine", Toast.LENGTH_SHORT).show()
-                }
-            } else {
-                Toast.makeText(context, "Nessuna immagine selezionata", Toast.LENGTH_SHORT).show()
-            }
-        }
-    )
-
-    // Richiesta del permesso
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-        onResult = { isGranted ->
-            if (isGranted) {
-                // Apri la galleria solo se non è stata richiesta di recente
-                if (!permissionRequested) {
-                    permissionRequested = true
-                    galleryLauncher.launch("image/*")
-                }
-            } else {
-                // Errore se permesso non concesso
-                Toast.makeText(
-                    context,
-                    "Consenti l'accesso alla galleria nelle impostazioni.",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+    val photoPicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { it: Uri? ->
+            savedImagePath = it.toString()
         }
     )
 
@@ -122,13 +84,13 @@ fun ProfileSettingsScreen(
         modifier = Modifier
             .padding(16.dp)
             .imePadding()
-            .verticalScroll(rememberScrollState()) // Rendi la colonna scrollabile
+            .verticalScroll(rememberScrollState())
     ) {
 
-        if (imageUri != null) {
-            imageUri?.let { uri ->
-                Image(
-                    painter = rememberAsyncImagePainter(File(uri.path.toString())),
+        if (savedImagePath != "") {
+
+                AsyncImage(
+                    model = savedImagePath,
                     contentDescription = null,
                     modifier = Modifier
                         .size(200.dp)
@@ -136,7 +98,8 @@ fun ProfileSettingsScreen(
                         .border(2.dp, Color.Gray, CircleShape),
                     contentScale = ContentScale.Crop
                 )
-            }
+
+
         } else {
             Text(
                 text = "Imposta un'immagine del profilo",
@@ -149,28 +112,41 @@ fun ProfileSettingsScreen(
 
 
         Button(onClick = {
-            // Controllo versione Android
+
+            //Se Android >= 13
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                // Permesso già stato concesso
-                if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_MEDIA_IMAGES)
-                    != PackageManager.PERMISSION_GRANTED
-                ) {
-                    // Permesso se non concesso
-                    permissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
-                } else {
-                    // Permesso già concesso apri la galleria
-                    galleryLauncher.launch("image/*")
-                }
+
+                photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+
             } else {
-                // Android 13 in giù apri direttamente la galleria
-                galleryLauncher.launch("image/*")
+                // Android <= 12
+
+                photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+
             }
         }) {
             Text("Seleziona")
         }
 
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
+
+        if (showError) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = "Compila tutti i campi obbligatori.",
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
 
         Row {
 
@@ -459,6 +435,8 @@ fun ProfileSettingsScreen(
 
                     if (brand.isNotBlank() && model.isNotBlank()) {
 
+                            val newImagePath = saveImageToMmry(context = context, Uri.parse(savedImagePath))
+
                         setViewModel.updateCarProfile(
                             CarProfile(
                                 brand,
@@ -466,7 +444,7 @@ fun ProfileSettingsScreen(
                                 displacement,
                                 power,
                                 horsepower,
-                                imageUri?.path,
+                                savedImagePath = newImagePath,
                                 type,
                                 fuel,
                                 year,
@@ -492,20 +470,7 @@ fun ProfileSettingsScreen(
 
         }
 
-        if (showError) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-                Text(
-                    text = "Compila tutti i campi obbligatori.",
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier
-                        .padding(top = 16.dp)
-                )
-            }
-        }
+
     }
 
 }

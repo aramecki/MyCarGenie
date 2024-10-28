@@ -19,7 +19,7 @@ private val MODEL_KEY = stringPreferencesKey("model")
 private val DISPLACEMENT_KEY = intPreferencesKey("displacement")
 private val POWER_KEY = floatPreferencesKey("power")
 private val HORSEPOWER_KEY = floatPreferencesKey("horsepower")
-private val IMAGE_URI_KEY = stringPreferencesKey("image_uri")
+private val SAVEDIMAGE_URI_KEY = stringPreferencesKey("savedimagepath")
 private val TYPE_KEY = stringPreferencesKey("type")
 private val FUEL_KEY = stringPreferencesKey("fuel")
 private val YEAR_KEY = intPreferencesKey("year")
@@ -34,7 +34,7 @@ suspend fun saveCarProfile(context: Context, carProfile: CarProfile) {
         preferences[DISPLACEMENT_KEY] = carProfile.displacement
         preferences[POWER_KEY] = carProfile.power
         preferences[HORSEPOWER_KEY] = carProfile.horsepower
-        preferences[IMAGE_URI_KEY] = carProfile.imageUri ?: ""
+        preferences[SAVEDIMAGE_URI_KEY] = carProfile.savedImagePath
         preferences[TYPE_KEY] = carProfile.type
         preferences[FUEL_KEY] = carProfile.fuel
         preferences[YEAR_KEY] = carProfile.year
@@ -52,7 +52,7 @@ fun getCarProfile(context: Context): Flow<CarProfile> {
             displacement = preferences[DISPLACEMENT_KEY] ?: 0,
             power = preferences[POWER_KEY] ?: 0.0f,
             horsepower = preferences[HORSEPOWER_KEY] ?: 0.0f,
-            imageUri = preferences[IMAGE_URI_KEY]?.takeIf { it.isNotEmpty() },
+            savedImagePath = preferences[SAVEDIMAGE_URI_KEY] ?: "",
             type = preferences[TYPE_KEY] ?: "",
             fuel = preferences[FUEL_KEY] ?: "",
             year = preferences[YEAR_KEY] ?: 0,

@@ -47,7 +47,7 @@ data class CarProfile(
     var displacement: Int,
     var power: Float,
     var horsepower: Float,
-    var imageUri: String? = null,
+    var savedImagePath: String,
     var type: String,
     var fuel: String,
     var year: Int,
@@ -140,8 +140,8 @@ fun ProfileScreen(
                     .fillMaxWidth()
                 //.padding(start = 32.dp)
             ) {
-                if (carProfile.imageUri != null) {
-                    val imagePainter = rememberAsyncImagePainter(model = carProfile.imageUri)
+                if (carProfile.savedImagePath != "") {
+                    val imagePainter = rememberAsyncImagePainter(model = carProfile.savedImagePath)
 
                     Image(
                         painter = imagePainter,

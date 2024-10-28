@@ -97,14 +97,13 @@ fun LibrettoScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                Column(
+                if (carProfile.savedImagePath != "") {
+                    Column(
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
                         .padding(start = 32.dp)
                 ) {
-                    if (carProfile.imageUri != null) {
-                        val imagePainter = rememberAsyncImagePainter(model = carProfile.imageUri)
-
+                        val imagePainter = rememberAsyncImagePainter(model = carProfile.savedImagePath)
 
                         Image(
                             painter = imagePainter,
