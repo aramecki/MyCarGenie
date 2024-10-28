@@ -42,10 +42,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavType
@@ -549,6 +551,14 @@ fun BottomNavigationBar(
     onTabSelected: (Int) -> Unit
 ) {
 
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp
+
+    val fontSize = when {
+        screenWidth <= 360 -> 8.sp
+        screenWidth <= 460 -> 9.sp
+        else -> 10.sp
+    }
 
     NavigationBar(
         modifier = Modifier
@@ -561,8 +571,12 @@ fun BottomNavigationBar(
                     Text(
                     item.title,
                     style = MaterialTheme.typography.labelMedium.copy(
-                        fontSize = 9.sp
-                    )
+                        fontSize = fontSize
+                    ),
+                        maxLines = 1,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
                     ) },
                 selected = selectedIndex == index,
                 onClick = { onTabSelected(index) }
