@@ -381,14 +381,13 @@ fun AddRifScreen(
                         ),
                         placeholder = {
                             if (totUnit.value.isEmpty()) {
-                                // Visualizza il placeholder solo se l'input è manuale
                                 if (state.type.value == "Elettrico") Text(text = "kWh Totali")
                                 else if (state.type.value.isEmpty() || state.type.value == "Altro") Text(text = "Litri o kWh Totali")
                                 else Text(text = "Litri Totali")
                             }
                         },
                         leadingIcon = totUnitLeadingIcon,
-                        enabled = !(state.price.value > 0.0 && state.uvalue.value > 0.0), // Disabilita l'input se price e uvalue sono > 0.0
+                        enabled = !(state.price.value > 0.0 && state.uvalue.value > 0.0),
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Decimal,
                             imeAction = ImeAction.Next

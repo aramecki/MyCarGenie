@@ -68,6 +68,7 @@ import com.android.mycargenie.pages.manutenzione.ViewManScreen
 import com.android.mycargenie.pages.profile.CarProfile
 import com.android.mycargenie.pages.profile.ProfileScreen
 import com.android.mycargenie.pages.profile.ProfileSettingsScreen
+import com.android.mycargenie.pages.profile.ProfileViewModel
 import com.android.mycargenie.pages.rifornimento.AddRifScreen
 import com.android.mycargenie.pages.rifornimento.EditRifScreen
 import com.android.mycargenie.pages.rifornimento.RifEvent
@@ -75,19 +76,9 @@ import com.android.mycargenie.pages.rifornimento.RifState
 import com.android.mycargenie.pages.rifornimento.RifViewModel
 import com.android.mycargenie.pages.rifornimento.RifornimentoScreen
 import com.android.mycargenie.pages.rifornimento.ViewRifScreen
-import com.android.mycargenie.pages.settings.SetViewModel
-
-
-// Screens
-
-@Composable
-fun ProfessionistiScreen() {
-    Text(
-        text = "Professionisti",
-        modifier = Modifier.fillMaxSize()
-    )
-}
-
+import com.android.mycargenie.pages.scadenze.ExpScreen
+import com.android.mycargenie.pages.scadenze.ExpSettingsScreen
+import com.android.mycargenie.pages.scadenze.Expirations
 
 // Defining the items
 data class BottomNavItem(
@@ -101,25 +92,26 @@ data class BottomNavItem(
 fun MainApp(
     viewModel: ManViewModel,
     rifViewModel: RifViewModel,
-    setViewModel: SetViewModel,
+    profileViewModel: ProfileViewModel,
     onManEvent: (ManEvent) -> Unit,
     onRifEvent: (RifEvent) -> Unit,
     state: ManState,
     rifState: RifState,
-    carProfile: CarProfile
+    carProfile: CarProfile,
+    expirations: Expirations
 ) {
 
 
     val navController = rememberNavController()
 
-    val observedCarProfile by setViewModel.carProfile.collectAsState()
+    val observedCarProfile by profileViewModel.carProfile.collectAsState()
 
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
 
     val currentBackStackEntry = navController.currentBackStackEntryAsState().value
     val currentDestination = currentBackStackEntry?.destination?.route
 
-    val shouldShowBottomBar = currentDestination !in listOf("ViewManScreen/{index}", "AddManScreen", "EditManScreen/{manIndex}", "ViewRifScreen/{index}", "AddRifScreen", "EditRifScreen/{rifIndex}", "ProfileSettings")
+    val shouldShowBottomBar = currentDestination !in listOf("ViewManScreen/{index}", "AddManScreen", "EditManScreen/{manIndex}", "ViewRifScreen/{index}", "AddRifScreen", "EditRifScreen/{rifIndex}", "ProfileSettings", "ExpirationsSettings")
 
     val shouldShowTopBar = currentDestination !in listOf("LibrettoScreen", "ProfileScreen")
 
@@ -127,13 +119,6 @@ fun MainApp(
         WindowInsets.statusBars.getBottom(this).toDp()
     }
 
-    /*
-    val navigationBarHeight = with(LocalDensity.current) {
-        WindowInsets.navigationBars.getBottom(LocalDensity.current).toDp()
-    }
-
-     */
-    
     val topBarHeight = statusBarHeight + 90.dp
 
     Scaffold(
@@ -152,11 +137,12 @@ fun MainApp(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     when (currentDestination) {
-                        "ManutenzioneScreen", "RifornimentoScreen" -> {
+                        "ManutenzioneScreen", "RifornimentoScreen", "ExpirationsScreen" -> {
                             Text(
                                 text = when (currentDestination) {
                                     "ManutenzioneScreen" -> "Manutenzione"
                                     "RifornimentoScreen" -> "Rifornimento"
+                                    "ExpirationsScreen" -> "Scadenze"
                                     else -> ""
                                 },
                                 modifier = Modifier
@@ -168,7 +154,7 @@ fun MainApp(
                             )
                         }
 
-                        "AddManScreen", "AddRifScreen", "ViewManScreen/{index}", "ViewRifScreen/{index}", "EditManScreen/{manIndex}", "EditRifScreen/{rifIndex}", "ProfileSettings" -> {
+                        "AddManScreen", "AddRifScreen", "ViewManScreen/{index}", "ViewRifScreen/{index}", "EditManScreen/{manIndex}", "EditRifScreen/{rifIndex}", "ProfileSettings", "ExpirationsSettings" -> {
                             Box(
                                 modifier = Modifier
                                     .size(48.dp)
@@ -326,7 +312,7 @@ fun MainApp(
                         "LibrettoScreen" -> 0
                         "ManutenzioneScreen" -> 1
                         "RifornimentoScreen" -> 2
-                        "ScadenzeScreen" -> 3
+                        "ExpirationsScreen" -> 3
                         "ProfileScreen" -> 4
                         else -> 0
                     }
@@ -361,8 +347,8 @@ fun MainApp(
                                 "Scadenze",
                                 ImageVector.vectorResource(id = R.drawable.calendar)
                             ) {
-                                selectedTabIndex = 4
-                                ProfessionistiScreen()
+                                selectedTabIndex = 3
+                                navController.navigate("ExpirationsScreen")
                             },
                             BottomNavItem(
                                 "Profilo",
@@ -380,7 +366,7 @@ fun MainApp(
                                 0 -> navController.navigate("LibrettoScreen")
                                 1 -> navController.navigate("ManutenzioneScreen")
                                 2 -> navController.navigate("RifornimentoScreen")
-                                3 -> navController.navigate("ScadenzeScreen")
+                                3 -> navController.navigate("ExpirationsScreen")
                                 4 -> navController.navigate("ProfileScreen")
                             }
                         }
@@ -532,9 +518,29 @@ fun MainApp(
                 ) {
                     ProfileSettingsScreen(
                         carProfile = carProfile,
-                        setViewModel = setViewModel,
+                        profileViewModel = profileViewModel,
                         navController = navController,
                         context = LocalContext.current
+                    )
+                }
+
+                composable("ExpirationsScreen") {
+                    ExpScreen(
+                        navController = navController
+                    )
+                }
+
+                composable("ExpirationsSettings",
+                    enterTransition = {
+                        slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500))
+                    },
+                    exitTransition = {
+                        slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
+                    }
+                ) {
+                    ExpSettingsScreen(
+                        expirations = expirations,
+                        navController = navController,
                     )
                 }
 

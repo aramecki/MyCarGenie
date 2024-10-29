@@ -41,20 +41,6 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.android.mycargenie.R
 
-data class CarProfile(
-    var brand: String,
-    var model: String,
-    var displacement: Int,
-    var power: Float,
-    var horsepower: Float,
-    var savedImagePath: String,
-    var type: String,
-    var fuel: String,
-    var year: Int,
-    var eco: String,
-    var conf: String
-)
-
 @Composable
 fun ProfileScreen(
     carProfile: CarProfile,

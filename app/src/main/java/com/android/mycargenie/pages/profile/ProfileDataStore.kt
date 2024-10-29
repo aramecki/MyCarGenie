@@ -1,4 +1,4 @@
-package com.android.mycargenie.shared
+package com.android.mycargenie.pages.profile
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
@@ -6,10 +6,22 @@ import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.android.mycargenie.pages.profile.CarProfile
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
+data class CarProfile(
+    var brand: String,
+    var model: String,
+    var displacement: Int,
+    var power: Float,
+    var horsepower: Float,
+    var savedImagePath: String,
+    var type: String,
+    var fuel: String,
+    var year: Int,
+    var eco: String,
+    var conf: String
+)
 
 val Context.dataStore by preferencesDataStore(name = "car_profile")
 

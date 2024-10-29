@@ -46,13 +46,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.android.mycargenie.pages.manutenzione.TypeDropdownMenu
-import com.android.mycargenie.pages.settings.SetViewModel
 import com.android.mycargenie.shared.saveImageToMmry
 
 @Composable
 fun ProfileSettingsScreen(
     carProfile: CarProfile,
-    setViewModel: SetViewModel,
+    profileViewModel: ProfileViewModel,
     navController: NavController,
     context: Context
 ) {
@@ -437,7 +436,7 @@ println(savedImagePath)
 
                             val newImagePath = saveImageToMmry(context = context, Uri.parse(savedImagePath))
 
-                        setViewModel.updateCarProfile(
+                        profileViewModel.updateCarProfile(
                             CarProfile(
                                 brand,
                                 model,
