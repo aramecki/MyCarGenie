@@ -67,8 +67,6 @@ fun ProfileSettingsScreen(
     var eco by remember { mutableStateOf(carProfile.eco) }
     var conf by remember { mutableStateOf(carProfile.conf) }
 
-println(savedImagePath)
-
     var showError by remember { mutableStateOf(false) }
 
     val photoPicker = rememberLauncherForActivityResult(

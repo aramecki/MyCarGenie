@@ -79,6 +79,7 @@ import com.android.mycargenie.pages.rifornimento.ViewRifScreen
 import com.android.mycargenie.pages.scadenze.ExpScreen
 import com.android.mycargenie.pages.scadenze.ExpSettingsScreen
 import com.android.mycargenie.pages.scadenze.Expirations
+import com.android.mycargenie.pages.scadenze.ExpirationsViewModel
 
 // Defining the items
 data class BottomNavItem(
@@ -93,6 +94,7 @@ fun MainApp(
     viewModel: ManViewModel,
     rifViewModel: RifViewModel,
     profileViewModel: ProfileViewModel,
+    expirationsViewModel: ExpirationsViewModel,
     onManEvent: (ManEvent) -> Unit,
     onRifEvent: (RifEvent) -> Unit,
     state: ManState,
@@ -105,6 +107,7 @@ fun MainApp(
     val navController = rememberNavController()
 
     val observedCarProfile by profileViewModel.carProfile.collectAsState()
+    val observedExpirations by expirationsViewModel.expSettings.collectAsState()
 
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
 
@@ -526,6 +529,7 @@ fun MainApp(
 
                 composable("ExpirationsScreen") {
                     ExpScreen(
+                        expirations = observedExpirations,
                         navController = navController
                     )
                 }
@@ -540,6 +544,7 @@ fun MainApp(
                 ) {
                     ExpSettingsScreen(
                         expirations = expirations,
+                        expirationsViewModel = expirationsViewModel,
                         navController = navController,
                     )
                 }

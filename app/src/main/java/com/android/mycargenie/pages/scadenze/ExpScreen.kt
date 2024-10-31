@@ -19,9 +19,12 @@ import com.android.mycargenie.R
 
 @Composable
 fun ExpScreen(
+    expirations: Expirations,
     navController: NavController
 ) {
 
+
+    
     Row {
         Column(
             horizontalAlignment = Alignment.End,
@@ -43,6 +46,8 @@ fun ExpScreen(
     }
 
     Column {
+        Text(text = expirations.insend)
+        Text(text = expirations.insdues.toString())
 
         Text(
             text = "Assicurazione RCA"

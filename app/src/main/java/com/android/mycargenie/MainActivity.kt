@@ -120,6 +120,7 @@ class MainActivity : ComponentActivity() {
                         viewModel = viewModel,
                         rifViewModel = rifViewModel,
                         profileViewModel = profileViewModel,
+                        expirationsViewModel = expViewModel,
                         onManEvent = viewModel::onEvent,
                         onRifEvent = rifViewModel::onEvent,
                         state = state,
