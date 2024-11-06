@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class ExpirationsViewModel(private val application: Application) : ViewModel() {
-    private val _expSettings = MutableStateFlow(Expirations(inscheck = false, insstart = "", insend = "", insdues = 0 , insprice = 0.0f, insplace = "", taxcheck = false, taxdate = "", taxprice = 0.0f, revcheck = false, revlast = "", revnext = "", revplace = ""))
+    private val _expSettings = MutableStateFlow(Expirations(inscheck = false, insstart = "", insend = "", insdues = 0 , insprice = 0.0f, insplace = "", insnot = false, taxcheck = false, taxdate = "", taxprice = 0.0f, taxnot = false, revcheck = false, revlast = "", revnext = "", revplace = "", revnot = false))
     val expSettings: StateFlow<Expirations> = _expSettings
 
     init {
