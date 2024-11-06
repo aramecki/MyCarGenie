@@ -80,6 +80,7 @@ import com.android.mycargenie.pages.scadenze.ExpScreen
 import com.android.mycargenie.pages.scadenze.ExpSettingsScreen
 import com.android.mycargenie.pages.scadenze.Expirations
 import com.android.mycargenie.pages.scadenze.ExpirationsViewModel
+import com.android.mycargenie.pages.scadenze.PermissionHandler
 
 // Defining the items
 data class BottomNavItem(
@@ -100,7 +101,8 @@ fun MainApp(
     state: ManState,
     rifState: RifState,
     carProfile: CarProfile,
-    expirations: Expirations
+    expirations: Expirations,
+    permissionHandler: PermissionHandler
 ) {
 
 
@@ -546,6 +548,7 @@ fun MainApp(
                         expirations = expirations,
                         expirationsViewModel = expirationsViewModel,
                         navController = navController,
+                        permissionHandler = permissionHandler
                     )
                 }
 

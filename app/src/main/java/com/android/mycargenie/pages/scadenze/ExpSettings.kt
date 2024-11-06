@@ -61,7 +61,8 @@ import java.time.Instant
 fun ExpSettingsScreen(
     expirations: Expirations,
     expirationsViewModel: ExpirationsViewModel,
-    navController: NavController
+    navController: NavController,
+    permissionHandler: PermissionHandler
 ) {
 
     val context = LocalContext.current
@@ -355,6 +356,7 @@ fun ExpSettingsScreen(
                         checked = insnot,
                         onCheckedChange = { checked ->
                             insnot = checked
+                            permissionHandler.initialize()
                         }
                     )
                     Text(
@@ -494,6 +496,7 @@ fun ExpSettingsScreen(
                         checked = taxnot,
                         onCheckedChange = { checked ->
                             taxnot = checked
+                            permissionHandler.initialize()
                         }
                     )
                     Text(
@@ -661,6 +664,7 @@ fun ExpSettingsScreen(
                         checked = revnot,
                         onCheckedChange = { checked ->
                             revnot = checked
+                            permissionHandler.initialize()
                         }
                     )
                     Text(
@@ -725,6 +729,13 @@ fun ExpSettingsScreen(
 
                     Log.d(tag, "insend: $insend")
                     val insTimestamp = formatDateToLong(insend)
+
+                    notificationManager.scheduleNotification(
+                        System.currentTimeMillis() + 5000,
+                        "La tua assicurazione auto sta per scadere.",
+                        "Il Genio ti ricorda che la polizza scadrà il $insend. Evita sanzioni pagando in tempo.",
+                        "insurance"
+                    )
 
                     notificationManager.scheduleNotification(
                         (insTimestamp - oneMonthMillis) + hour14Millis,

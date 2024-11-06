@@ -143,26 +143,22 @@ class CustomNotificationManager(private val context: Context) {
         scheduledTimestamps.remove(category)
     }
 
-
-
 }
 
 
 class PermissionHandler(private val activity: ComponentActivity) {
 
-    companion object {
-        private const val TAG = "PermissionHandler"
-    }
+    private var onPermissionsGranted: (() -> Unit)? = null
 
     private val requestNotificationPermissionLauncher = activity.registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
         if (isGranted) {
             Log.d(TAG, "Permesso notifiche concesso")
+            checkAlarmPermission()
         } else {
             Log.d(TAG, "Permesso notifiche negato")
         }
-        checkAlarmPermission()
     }
 
     fun initialize() {
@@ -174,10 +170,10 @@ class PermissionHandler(private val activity: ComponentActivity) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             Log.d(TAG, "Controllo permessi per API level 31 o superiore")
-            // Controllo per notifiche
             checkNotificationPermission()
         } else {
             Log.d(TAG, "API level insufficiente, nessun permesso richiesto per allarmi esatti.")
+            onPermissionsGranted?.invoke() // Chiamato direttamente se i permessi non sono richiesti
         }
     }
 
@@ -185,15 +181,16 @@ class PermissionHandler(private val activity: ComponentActivity) {
         when {
             ContextCompat.checkSelfPermission(activity, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED -> {
                 Log.d(TAG, "Permesso notifiche già concesso")
-                // Permesso notifiche già concesso, passa alla verifica del permesso per gli allarmi
-                checkAlarmPermission()
+                checkAlarmPermission() // Se concesso, verifica il permesso successivo
             }
             activity.shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> {
                 showPermissionRationale()
             }
             else -> {
                 Log.d(TAG, "Richiesta permesso notifiche")
-                requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
             }
         }
     }
@@ -203,33 +200,35 @@ class PermissionHandler(private val activity: ComponentActivity) {
             val alarmManager = activity.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             if (alarmManager.canScheduleExactAlarms()) {
                 Log.d(TAG, "Permesso per allarmi esatti già concesso")
+                onPermissionsGranted?.invoke() // Esegui il callback se permessi concessi
             } else {
                 Log.d(TAG, "Permesso per allarmi esatti non ancora concesso")
-                showAlarmPermissionRationale() // Solo se il permesso non è stato concesso
+                showAlarmPermissionRationale()
             }
         } else {
             Log.d(TAG, "API level inferiore a 31, nessun permesso per allarmi esatti richiesto.")
+            onPermissionsGranted?.invoke() // Chiamato direttamente se permessi non necessari
         }
     }
 
     private fun showPermissionRationale() {
         AlertDialog.Builder(activity)
             .setTitle("Permesso richiesto")
-            .setMessage("Questa applicazione ha bisogno del permesso per inviare notifiche. Questo è necessario per informarti sugli eventi importanti.")
+            .setMessage("Questa applicazione ha bisogno della tua autorizzazione per inviare notifiche. Questo è necessario per informarti sugli eventi importanti.")
             .setPositiveButton("OK") { _, _ ->
-                requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    requestNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
             }
-            .setNegativeButton("Annulla") { dialog, _ ->
-                dialog.dismiss() // Chiudi il dialogo se l'utente annulla
-            }
+            .setNegativeButton("Annulla") { dialog, _ -> dialog.dismiss() }
             .create()
             .show()
     }
 
     private fun showAlarmPermissionRationale() {
         AlertDialog.Builder(activity)
-            .setTitle("Permesso per allarmi esatti richiesto")
-            .setMessage("Questa applicazione ha bisogno del permesso per pianificare allarmi esatti. Questo è necessario per assicurarti di ricevere promemoria precisi.")
+            .setTitle("Permesso richiesto")
+            .setMessage("Nelle ultime versioni di Android le applicazioni hanno bisogno della tua autorizzazione per inviare notifiche. Sarai indirizzato ad una pagina delle impostazioni dove potrai concedere questa autorizzazione.")
             .setPositiveButton("Concedi") { _, _ ->
                 requestAlarmPermission()
             }
@@ -239,8 +238,12 @@ class PermissionHandler(private val activity: ComponentActivity) {
     }
 
     private fun requestAlarmPermission() {
-        val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
-            data = Uri.parse("package:${activity.packageName}")
+        val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
+                data = Uri.parse("package:${activity.packageName}")
+            }
+        } else {
+            TODO("VERSION.SDK_INT < S")
         }
         try {
             activity.startActivity(intent)
@@ -262,7 +265,6 @@ class NotificationReceiver : BroadcastReceiver() {
     private fun sendNotification(context: Context, title: String, message: String) {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        // Assicurati che il canale esista
         val channelId = "reminder_channel"
         val channel = NotificationChannel(channelId, "Promemoria", NotificationManager.IMPORTANCE_HIGH).apply {
             description = "Canale per le notifiche di promemoria"

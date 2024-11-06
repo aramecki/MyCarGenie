@@ -108,9 +108,6 @@ class MainActivity : ComponentActivity() {
 
         // Inizializza il gestore dei permessi
         permissionHandler = PermissionHandler(this)
-        permissionHandler.initialize()
-
-
 
         setContent {
 
@@ -139,7 +136,8 @@ class MainActivity : ComponentActivity() {
                         state = state,
                         rifState = rifState,
                         carProfile = carProfile,
-                        expirations = expirations
+                        expirations = expirations,
+                        permissionHandler = permissionHandler
                     )
                 }
             }
