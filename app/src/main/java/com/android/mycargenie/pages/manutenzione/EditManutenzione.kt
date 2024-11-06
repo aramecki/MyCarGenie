@@ -56,7 +56,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.mycargenie.R
-import com.android.mycargenie.shared.formatDate
+import com.android.mycargenie.shared.formatDateToString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -102,7 +102,7 @@ fun EditManScreen(
                 TextButton(onClick = {
                     val selectedDateMillis = datePickerState.selectedDateMillis
                     if (selectedDateMillis != null) {
-                        state.date.value = formatDate(selectedDateMillis
+                        state.date.value = formatDateToString(selectedDateMillis
                         )
                     }
                     showDatePicker = false

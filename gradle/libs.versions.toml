@@ -14,6 +14,7 @@ navigationCompose = "2.8.3"
 roomVersion = "2.6.1"
 voyagerKoin = "1.1.0-beta02"
 datastore = "1.1.1"
+workRuntimeKtxVersion = "2.8.1"
 
 [libraries]
 
@@ -38,6 +39,7 @@ ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyagerKoin" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtxVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

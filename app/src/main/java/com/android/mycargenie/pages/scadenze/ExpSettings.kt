@@ -1,5 +1,6 @@
 package com.android.mycargenie.pages.scadenze
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -41,6 +42,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -50,7 +52,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.android.mycargenie.shared.formatDate
+import com.android.mycargenie.shared.CustomNotificationManager
+import com.android.mycargenie.shared.formatDateToLong
+import com.android.mycargenie.shared.formatDateToString
 import java.time.Instant
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,6 +64,15 @@ fun ExpSettingsScreen(
     expirationsViewModel: ExpirationsViewModel,
     navController: NavController
 ) {
+
+    val context = LocalContext.current
+
+
+
+    val notificationManager = remember { CustomNotificationManager(context) }
+    var isInsendChecked by remember { mutableStateOf(false) }
+    var isTaxDateChecked by remember { mutableStateOf(false) }
+    var isRevNextChecked by remember { mutableStateOf(false) }
 
     // Insurance components
     var inscheck by remember { mutableStateOf(expirations.inscheck) }
@@ -74,6 +87,8 @@ fun ExpSettingsScreen(
     val insStartDatePickerState = rememberDatePickerState()
     var showInsEndDatePicker by remember { mutableStateOf(false) }
     val insEndDatePickerState = rememberDatePickerState()
+
+    val isInsRemButEnabled = insend != ""
 
     //Tax components
     var taxcheck by remember { mutableStateOf(expirations.taxcheck) }
@@ -170,7 +185,7 @@ fun ExpSettingsScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = insstart.ifEmpty { formatDate(Instant.now().toEpochMilli()) },
+                            text = insstart.ifEmpty { formatDateToString(Instant.now().toEpochMilli()) },
                             fontSize = 17.sp,
                             modifier = Modifier
                         )
@@ -217,7 +232,7 @@ fun ExpSettingsScreen(
                         Spacer(modifier = Modifier.width(8.dp))
 
                         Text(
-                            text = insend.ifEmpty { formatDate(Instant.now().toEpochMilli()) },
+                            text = insend.ifEmpty { formatDateToString(Instant.now().toEpochMilli()) },
                             fontSize = 17.sp,
                             modifier = Modifier
                         )
@@ -341,9 +356,157 @@ fun ExpSettingsScreen(
                     )
 
                 }
+            }
 
+            if (insend != "") {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Checkbox(
+                        checked = isInsendChecked,
+                        onCheckedChange = { checked ->
+                            isInsendChecked = checked // Aggiorna lo stato del CheckBox
+                        }
+                    )
+                    Text("Ricevi notifiche sulla scadenza.")
+
+
+
+                    Button(
+                        onClick = {
+
+                            val tag = "ReminderApp"
+
+                            Log.d(tag, "insend: $insend")
+                            val insTimestamp = formatDateToLong(insend)
+                            Log.d(tag, "insTimestamp: $insTimestamp")
+
+
+                            val oneMonthMillis = 30L * 24 * 60 * 60 * 1000      // Circa un mese (30 giorni)
+                            val oneWeekMillis = 7L * 24 * 60 * 60 * 1000        // Una settimana
+                            val oneDayMillis = 1L * 24 * 60 * 60 * 1000         // Un
+
+                            val hour14Millis = 14 * 60 * 60 * 1000  // ore 14:00
+                            val hour8Millis = 8 * 60 * 60 * 1000    // ore 08:00
+
+
+                            Log.d(tag, "Stato di isInsendChecked: $isInsendChecked")
+
+                            if (isInsendChecked) {
+
+                                notificationManager.scheduleNotification(
+                                    System.currentTimeMillis() + 10000,
+                                    "Notifica 5 sec dopo.",
+                                    "Il Genio ti ricorda che la tua polizza assicurativa scadrà il $insend, non dimenticare di versare la quota di rinnovo per non incorrere in sanzioni.",
+                                    "insurance"
+                                )
+
+                                notificationManager.scheduleNotification(
+                                    (insTimestamp - oneMonthMillis) + hour14Millis,
+                                    "Notifica un mese prima.",
+                                    "Il Genio ti ricorda che la tua polizza assicurativa scadrà il $insend, non dimenticare di versare la quota di rinnovo per non incorrere in sanzioni.",
+                                    "insurance"
+                                )
+
+                                notificationManager.scheduleNotification(
+                                    (insTimestamp - oneWeekMillis) + hour14Millis,
+                                    "Notifica una settimana prima.",
+                                    "Il Genio ti ricorda che la tua polizza assicurativa scadrà il $insend, non dimenticare di versare la quota di rinnovo per non incorrere in sanzioni.",
+                                    "insurance"
+                                )
+
+                                notificationManager.scheduleNotification(
+                                    (insTimestamp - oneDayMillis) + hour8Millis,
+                                    "Notifica un giorno prima.",
+                                    "Il Genio ti ricorda che la tua polizza assicurativa scadrà il $insend, non dimenticare di versare la quota di rinnovo per non incorrere in sanzioni.",
+                                    "insurance"
+                                )
+
+                                notificationManager.scheduleNotification(
+                                    insTimestamp + hour8Millis,
+                                    "Notifica il giorno stesso.",
+                                    "Il Genio ti ricorda che la tua polizza assicurativa scadrà il $insend, non dimenticare di versare la quota di rinnovo per non incorrere in sanzioni.",
+                                    "insurance"
+                                )
+
+                                /*
+                                val insTimestamp = formatDateToLong(insend)
+                                Log.d(tag, "Il timestamp per la data $insend è: $insTimestamp")
+
+                                //val oneMonthBefore = insTimestamp - (30L * 24 * 60 * 60 * 1000)
+                                notificationManager.scheduleNotification(
+                                    System.currentTimeMillis() + 5000,
+                                    //"La tua assicurazione auto sta per scadere.",
+                                    "Notifica 1 mese prima.",
+                                    "Il Genio ti ricorda che la tua polizza assicurativa scadrà il $insend, non dimenticare di versare la quota di rinnovo per non incorrere in sanzioni.",
+                                    "insurance"
+                                )
+
+                                val oneWeekBefore = insTimestamp + 5000
+                                val delay = oneWeekBefore - System.currentTimeMillis()
+                                Log.d(tag, "Ritardo per Notifica 2: $delay ms")
+                                notificationManager.scheduleNotification(
+                                    oneWeekBefore,
+                                    //"La tua assicurazione auto sta per scadere.",
+                                    "Notifica 2.",
+                                    "Il Genio ti ricorda che la tua polizza assicurativa scadrà il $insend, non dimenticare di versare la quota di rinnovo per non incorrere in sanzioni.",
+                                    "insurance"
+                                )
+
+
+
+                                //val oneWeekBefore = insTimestamp - (7L * 24 * 60 * 60 * 1000)
+                                notificationManager.scheduleNotification(
+                                    1738281600000 + (7L * 24 * 60 * 60 * 1000),
+                                    "Notifica 1 settimana prima.",
+                                    "Seconda notifica.",
+                                    "insurance"
+                                )
+
+
+                                val oneDayBefore = insTimestamp - (24 * 60 * 60 * 1000)
+                                notificationManager.scheduleNotification(
+                                    oneDayBefore,
+                                    "Notifica 1 giorno prima.",
+                                    "Seconda notifica.",
+                                    "insurance"
+                                )
+                                Log.d(tag, "Notifica 1 giorno prima programmata per: ${formatDateToString(oneDayBefore)} alle ${formatTime(oneDayBefore)}")
+
+
+                                notificationManager.scheduleNotification(
+                                    insTimestamp,
+                                    "Notifica il giorno stesso.",
+                                    "Seconda notifica.",
+                                    "insurance"
+                                )
+                                Log.d(tag, "Notifica giorno stesso programmata per: ${formatDateToString(insTimestamp)} alle ${formatTime(insTimestamp)}")
+
+                                 */
+
+
+                            } else {
+                                notificationManager.disableNotifications("insurance")
+
+                            }
+
+                        },
+                        //enabled = isInsendChecked,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Text("Promemoria")
+                    }
+
+
+
+                }
 
             }
+
+
+
 
             HorizontalDivider(
                 modifier = Modifier
@@ -411,7 +574,7 @@ fun ExpSettingsScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = taxdate.ifEmpty { formatDate(Instant.now().toEpochMilli()) },
+                            text = taxdate.ifEmpty { formatDateToString(Instant.now().toEpochMilli()) },
                             fontSize = 17.sp,
                             modifier = Modifier
                         )
@@ -530,7 +693,7 @@ fun ExpSettingsScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = revlast.ifEmpty { formatDate(Instant.now().toEpochMilli()) },
+                            text = revlast.ifEmpty { formatDateToString(Instant.now().toEpochMilli()) },
                             fontSize = 17.sp,
                             modifier = Modifier
                         )
@@ -577,7 +740,7 @@ fun ExpSettingsScreen(
                         Spacer(modifier = Modifier.width(8.dp))
 
                         Text(
-                            text = revnext.ifEmpty { formatDate(Instant.now().toEpochMilli()) },
+                            text = revnext.ifEmpty { formatDateToString(Instant.now().toEpochMilli()) },
                             fontSize = 17.sp,
                             modifier = Modifier
                         )
@@ -629,9 +792,16 @@ fun ExpSettingsScreen(
             modifier = Modifier
                 .padding(top = 16.dp)
         ) {
+
+
+
+
+
+
+
             Button(onClick = {
 
-                //if (brand.isNotBlank() && model.isNotBlank()) {
+
 
                 expirationsViewModel.updateExpSettings(
                     Expirations(
@@ -650,6 +820,9 @@ fun ExpSettingsScreen(
                         revplace
                     )
                 )
+
+
+
                 navController.navigate("ExpirationsScreen")
                 //} else {
                 //  showError = true
@@ -724,7 +897,7 @@ fun CustomDatePickerDialog(
             TextButton(onClick = {
                 val selectedDateMillis = datePickerState.selectedDateMillis
                 if (selectedDateMillis != null) {
-                    onDateSelected(formatDate(selectedDateMillis))
+                    onDateSelected(formatDateToString(selectedDateMillis))
                 }
                 onDismissRequest()
             }) {
@@ -740,3 +913,5 @@ fun CustomDatePickerDialog(
         DatePicker(state = datePickerState)
     }
 }
+
+

@@ -60,7 +60,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.mycargenie.R
 import com.android.mycargenie.pages.manutenzione.TypeDropdownMenu
-import com.android.mycargenie.shared.formatDate
+import com.android.mycargenie.shared.formatDateToString
 import com.android.mycargenie.shared.formatPrice
 import java.time.Instant
 
@@ -73,7 +73,7 @@ fun AddRifScreen(
 ) {
 
     LaunchedEffect(Unit) {
-        state.date.value = formatDate(Instant.now().toEpochMilli())
+        state.date.value = formatDateToString(Instant.now().toEpochMilli())
     }
 
     var showError by remember { mutableStateOf(false) }
@@ -89,7 +89,7 @@ fun AddRifScreen(
                 TextButton(onClick = {
                     val selectedDateMillis = datePickerState.selectedDateMillis
                     if (selectedDateMillis != null) {
-                        state.date.value = formatDate(selectedDateMillis)
+                        state.date.value = formatDateToString(selectedDateMillis)
                     }
                     showDatePicker = false
                 }) {
@@ -418,7 +418,7 @@ fun AddRifScreen(
                             contentDescription = "Calendario"
                         )
                         Text(
-                            text = state.date.value.ifEmpty { formatDate(Instant.now().toEpochMilli()) },
+                            text = state.date.value.ifEmpty { formatDateToString(Instant.now().toEpochMilli()) },
                             fontSize = 17.sp,
                             modifier = Modifier
                                 .padding(start = 8.dp)

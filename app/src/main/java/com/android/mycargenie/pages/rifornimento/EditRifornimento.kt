@@ -57,7 +57,7 @@ import androidx.navigation.NavController
 import com.android.mycargenie.R
 import com.android.mycargenie.shared.formatPrice
 import java.time.Instant
-import com.android.mycargenie.shared.formatDate
+import com.android.mycargenie.shared.formatDateToString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -104,7 +104,7 @@ fun EditRifScreen(
                 TextButton(onClick = {
                     val selectedDateMillis = datePickerState.selectedDateMillis
                     if (selectedDateMillis != null) {
-                        state.date.value = formatDate(selectedDateMillis)
+                        state.date.value = formatDateToString(selectedDateMillis)
                     }
                     showDatePicker = false
                 }) {
@@ -449,7 +449,7 @@ fun EditRifScreen(
                             )
                             Text(
                                 text = state.date.value.ifEmpty {
-                                    formatDate(
+                                    formatDateToString(
                                         Instant.now().toEpochMilli()
                                     )
                                 },

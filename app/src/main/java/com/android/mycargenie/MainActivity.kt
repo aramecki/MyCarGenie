@@ -24,12 +24,19 @@ import com.android.mycargenie.pages.manutenzione.ManViewModel
 import com.android.mycargenie.pages.profile.ProfileViewModel
 import com.android.mycargenie.pages.rifornimento.RifViewModel
 import com.android.mycargenie.pages.scadenze.ExpirationsViewModel
+import com.android.mycargenie.shared.CustomNotificationManager
+import com.android.mycargenie.shared.PermissionHandler
 import com.android.mycargenie.ui.MainApp
 import com.android.mycargenie.ui.theme.MyCarGenieTheme
 
 
 @Suppress("UNCHECKED_CAST")
 class MainActivity : ComponentActivity() {
+
+    private lateinit var permissionHandler: PermissionHandler
+
+    private lateinit var notificationManager: CustomNotificationManager
+
 
 
     private val database by lazy {
@@ -99,6 +106,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        // Inizializza il gestore dei permessi
+        permissionHandler = PermissionHandler(this)
+        permissionHandler.initialize()
+
+
+
         setContent {
 
             //deleteExistingDatabase()
@@ -132,6 +145,12 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        // Inizializza il CustomNotificationManager
+        notificationManager = CustomNotificationManager(this)
+
+        // Crea il canale di notifica (se necessario)
+        notificationManager.createNotificationChannel()
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -148,6 +167,8 @@ class MainActivity : ComponentActivity() {
     }
 
 
+
+
     private fun deleteExistingDatabase() {
 
         val databaseName = "man.db"
@@ -162,6 +183,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
 
 
 

@@ -71,6 +71,9 @@ dependencies {
     //Datastore
     implementation(libs.androidx.datastore.preferences)
 
+    //WorkManager
+    implementation(libs.work.runtime.ktx)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit.v115)
     androidTestImplementation(libs.androidx.espresso.core.v351)
