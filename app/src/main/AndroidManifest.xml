@@ -31,7 +31,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="com.android.mycargenie.shared.NotificationReceiver" />
+        <receiver android:name="com.android.mycargenie.pages.scadenze.NotificationReceiver" />
 
     </application>
 

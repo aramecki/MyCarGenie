@@ -52,7 +52,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.android.mycargenie.shared.CustomNotificationManager
 import com.android.mycargenie.shared.formatDateToLong
 import com.android.mycargenie.shared.formatDateToString
 import java.time.Instant
@@ -77,7 +76,6 @@ fun ExpSettingsScreen(
     var insprice by remember { mutableFloatStateOf(expirations.insprice) }
     var insplace by remember { mutableStateOf(expirations.insplace) }
     var insnot by remember { mutableStateOf(expirations.insnot) }
-
 
     var showInsStartDatePicker by remember { mutableStateOf(false) }
     val insStartDatePickerState = rememberDatePickerState()
@@ -105,9 +103,7 @@ fun ExpSettingsScreen(
     var showRevNextDatePicker by remember { mutableStateOf(false) }
     val revNextDatePickerState = rememberDatePickerState()
 
-
     val isSaveEnabled = inscheck || taxcheck || revcheck
-
 
     Column(
         modifier = Modifier
@@ -127,9 +123,7 @@ fun ExpSettingsScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                //.padding(vertical = 8.dp)
+            verticalAlignment = Alignment.CenterVertically
         ) {
 
             Checkbox(
@@ -360,7 +354,7 @@ fun ExpSettingsScreen(
                     Checkbox(
                         checked = insnot,
                         onCheckedChange = { checked ->
-                            insnot = checked // Aggiorna lo stato del CheckBox
+                            insnot = checked
                         }
                     )
                     Text(
@@ -383,12 +377,8 @@ fun ExpSettingsScreen(
         }
 
         // Tax
-        //Spacer(modifier = Modifier.height(16.dp))
-
         Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                //.padding(vertical = 8.dp)
+            verticalAlignment = Alignment.CenterVertically
         ) {
 
             Checkbox(
@@ -503,7 +493,7 @@ fun ExpSettingsScreen(
                     Checkbox(
                         checked = taxnot,
                         onCheckedChange = { checked ->
-                            taxnot = checked // Aggiorna lo stato del CheckBox
+                            taxnot = checked
                         }
                     )
                     Text(
@@ -523,12 +513,8 @@ fun ExpSettingsScreen(
         }
 
         // Revision
-        //Spacer(modifier = Modifier.height(16.dp))
-
         Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                //.padding(vertical = 8.dp)
+            verticalAlignment = Alignment.CenterVertically
         ) {
 
             Checkbox(
@@ -740,15 +726,6 @@ fun ExpSettingsScreen(
                     Log.d(tag, "insend: $insend")
                     val insTimestamp = formatDateToLong(insend)
 
-                    /*
-                    notificationManager.scheduleNotification(
-                        System.currentTimeMillis() + 5000,
-                        "Notifica 5 sec dopo.",
-                        "Il Genio ti ricorda che la tua polizza assicurativa scadrà il $insend, non dimenticare di versare la quota di rinnovo per non incorrere in sanzioni.",
-                        "insurance"
-                    )
-                     */
-
                     notificationManager.scheduleNotification(
                         (insTimestamp - oneMonthMillis) + hour14Millis,
                         "La tua assicurazione auto sta per scadere.",
@@ -787,14 +764,6 @@ fun ExpSettingsScreen(
 
                     Log.d(tag, "taxdate: $taxdate")
                     val taxTimestamp = formatDateToLong(taxdate)
-/*
-                    notificationManager.scheduleNotification(
-                        System.currentTimeMillis() + 10000,
-                        "Notifica 10 sec dopo.",
-                        "Il Genio ti ricorda che la tassa scadrà il $taxdate, non dimenticare di versare la quota di rinnovo per non incorrere in sanzioni.",
-                        "tax"
-                    )
- */
 
                     notificationManager.scheduleNotification(
                         (taxTimestamp - oneMonthMillis) + hour14Millis,
@@ -834,14 +803,6 @@ fun ExpSettingsScreen(
 
                     Log.d(tag, "revnext: $revnext")
                     val revTimestamp = formatDateToLong(revnext)
-/*
-                    notificationManager.scheduleNotification(
-                        System.currentTimeMillis() + 15000,
-                        "Notifica 15 sec dopo.",
-                        "Il Genio ti ricorda che la revisione scadrà il $revnext, non dimenticare di versare la quota di rinnovo per non incorrere in sanzioni.",
-                        "rev"
-                    )
- */
 
                     notificationManager.scheduleNotification(
                         (revTimestamp - oneMonthMillis) + hour14Millis,
@@ -957,6 +918,7 @@ fun CustomDatePickerDialog(
                 Text("ANNULLA")
             }
         }
+
     ) {
         DatePicker(state = datePickerState)
     }

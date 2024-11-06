@@ -23,9 +23,9 @@ import com.android.mycargenie.data.RifDatabase
 import com.android.mycargenie.pages.manutenzione.ManViewModel
 import com.android.mycargenie.pages.profile.ProfileViewModel
 import com.android.mycargenie.pages.rifornimento.RifViewModel
+import com.android.mycargenie.pages.scadenze.CustomNotificationManager
 import com.android.mycargenie.pages.scadenze.ExpirationsViewModel
-import com.android.mycargenie.shared.CustomNotificationManager
-import com.android.mycargenie.shared.PermissionHandler
+import com.android.mycargenie.pages.scadenze.PermissionHandler
 import com.android.mycargenie.ui.MainApp
 import com.android.mycargenie.ui.theme.MyCarGenieTheme
 
