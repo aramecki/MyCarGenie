@@ -104,8 +104,6 @@ fun ExpSettingsScreen(
     var showRevNextDatePicker by remember { mutableStateOf(false) }
     val revNextDatePickerState = rememberDatePickerState()
 
-    val isSaveEnabled = inscheck || taxcheck || revcheck
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -388,7 +386,7 @@ fun ExpSettingsScreen(
                 onCheckedChange = { taxcheck = it }
             )
             Text(
-                text = "Tassa",
+                text = "Tassa Automobilistica",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold
             )
@@ -655,7 +653,7 @@ fun ExpSettingsScreen(
                 }
             }
 
-            if (revnext != "") {
+            if (revnext.isNotEmpty()) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -848,7 +846,6 @@ fun ExpSettingsScreen(
 
                 navController.navigate("ExpirationsScreen")
             },
-                enabled = isSaveEnabled,
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
