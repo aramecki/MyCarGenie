@@ -365,7 +365,7 @@ fun EditManScreen(
                         var userPriceInput by remember { mutableStateOf("") }
 
                         LaunchedEffect(state.price.value) {
-                            userPriceInput = if (state.price.value == 0.0) "" else state.price.value.toString().replace('.', ',')
+                            userPriceInput = if (state.price.value == 0.0) "" else state.price.value.toString()
                         }
 
                         OutlinedTextField(

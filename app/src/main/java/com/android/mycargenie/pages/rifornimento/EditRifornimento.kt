@@ -55,9 +55,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.mycargenie.R
+import com.android.mycargenie.shared.formatDateToString
 import com.android.mycargenie.shared.formatPrice
 import java.time.Instant
-import com.android.mycargenie.shared.formatDateToString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -240,7 +240,7 @@ fun EditRifScreen(
                     var userPriceInput by remember { mutableStateOf("") }
 
                     LaunchedEffect(state.price.value) {
-                        userPriceInput = if (state.price.value == 0.0) "" else state.price.value.toString().replace('.', ',')
+                        userPriceInput = if (state.price.value == 0.0) "" else state.price.value.toString()
                     }
 
                     Column(
@@ -290,7 +290,7 @@ fun EditRifScreen(
                     var userUValueInput by remember { mutableStateOf("") }
 
                     LaunchedEffect(state.uvalue.value) {
-                        userUValueInput = if (state.uvalue.value == 0.0) "" else state.uvalue.value.toString().replace('.', ',')
+                        userUValueInput = if (state.uvalue.value == 0.0) "" else state.uvalue.value.toString()
                     }
 
                     val leadingIcon: @Composable (() -> Unit)? = if (state.uvalue.value != 0.0) {

@@ -24,7 +24,6 @@ class RifViewModel(
     */
 
     private val _lastInsertedId = MutableStateFlow<Int?>(null)
-
     private val _state = MutableStateFlow(RifState())
     private val isSortedByDateAdded = MutableStateFlow(true)
     private val _rifs = MutableStateFlow<List<Rif>>(emptyList())
@@ -54,14 +53,15 @@ class RifViewModel(
     }
 
     fun loadMoreRifs() {
+        // Evita richieste multiple contemporaneamente
         if (isLoading) return
 
+        isLoading = true
+        _state.update { it.copy(isLoading = true) }
+
+        println("Caricamento pagina: $currentPage, Offset: ${currentPage * pageSize}")
+
         viewModelScope.launch {
-            isLoading = true
-            _state.update { it.copy(isLoading = true) }
-
-            println("Caricamento pagina: $currentPage, Offset: ${currentPage * pageSize}")
-
             val newRifs = if (isSortedByDateAdded.value) {
                 dao.getRifPaginatedOrderedByDate(currentPage * pageSize, pageSize)
             } else {
@@ -75,11 +75,14 @@ class RifViewModel(
                 return@launch
             }
 
+            // Aggiungi nuovi dati alla lista esistente
             _rifs.update { currentList -> currentList + newRifs }
-            currentPage++
 
+            // Incrementa il contatore della pagina
+            currentPage++
             println("Nuovi rifornimenti caricati: ${newRifs.size}, Totale: ${_rifs.value.size}")
 
+            // Termina il caricamento
             isLoading = false
             _state.update { it.copy(isLoading = false) }
         }
@@ -90,6 +93,8 @@ class RifViewModel(
             is RifEvent.DeleteRif -> {
                 viewModelScope.launch {
                     dao.deleteRif(event.rif)
+                    // Dopo la cancellazione, aggiorniamo la lista rimuovendo l'elemento
+                    _rifs.update { currentList -> currentList.filter { it.id != event.rif.id } }
                 }
             }
 
@@ -107,6 +112,8 @@ class RifViewModel(
 
                 viewModelScope.launch {
                     dao.insertRif(rif)
+                    // Aggiungi il nuovo rifornimento alla lista esistente
+                    _rifs.update { currentList -> currentList + rif }
                 }
 
                 _state.update {
@@ -138,6 +145,10 @@ class RifViewModel(
 
                 viewModelScope.launch {
                     dao.updateRif(rif)
+                    // Dopo l'aggiornamento, sostituire il vecchio elemento nella lista
+                    _rifs.update { currentList ->
+                        currentList.map { if (it.id == rif.id) rif else it }
+                    }
                 }
 
                 _state.update {
@@ -156,9 +167,10 @@ class RifViewModel(
             }
 
             is RifEvent.SortRif -> {
+                // Gestisci l'ordinamento e ricarica i dati
                 isSortedByDateAdded.value = !isSortedByDateAdded.value
                 currentPage = 0
-                _rifs.value = emptyList()
+                _rifs.value = emptyList()  // Svuota la lista e ricarica
                 loadMoreRifs()
             }
         }

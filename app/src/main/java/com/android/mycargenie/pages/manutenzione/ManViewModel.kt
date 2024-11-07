@@ -109,8 +109,8 @@ class ManViewModel(
                 viewModelScope.launch {
                     dao.insertMan(man)
 
-                    val updatedMenList = dao.getMenPaginatedOrderedByDate(0, (currentPage + 1) * pageSize)
-                    _mans.update { updatedMenList }
+                    // Aggiungi solo il nuovo elemento alla lista esistente
+                    _mans.update { currentList -> currentList + man }
 
                     _state.update {
                         it.copy(
@@ -141,9 +141,10 @@ class ManViewModel(
                 viewModelScope.launch {
                     dao.updateMan(man)
 
-                    val updatedMenList =
-                        dao.getMenPaginatedOrderedByDate(0, (currentPage + 1) * pageSize)
-                    _mans.update { updatedMenList }
+                    // Dopo l'aggiornamento, aggiorna solo l'elemento modificato nella lista
+                    _mans.update { currentList ->
+                        currentList.map { if (it.id == man.id) man else it }
+                    }
 
 
                     _state.update {

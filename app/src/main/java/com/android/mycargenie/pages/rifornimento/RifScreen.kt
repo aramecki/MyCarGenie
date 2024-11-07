@@ -64,8 +64,8 @@ fun RifornimentoScreen(
         }
     }
 
+    // Watch for when to load more items and when the list changes
     LaunchedEffect(isAtEndOfList.value, state.rifs) {
-        println("isAtEndOfList.value: ${isAtEndOfList.value}")
         if (isAtEndOfList.value) {
             println("Caricamento nuovi dati...")
             viewModel.loadMoreRifs()
@@ -122,40 +122,40 @@ fun RifornimentoScreen(
             }
         } else {
 
-                LazyColumn(
-                    state = lazyListState,
-                    contentPadding = PaddingValues(
-                        top = 8.dp,
-                        start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
-                        end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
-                        bottom = paddingValues.calculateBottomPadding()
-                    ),
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
+            LazyColumn(
+                state = lazyListState,
+                contentPadding = PaddingValues(
+                    top = 8.dp,
+                    start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
+                    end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+                    bottom = paddingValues.calculateBottomPadding()
+                ),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                // Display list items
+                items(state.rifs.size) { index ->
+                    RifItem(
+                        state = state,
+                        index = index,
+                        navController = navController
+                    )
+                }
 
-                    items(state.rifs.size) { index ->
-                        RifItem(
-                            state = state,
-                            index = index,
-                            navController = navController
+                // Show the loading indicator if isLoading is true
+                if (state.isLoading) {
+                    item {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
                         )
                     }
 
-                    if (state.isLoading) {
-                        item {
-                            CircularProgressIndicator(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp)
-                            )
-                        }
-                    }
-
                 }
-
+            }
             }
 
     }
