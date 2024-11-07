@@ -30,7 +30,7 @@ fun ExpScreen(
 ) {
 
 
-    
+
     Row {
         Column(
             horizontalAlignment = Alignment.End,
@@ -53,7 +53,7 @@ fun ExpScreen(
 
     Spacer(modifier = Modifier.height(16.dp))
 
-    if (!expirations.inscheck || !expirations.taxcheck || !expirations.revcheck) {
+    if (!expirations.inscheck && !expirations.taxcheck && !expirations.revcheck) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -75,70 +75,91 @@ fun ExpScreen(
                 )
             }
         }
-    }
-
-    Column(
-        modifier = Modifier
-            .padding(top = 32.dp, start = 8.dp)
-    ) {
+    } else {
 
 
-
-        if (expirations.inscheck) {
-
-            Text(
-                text = "Assicurazione RCA",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier
-                    .padding(bottom = 4.dp)
-            )
+        Column(
+            modifier = Modifier
+                .padding(top = 32.dp, start = 8.dp)
+        ) {
 
 
-            if (expirations.insstart.isNotEmpty()) { Text(text = "Inizio copertura: ${expirations.insstart}", fontSize = 20.sp) }
-            if (expirations.insend.isNotEmpty()) { Text(text = "Fine copertura: ${expirations.insend}", fontSize = 20.sp) }
-            if (expirations.insdues != 0) { Text(text = "Rate: ${expirations.insdues}", fontSize = 20.sp) }
-            if (expirations.insend.isNotEmpty()) { Text(text = "Assicuratore: ${expirations.insplace}", fontSize = 20.sp) }
-            if (expirations.insprice != 0.0f) { Text(text = "Costo totale: ${expirations.insprice}€", fontSize = 20.sp) }
+            if (expirations.inscheck) {
 
-            Spacer(modifier = Modifier.height(28.dp))
+                Text(
+                    text = "Assicurazione RCA",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier
+                        .padding(bottom = 4.dp)
+                )
+
+
+                if (expirations.insstart.isNotEmpty()) {
+                    Text(text = "Inizio copertura: ${expirations.insstart}", fontSize = 20.sp)
+                }
+                if (expirations.insend.isNotEmpty()) {
+                    Text(text = "Fine copertura: ${expirations.insend}", fontSize = 20.sp)
+                }
+                if (expirations.insdues != 0) {
+                    Text(text = "Rate: ${expirations.insdues}", fontSize = 20.sp)
+                }
+                if (expirations.insend.isNotEmpty()) {
+                    Text(text = "Assicuratore: ${expirations.insplace}", fontSize = 20.sp)
+                }
+                if (expirations.insprice != 0.0f) {
+                    Text(text = "Costo totale: ${expirations.insprice}€", fontSize = 20.sp)
+                }
+
+                Spacer(modifier = Modifier.height(28.dp))
+            }
+
+            if (expirations.taxcheck) {
+
+                Text(
+                    text = "Tassa Automobilistica",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier
+                        .padding(bottom = 4.dp)
+                )
+
+
+                if (expirations.taxdate.isNotEmpty()) {
+                    Text(text = "Prossimo saldo: ${expirations.taxdate}", fontSize = 20.sp)
+                }
+                if (expirations.taxprice != 0.0f) {
+                    Text(text = "Costo: ${expirations.taxprice}€", fontSize = 20.sp)
+                }
+
+                Spacer(modifier = Modifier.height(28.dp))
+            }
+
+            if (expirations.revcheck) {
+
+                Text(
+                    text = "Revisione",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier
+                        .padding(bottom = 4.dp)
+                )
+
+
+                if (expirations.revlast.isNotEmpty()) {
+                    Text(text = "Ultima revisione: ${expirations.revlast}", fontSize = 20.sp)
+                }
+                if (expirations.revnext.isNotEmpty()) {
+                    Text(text = "Prossima revisione: ${expirations.revnext}", fontSize = 20.sp)
+                }
+                if (expirations.insend.isNotEmpty()) {
+                    Text(text = "Revisore: ${expirations.revplace}", fontSize = 20.sp)
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
         }
-
-        if (expirations.taxcheck) {
-
-            Text(
-                text = "Tassa Automobilistica",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier
-                    .padding(bottom = 4.dp)
-            )
-
-
-            if (expirations.taxdate.isNotEmpty()) { Text(text = "Prossimo saldo: ${expirations.taxdate}", fontSize = 20.sp) }
-            if (expirations.taxprice != 0.0f) { Text(text = "Costo: ${expirations.taxprice}€", fontSize = 20.sp) }
-
-            Spacer(modifier = Modifier.height(28.dp))
-        }
-
-        if (expirations.revcheck) {
-
-            Text(
-                text = "Revisione",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier
-                    .padding(bottom = 4.dp)
-            )
-
-
-            if (expirations.revlast.isNotEmpty()) { Text(text = "Ultima revisione: ${expirations.revlast}", fontSize = 20.sp) }
-            if (expirations.revnext.isNotEmpty()) { Text(text = "Prossima revisione: ${expirations.revnext}", fontSize = 20.sp) }
-            if (expirations.insend.isNotEmpty()) { Text(text = "Revisore: ${expirations.revplace}", fontSize = 20.sp) }
-
-            Spacer(modifier = Modifier.height(16.dp))
-        }
-
     }
 
 }
