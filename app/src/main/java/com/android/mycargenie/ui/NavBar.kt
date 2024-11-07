@@ -402,6 +402,7 @@ fun MainApp(
                     ManutenzioneScreen(
                         state = viewModel.state.collectAsState().value,
                         navController = navController,
+                        viewModel = viewModel
                         //onEvent = viewModel::onEvent
                     )
                 }

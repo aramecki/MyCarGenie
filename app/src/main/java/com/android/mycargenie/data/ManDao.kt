@@ -19,14 +19,22 @@ interface ManDao {
     @Delete
     suspend fun deleteMan(man: Man)
 
+    /*
     @Query("SELECT * FROM man ORDER BY substr(date, 7, 4) || '-' || substr(date, 4, 2) || '-' || substr(date, 1, 2) DESC")
     fun getManOrderedByDate(): Flow<List<Man>>
-
 
     @Query("SELECT * FROM man ORDER BY id DESC")
     fun getManOrderedByDateAdded(): Flow<List<Man>>
 
+     */
+
     @Query("SELECT MAX(id) FROM man")
     fun getLastInsertedId(): Flow<Int?>
+
+    @Query("SELECT * FROM man ORDER BY substr(date, 7, 4) || '-' || substr(date, 4, 2) || '-' || substr(date, 1, 2) DESC LIMIT :limit OFFSET :offset")
+    suspend fun getMenPaginatedOrderedByDate(offset: Int, limit: Int): List<Man>
+
+    @Query("SELECT * FROM man ORDER BY id DESC LIMIT :limit OFFSET :offset")
+    suspend fun getMenPaginatedOrderedByDateAdded(offset: Int, limit: Int): List<Man>
 
 }

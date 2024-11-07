@@ -729,13 +729,6 @@ fun ExpSettingsScreen(
                     val insTimestamp = formatDateToLong(insend)
 
                     notificationManager.scheduleNotification(
-                        System.currentTimeMillis() + 5000,
-                        "La tua assicurazione auto sta per scadere.",
-                        "Il Genio ti ricorda che la polizza scadrà il $insend. Evita sanzioni pagando in tempo.",
-                        "insurance"
-                    )
-
-                    notificationManager.scheduleNotification(
                         (insTimestamp - oneMonthMillis) + hour14Millis,
                         "La tua assicurazione auto sta per scadere.",
                         "Il Genio ti ricorda che la polizza scadrà il $insend. Evita sanzioni pagando in tempo.",
