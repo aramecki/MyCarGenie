@@ -1,4 +1,4 @@
-package com.android.mycargenie.pages.profile
+package com.android.mycargenie.pages.libretto
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class ProfileViewModel(private val application: Application) : ViewModel() {
+class LibrettoViewModel(private val application: Application) : ViewModel() {
     private val _carProfile = MutableStateFlow(CarProfile(brand = "", model = "", displacement = 0 , power = 0.0f, horsepower = 0.0f, savedImagePath = "", type = "", fuel = "", year = 0, eco = "", conf = ""))
     val carProfile: StateFlow<CarProfile> = _carProfile
 

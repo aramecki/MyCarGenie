@@ -23,9 +23,7 @@ class ManViewModel(
     The performance optimization to load elements in ManScreen when required has ben made through the use of AI.
      */
 
-
     private val _lastInsertedId = MutableStateFlow<Int?>(null)
-    //val lastInsertedId: StateFlow<Int?> = _lastInsertedId
 
     private val _state = MutableStateFlow(ManState())
     private val isSortedByDateAdded = MutableStateFlow(true)

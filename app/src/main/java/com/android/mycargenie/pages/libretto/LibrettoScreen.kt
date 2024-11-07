@@ -1,21 +1,25 @@
 package com.android.mycargenie.pages.libretto
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -36,24 +40,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.android.mycargenie.R
-import com.android.mycargenie.pages.manutenzione.ManState
-import com.android.mycargenie.pages.profile.CarProfile
-import com.android.mycargenie.pages.rifornimento.RifState
-import com.android.mycargenie.shared.formatDisplacement
-import com.android.mycargenie.shared.formatKmt
-import com.android.mycargenie.shared.formatPrice
 
 @Composable
 fun LibrettoScreen(
-    state: ManState,
-    rifState: RifState,
     carProfile: CarProfile,
     navController: NavController
 ) {
-
-    
-    val sortedMen = state.men.sortedByDescending { it.id }
-    val sortedRif = rifState.rifs.sortedByDescending { it.id }
 
     var localCarProfile by remember { mutableStateOf(carProfile) }
 
@@ -61,115 +53,46 @@ fun LibrettoScreen(
         localCarProfile = carProfile
     }
 
+    Column(
+        modifier = Modifier
+            .imePadding()
+            .verticalScroll(rememberScrollState())
 
-    Column {
-
-/*
-        Row {
-            Column(
-                horizontalAlignment = Alignment.End,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                IconButton(onClick = {
-                    navController.navigate("ProfileSettings")
-                }) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.settings),
-                        contentDescription = "Impostazioni",
-                        modifier = Modifier
-                            .size(42.dp)
-                            .padding(top = 8.dp, end = 8.dp),
-                    )
-                }
-            }
-        }
-
- */
+    ) {
 
 
+        Spacer(modifier = Modifier.height(10.dp))
 
+        if (carProfile.brand != "") {
 
-        Spacer(modifier = Modifier.height(40.dp))
-
-        if (carProfile.brand.isNotEmpty()) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                if (carProfile.savedImagePath != "") {
-                    Column(
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                        .padding(start = 32.dp)
-                ) {
-                        val imagePainter = rememberAsyncImagePainter(model = carProfile.savedImagePath)
-
-                        Image(
-                            painter = imagePainter,
-                            contentDescription = "Automobile",
-                            modifier = Modifier
-                                .clip(CircleShape)
-                                .size(160.dp),
-                            contentScale = ContentScale.Crop
-                        )
-                    }
-                }
-
+            Row {
                 Column(
+                    horizontalAlignment = Alignment.End,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 32.dp)
                 ) {
-                    Row {
-                        Text(
-                            text = carProfile.brand,
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.SemiBold,
+                    IconButton(onClick = {
+                        navController.navigate("ProfileSettings")
+                    }) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.settings),
+                            contentDescription = "Impostazioni",
                             modifier = Modifier
-                                .padding(top = 16.dp)
-                        )
-                    }
-
-                    Row(
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        Text(
-                            text = carProfile.model,
-                            fontSize = 32.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-
-                    Row {
-
-                        val displacement = formatDisplacement(carProfile.displacement)
-
-                        Text(
-                            text = displacement,
-                            fontSize = 16.sp,
-                            modifier = Modifier
-                                .padding(end = 4.dp)
-                        )
-
-                        Text(
-                            text = carProfile.power.toString(),
-                            fontSize = 16.sp,
-                            modifier = Modifier
-                                .padding(end = 4.dp)
-                        )
-
-                        Text(
-                            text = carProfile.horsepower.toString(),
-                            fontSize = 16.sp
+                                .size(42.dp)
+                                .padding(top = 8.dp, end = 8.dp),
                         )
                     }
                 }
             }
+
         }
 
+
+        Spacer(modifier = Modifier.height(10.dp))
+
         if (carProfile.brand == "") {
-            Spacer(modifier = Modifier.height(80.dp))
+
+            Spacer(modifier = Modifier.height(100.dp))
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -177,362 +100,347 @@ fun LibrettoScreen(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "Configura le informazioni sul tuo veicolo per visualizzarne un resoconto.",
-                    fontSize = 18.sp,
+                    text = "Configura le informazioni sul tuo veicolo per visualizzarne il libretto.",
+                    fontSize = 20.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .padding(8.dp)
                 )
 
+
+                Button(onClick = {
+                    navController.navigate("ProfileSettings")
+                }) {
+                    Text("Configura")
+                }
+            }
+
+        }
+
+
+        if (carProfile.brand != "") {
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+                //.padding(start = 32.dp)
+            ) {
+                if (carProfile.savedImagePath != "") {
+                    val imagePainter = rememberAsyncImagePainter(model = carProfile.savedImagePath)
+
+                    Image(
+                        painter = imagePainter,
+                        contentDescription = "Automobile",
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .size(250.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+            }
+
+        Column {
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = carProfile.brand,
+                    fontSize = 37.sp,
+                    fontWeight = FontWeight.Bold
+                )
+
+                val modelFontSize = when {
+                    carProfile.model.length < 5 -> 35.sp
+                    carProfile.model.length < 10 -> 33.sp
+                    carProfile.model.length < 15 -> 31.sp
+                    carProfile.model.length < 20 -> 29.sp
+                    else -> 27.sp
+                }
+
+                Text(
+                    text = carProfile.model,
+                    fontSize = modelFontSize,
+                    fontWeight = FontWeight.SemiBold
+                )
+
+                if (carProfile.conf.isNotEmpty()) {
+
+                    val confFontSize = when {
+                        carProfile.conf.length < 10 -> 18.sp
+                        carProfile.conf.length < 20 -> 16.sp
+                        else -> 14.sp
+                    }
+
+                    Text(
+                        text = carProfile.conf,
+                        fontSize = confFontSize,
+                    )
+                }
+
+            }
+
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp)
+            ) {
+
+                //Cilindrata
+                if (carProfile.displacement != 0) {
+
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                    ) {
+                        Text(
+                            text = "Cilindrata",
+                            fontSize = 14.sp,
+
+                            )
+                        Row(
+                            modifier = Modifier
+                                .border(
+                                    border = ButtonDefaults.outlinedButtonBorder(),
+                                    shape = RoundedCornerShape(6.dp)
+                                )
+                                .padding(12.dp)
+                                .fillMaxWidth()
+                        ) {
+
+                            Text(
+                                text = "${carProfile.displacement}",
+                                fontSize = 23.sp,
+                            )
+                            Text(
+                                text = "cc",
+                                fontSize = 11.sp
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
+
+
+                //Potenza
+                if (carProfile.power > 0.0) {
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                    ) {
+                        Text(
+                            text = "Potenza",
+                            fontSize = 14.sp
+                        )
+                        Row(
+                            modifier = Modifier
+                                .border(
+                                    border = ButtonDefaults.outlinedButtonBorder(),
+                                    shape = RoundedCornerShape(6.dp)
+                                )
+                                .padding(12.dp)
+                                .fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "${carProfile.power}",
+                                fontSize = 23.sp,
+                            )
+                            Text(
+                                text = "kW",
+                                fontSize = 11.sp
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
+
+                //Cavalli
+                if (carProfile.horsepower > 0.0) {
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                    ) {
+                        Text(
+                            text = "Cavalli",
+                            fontSize = 14.sp
+                        )
+                        Row(
+                            modifier = Modifier
+                                .border(
+                                    border = ButtonDefaults.outlinedButtonBorder(),
+                                    shape = RoundedCornerShape(6.dp)
+                                )
+                                .padding(12.dp)
+                                .fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "${carProfile.horsepower}",
+                                fontSize = 23.sp
+                            )
+                            Text(
+                                text = "CV",
+                                fontSize = 11.sp
+                            )
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(35.dp))
+
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 32.dp, end = 32.dp)
+            ) {
+
                 Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                    horizontalAlignment = Alignment.Start,
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .weight(1f)
                 ) {
-                    Button(onClick = {
-                        navController.navigate("ProfileSettings")
-                    }) {
-                        Text(
-                            text = "Imposta",
-                            fontSize = 16.sp
-                        )
+
+                    //Tipo
+                    if (carProfile.type.isNotEmpty()) {
+                        Row {
+                            Column {
+                                Text(
+                                    text = "Tipo",
+                                    fontSize = 14.sp
+                                )
+                                Row(
+                                    modifier = Modifier
+                                        .border(
+                                            border = ButtonDefaults.outlinedButtonBorder(),
+                                            shape = RoundedCornerShape(6.dp)
+                                        )
+                                        .padding(12.dp)
+                                        .fillMaxWidth()
+                                ) {
+                                    Text(
+                                        text = carProfile.type,
+                                        fontSize = 24.sp,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(16.dp))
+                            }
+                        }
+                    }
+
+                    //Alimentazione
+                    if (carProfile.fuel.isNotEmpty()) {
+                        Row {
+                            Column {
+                                Text(
+                                    text = "Alimentazione",
+                                    fontSize = 14.sp
+                                )
+                                Row(
+                                    modifier = Modifier
+                                        .border(
+                                            border = ButtonDefaults.outlinedButtonBorder(),
+                                            shape = RoundedCornerShape(6.dp)
+                                        )
+                                        .padding(12.dp)
+                                        .fillMaxWidth()
+                                ) {
+                                    Text(
+                                        text = carProfile.fuel,
+                                        fontSize = 24.sp,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                    )
+                                }
+                            }
+                        }
+
                     }
                 }
 
-            }
+                Spacer(modifier = Modifier.width(16.dp))
 
-        }
-
-        Spacer(modifier = Modifier.height(38.dp))
-
-
-        if (sortedMen.isEmpty()) {
-            Row(
-                modifier = Modifier
-                    .padding(top = 32.dp)
-            ) {
-                Text(
-                    text = "Aggiungi la tua prima manutenzione per visualizzare un resoconto.",
-                    modifier = Modifier.padding(16.dp),
-                    fontSize = 18.sp,
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
-
-
-        if (sortedMen.isNotEmpty()) {
-
-            val currentItem = sortedMen.first()
-            val index = state.men.indexOf(currentItem)
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(MaterialTheme.colorScheme.primaryContainer)
-                    .padding(12.dp)
-                    .clickable {
-                        navController.navigate("ViewManScreen/$index")
-                    }
-            ) {
-
-                val icon = when (currentItem.type) {
-                    "Meccanico" -> ImageVector.vectorResource(id = R.drawable.manufacturing)
-                    "Elettrauto" -> ImageVector.vectorResource(id = R.drawable.lightbulb)
-                    "Carrozziere" -> ImageVector.vectorResource(id = R.drawable.brush)
-                    else -> ImageVector.vectorResource(id = R.drawable.repair)
-                }
 
                 Column(
-                    verticalArrangement = Arrangement.SpaceEvenly
+                    modifier = Modifier
+                        .weight(1f),
+                    horizontalAlignment = Alignment.Start
                 ) {
 
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .padding(bottom = 4.dp)
-                    ) {
-                        Column {
-                            Icon(
-                                imageVector = icon,
-                                contentDescription = currentItem.type,
-                                modifier = Modifier
-                                    .size(34.dp)
-                                    .padding(end = 4.dp),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }
-
-
-                        Column {
-
-                            //Titolo
-                            Text(
-                                text = currentItem.title,
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-                        }
-                        Column(
-                            horizontalAlignment = Alignment.End,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            Text(
-                                text = currentItem.date,
-                                fontSize = 18.sp,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer
-                            )
-                        }
-                    }
-
-
-                    //Luogo
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .padding(bottom = 4.dp)
-                    ) {
-                        val place = currentItem.place
-
-                        if (place.isNotEmpty()) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.location),
-                                contentDescription = "Luogo",
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier
-                                    .size(34.dp)
-                                    .padding(end = 4.dp),
-                            )
-
-                            Text(
-                                text = currentItem.place,
-                                fontSize = 18.sp,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer
-                            )
-                        } else {
-                            Spacer(
-                                modifier = Modifier
-                                    .height(34.dp)
-                            )
-                        }
-                    }
-
-                    //Kilometri
-
-                    val kmt = formatKmt(currentItem.kmt)
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                    ) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.time_to_leave),
-                            contentDescription = "Icona automobile",
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier
-                                .size(34.dp)
-                                .padding(end = 4.dp),
-                        )
-
-                        Text(
-                            text = "$kmt km",
-                            fontSize = 18.sp,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-
-                        Column(
-                            horizontalAlignment = Alignment.End,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            val price = formatPrice(state.men[index].price)
-
-                            Text(
-                                text = "$price €",
-                                fontSize = 18.sp,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            )
-                        }
-                    }
-                }
-            }
-        }
-
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        if (sortedRif.isEmpty()) {
-            Row(
-                modifier = Modifier
-                    .padding(top = 32.dp)
-            ) {
-                Text(
-                    text = "Aggiungi il tuo primo rifornimento per visualizzare un resoconto.",
-                    modifier = Modifier.padding(16.dp),
-                    fontSize = 18.sp,
-                    textAlign = TextAlign.Center
-                )
-            }
-            //return@Column
-        }
-
-        if (sortedRif.isNotEmpty()) {
-            val currentRifItem = sortedRif.first()
-            val rifIndex = rifState.rifs.indexOf(currentRifItem)
-
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(MaterialTheme.colorScheme.primaryContainer)
-                    .padding(12.dp)
-                    .clickable {
-                        navController.navigate("ViewRifScreen/$rifIndex")
-                    }
-            ) {
-
-                //Icona tipo
-                val icon = when (currentRifItem.type) {
-                    "Elettrico" -> ImageVector.vectorResource(id = R.drawable.electric)
-                    else -> ImageVector.vectorResource(id = R.drawable.oil)
-                }
-
-                Column(
-                    verticalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .padding(bottom = 4.dp)
-                    ) {
-                        Column {
-                            Icon(
-                                imageVector = icon,
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(34.dp)
-                                    .padding(end = 4.dp),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }
-
-
-
-                        Column {
-
-                            //Data
-                            Text(
-                                text = currentRifItem.date,
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                        Column(
-                            horizontalAlignment = Alignment.End,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-
-                            //Prezzo
-                            val price = formatPrice(currentRifItem.price)
-
-                            Text(
-                                text = "$price €",
-                                fontSize = 18.sp,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            )
-                        }
-                    }
-
-                    //Prezzo per unità
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .padding(bottom = 4.dp)
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.End,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            val uvalue =
-                                formatPrice(currentRifItem.uvalue).replace('.', ',')
-
-                            val unitprice = if (currentRifItem.type == "Elettrico") {
-                                "$uvalue €/kWh"
-                            } else {
-                                "$uvalue €/l"
+                    //Anno
+                    if (carProfile.year != 0) {
+                        Row {
+                            Column {
+                                Text(
+                                    text = "Anno",
+                                    fontSize = 14.sp
+                                )
+                                Row(
+                                    modifier = Modifier
+                                        .border(
+                                            border = ButtonDefaults.outlinedButtonBorder(),
+                                            shape = RoundedCornerShape(6.dp)
+                                        )
+                                        .padding(12.dp)
+                                        .fillMaxWidth()
+                                ) {
+                                    Text(
+                                        text = carProfile.year.toString(),
+                                        fontSize = 24.sp,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(16.dp))
                             }
-
-                            Text(
-                                text = unitprice,
-                                fontSize = 18.sp,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            )
                         }
                     }
 
 
-                    //Luogo
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        val place = currentRifItem.place
+                    if (carProfile.eco.isNotEmpty()) {
+                        //Inquinamento
 
-                        if (place.isNotEmpty()) {
-
-                            Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.location),
-                                contentDescription = "Luogo",
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier
-                                    .size(34.dp)
-                                    .padding(end = 4.dp),
-                            )
-
-                            Text(
-                                text = currentRifItem.place,
-                                fontSize = 18.sp,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-                        } else {
-                            Spacer(modifier = Modifier
-                                .height(34.dp)
-                            )
-                        }
-
-                        //Unità totali
-                        Column(
-                            horizontalAlignment = Alignment.End,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            val totunit = formatPrice(currentRifItem.totunit)
-
-                            val showunit = if (currentRifItem.type == "Elettrico") {
-                                "$totunit kWh"
-                            } else {
-                                "$totunit l"
+                        Row {
+                            Column {
+                                Text(
+                                    text = "Inquinamento",
+                                    fontSize = 14.sp
+                                )
+                                Row(
+                                    modifier = Modifier
+                                        .border(
+                                            border = ButtonDefaults.outlinedButtonBorder(),
+                                            shape = RoundedCornerShape(6.dp)
+                                        )
+                                        .padding(12.dp)
+                                        .fillMaxWidth()
+                                ) {
+                                    Text(
+                                        text = carProfile.eco,
+                                        fontSize = 24.sp,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                    )
+                                }
                             }
-
-                            Text(
-                                text = showunit,
-                                fontSize = 18.sp,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            )
                         }
                     }
                 }
             }
+
         }
+     }
     }
-    }
+}

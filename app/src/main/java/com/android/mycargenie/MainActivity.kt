@@ -18,10 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
+import com.android.mycargenie.data.ManDao
 import com.android.mycargenie.data.ManDatabase
+import com.android.mycargenie.data.RifDao
 import com.android.mycargenie.data.RifDatabase
+import com.android.mycargenie.pages.home.HomeViewModel
+import com.android.mycargenie.pages.libretto.LibrettoViewModel
 import com.android.mycargenie.pages.manutenzione.ManViewModel
-import com.android.mycargenie.pages.profile.ProfileViewModel
 import com.android.mycargenie.pages.rifornimento.RifViewModel
 import com.android.mycargenie.pages.scadenze.CustomNotificationManager
 import com.android.mycargenie.pages.scadenze.ExpirationsViewModel
@@ -39,7 +42,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-    private val database by lazy {
+    private val manDatabase by lazy {
         Room.databaseBuilder(
             applicationContext,
             ManDatabase::class.java,
@@ -47,7 +50,7 @@ class MainActivity : ComponentActivity() {
         ) .build()
     }
 
-    private val rifdatabase by lazy {
+    private val rifDatabase by lazy {
         Room.databaseBuilder(
             applicationContext,
             RifDatabase::class.java,
@@ -55,15 +58,27 @@ class MainActivity : ComponentActivity() {
         ) .build()
     }
 
+    class HomeViewModelFactory(
+        private val manDao: ManDao,
+        private val rifDao: RifDao
+    ) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            Log.d("HomeViewModelFactory", "Creating HomeViewModel with $manDao, $rifDao")
+            return HomeViewModel(manDao, rifDao) as T
+        }
+    }
+
+    private val homeViewModel by viewModels<HomeViewModel> {
+        HomeViewModelFactory(manDatabase.dao(), rifDatabase.dao())
+    }
 
 
-
-    private val viewModel by viewModels<ManViewModel> {
+    private val manViewModel by viewModels<ManViewModel> {
         object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 if (modelClass.isAssignableFrom(ManViewModel::class.java)) {
-                    return ManViewModel(database.dao()) as T
+                    return ManViewModel(manDatabase.dao()) as T
                 }
                 throw IllegalArgumentException("Unknown ViewModel class ManViewModel")
             }
@@ -75,7 +90,7 @@ class MainActivity : ComponentActivity() {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 if (modelClass.isAssignableFrom(RifViewModel::class.java)) {
-                    return RifViewModel(rifdatabase.dao()) as T
+                    return RifViewModel(rifDatabase.dao()) as T
                 }
                 throw IllegalArgumentException("Unknown ViewModel class RifViewModel")
             }
@@ -85,8 +100,8 @@ class MainActivity : ComponentActivity() {
     class SetViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return when {
-                modelClass.isAssignableFrom(ProfileViewModel::class.java) -> {
-                    ProfileViewModel(application) as T
+                modelClass.isAssignableFrom(LibrettoViewModel::class.java) -> {
+                    LibrettoViewModel(application) as T
                 }
                 modelClass.isAssignableFrom(ExpirationsViewModel::class.java) -> {
                     ExpirationsViewModel(application) as T
@@ -96,7 +111,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private val profileViewModel: ProfileViewModel by viewModels { SetViewModelFactory(application) }
+    private val librettoViewModel: LibrettoViewModel by viewModels { SetViewModelFactory(application) }
 
     private val expViewModel: ExpirationsViewModel by viewModels {SetViewModelFactory(application) }
 
@@ -121,17 +136,18 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 
-                    val state by viewModel.state.collectAsState()
+                    val state by manViewModel.state.collectAsState()
                     val rifState by rifViewModel.state.collectAsState()
-                    val carProfile by profileViewModel.carProfile.collectAsState()
+                    val carProfile by librettoViewModel.carProfile.collectAsState()
                     val expirations by expViewModel.expSettings.collectAsState()
 
                     MainApp(
-                        viewModel = viewModel,
+                        homeViewModel = homeViewModel,
+                        manViewModel = manViewModel,
                         rifViewModel = rifViewModel,
-                        profileViewModel = profileViewModel,
+                        librettoViewModel = librettoViewModel,
                         expirationsViewModel = expViewModel,
-                        onManEvent = viewModel::onEvent,
+                        onManEvent = manViewModel::onEvent,
                         onRifEvent = rifViewModel::onEvent,
                         state = state,
                         rifState = rifState,
@@ -160,12 +176,7 @@ class MainActivity : ComponentActivity() {
         }
 
 
-
-
     }
-
-
-
 
     private fun deleteExistingDatabase() {
 

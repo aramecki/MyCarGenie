@@ -129,7 +129,8 @@ fun ManutenzioneScreen(
                     start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
                     end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
                     bottom = paddingValues.calculateBottomPadding()
-                ), modifier = Modifier
+                ),
+                modifier = Modifier
                     .fillMaxSize()
                     .padding(8.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)

@@ -7,12 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.mycargenie.data.Rif
 import com.android.mycargenie.data.RifDao
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -21,39 +18,72 @@ class RifViewModel(
     private val dao: RifDao
 ) : ViewModel() {
 
+    /*
+    The viewmodel code base has been created with the use of AI and then customized and optimized.
+    The performance optimization to load elements in RifScreen when required has been made through the use of AI.
+    */
+
     private val _lastInsertedId = MutableStateFlow<Int?>(null)
-    val lastInsertedId: StateFlow<Int?> = _lastInsertedId
-
-    init {
-        viewModelScope.launch {
-            dao.getLastInsertedId().collect { lastId ->
-                println("Ultimo ID inserito: $lastId")  // Aggiungi questo log
-                _lastInsertedId.value = lastId
-            }
-        }
-    }
-
-    private val isSortedByDateAdded = MutableStateFlow(true)
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val rifs = isSortedByDateAdded.flatMapLatest { sort: Boolean ->
-        if (sort) {
-            dao.getRifOrderedByDate()
-        } else {
-            dao.getRifOrderedByDateAdded()
-        }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     private val _state = MutableStateFlow(RifState())
+    private val isSortedByDateAdded = MutableStateFlow(true)
+    private val _rifs = MutableStateFlow<List<Rif>>(emptyList())
+
+    private val pageSize = 10
+    private var currentPage = 0
+    private var isLoading = false
+
     val state = combine(
         _state,
         isSortedByDateAdded,
-        rifs
-    ) { state: RifState, _: Boolean, rifs: List<Rif> ->
+        _rifs
+    ) { state, _, rifs ->
         state.copy(
             rifs = rifs
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), RifState())
+
+    init {
+        viewModelScope.launch {
+            dao.getLastInsertedId().collect { lastId ->
+                println("Ultimo ID inserito: $lastId")
+                _lastInsertedId.value = lastId
+            }
+        }
+        loadMoreRifs()
+    }
+
+    fun loadMoreRifs() {
+        if (isLoading) return
+
+        viewModelScope.launch {
+            isLoading = true
+            _state.update { it.copy(isLoading = true) }
+
+            println("Caricamento pagina: $currentPage, Offset: ${currentPage * pageSize}")
+
+            val newRifs = if (isSortedByDateAdded.value) {
+                dao.getRifPaginatedOrderedByDate(currentPage * pageSize, pageSize)
+            } else {
+                dao.getRifPaginatedOrderedByDateAdded(currentPage * pageSize, pageSize)
+            }
+
+            if (newRifs.isEmpty()) {
+                println("Nessun dato da caricare.")
+                isLoading = false
+                _state.update { it.copy(isLoading = false) }
+                return@launch
+            }
+
+            _rifs.update { currentList -> currentList + newRifs }
+            currentPage++
+
+            println("Nuovi rifornimenti caricati: ${newRifs.size}, Totale: ${_rifs.value.size}")
+
+            isLoading = false
+            _state.update { it.copy(isLoading = false) }
+        }
+    }
 
     fun onEvent(event: RifEvent) {
         when (event) {
@@ -73,7 +103,6 @@ class RifViewModel(
                     date = state.value.date.value,
                     note = state.value.note.value,
                     kmt = state.value.kmt.value,
-
                 )
 
                 viewModelScope.launch {
@@ -90,7 +119,7 @@ class RifViewModel(
                         date = mutableStateOf(""),
                         note = mutableStateOf(""),
                         kmt = mutableIntStateOf(0),
-                        )
+                    )
                 }
             }
 
@@ -128,6 +157,9 @@ class RifViewModel(
 
             is RifEvent.SortRif -> {
                 isSortedByDateAdded.value = !isSortedByDateAdded.value
+                currentPage = 0
+                _rifs.value = emptyList()
+                loadMoreRifs()
             }
         }
     }

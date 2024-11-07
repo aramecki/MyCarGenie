@@ -19,14 +19,16 @@ interface RifDao {
     @Delete
     suspend fun deleteRif(rif: Rif)
 
-    @Query("SELECT * FROM rif ORDER BY substr(date, 7, 4) || '-' || substr(date, 4, 2) || '-' || substr(date, 1, 2) DESC")
-    fun getRifOrderedByDate(): Flow<List<Rif>>
-
-
-    @Query("SELECT * FROM rif ORDER BY id DESC")
-    fun getRifOrderedByDateAdded(): Flow<List<Rif>>
-
     @Query("SELECT MAX(id) FROM rif")
     fun getLastInsertedId(): Flow<Int?>
+
+    @Query("SELECT * FROM rif ORDER BY substr(date, 7, 4) || '-' || substr(date, 4, 2) || '-' || substr(date, 1, 2) DESC LIMIT :limit OFFSET :offset")
+    suspend fun getRifPaginatedOrderedByDate(offset: Int, limit: Int): List<Rif>
+
+    @Query("SELECT * FROM rif ORDER BY id DESC LIMIT :limit OFFSET :offset")
+    suspend fun getRifPaginatedOrderedByDateAdded(offset: Int, limit: Int): List<Rif>
+
+    @Query("SELECT * FROM rif WHERE date <= :today ORDER BY date DESC LIMIT 1")
+    fun getLastRifBeforeToday(today: String): Flow<Rif?>
 
 }

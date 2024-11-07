@@ -1,4 +1,4 @@
-package com.android.mycargenie.pages.profile
+package com.android.mycargenie.pages.libretto
 
 import android.content.Context
 import android.net.Uri
@@ -49,9 +49,9 @@ import com.android.mycargenie.pages.manutenzione.TypeDropdownMenu
 import com.android.mycargenie.shared.saveImageToMmry
 
 @Composable
-fun ProfileSettingsScreen(
+fun LibrettoSettingsScreen(
     carProfile: CarProfile,
-    profileViewModel: ProfileViewModel,
+    librettoViewModel: LibrettoViewModel,
     navController: NavController,
     context: Context
 ) {
@@ -434,7 +434,7 @@ fun ProfileSettingsScreen(
 
                             val newImagePath = saveImageToMmry(context = context, Uri.parse(savedImagePath))
 
-                        profileViewModel.updateCarProfile(
+                        librettoViewModel.updateCarProfile(
                             CarProfile(
                                 brand,
                                 model,

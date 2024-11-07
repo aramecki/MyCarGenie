@@ -15,16 +15,21 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,43 +48,31 @@ import com.android.mycargenie.shared.formatPrice
 fun RifornimentoScreen(
     state: RifState,
     navController: NavController,
-    //onEvent: (RifEvent) -> Unit
+    viewModel: RifViewModel
 ) {
 
+    // The optimization of the element loading has been obtained with the use of AI
+
+    val lazyListState = rememberLazyListState()
+
+    val isAtEndOfList = remember {
+        derivedStateOf {
+            val lastVisibleIndex = lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: -1
+            val distanceFromEnd = state.rifs.size - lastVisibleIndex
+            println("lastVisibleIndex: $lastVisibleIndex, State Size: ${state.rifs.size}, Distance: $distanceFromEnd")
+            distanceFromEnd <= 3
+        }
+    }
+
+    LaunchedEffect(isAtEndOfList.value, state.rifs) {
+        println("isAtEndOfList.value: ${isAtEndOfList.value}")
+        if (isAtEndOfList.value) {
+            println("Caricamento nuovi dati...")
+            viewModel.loadMoreRifs()
+        }
+    }
 
     Scaffold(
-
-        /*
-        topBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(55.dp)
-                    .background(MaterialTheme.colorScheme.primary)
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Rifornimento", //Da inserire in strings
-                    modifier = Modifier.weight(1f),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
-
-
-                IconButton(onClick = { onEvent(RifEvent.SortRif) }) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.sort),
-                        contentDescription = "Ordina Rifornimento",
-                        modifier = Modifier.size(35.dp),
-                        tint = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
-            }
-        },
-
-         */
 
         floatingActionButton = {
             FloatingActionButton(onClick = {
@@ -130,6 +123,7 @@ fun RifornimentoScreen(
         } else {
 
                 LazyColumn(
+                    state = lazyListState,
                     contentPadding = PaddingValues(
                         top = 8.dp,
                         start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
@@ -148,6 +142,16 @@ fun RifornimentoScreen(
                             index = index,
                             navController = navController
                         )
+                    }
+
+                    if (state.isLoading) {
+                        item {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp)
+                            )
+                        }
                     }
 
                 }

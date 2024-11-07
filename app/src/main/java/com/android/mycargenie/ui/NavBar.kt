@@ -57,7 +57,12 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.android.mycargenie.R
+import com.android.mycargenie.pages.home.HomeScreen
+import com.android.mycargenie.pages.home.HomeViewModel
+import com.android.mycargenie.pages.libretto.CarProfile
 import com.android.mycargenie.pages.libretto.LibrettoScreen
+import com.android.mycargenie.pages.libretto.LibrettoSettingsScreen
+import com.android.mycargenie.pages.libretto.LibrettoViewModel
 import com.android.mycargenie.pages.manutenzione.AddManScreen
 import com.android.mycargenie.pages.manutenzione.EditManScreen
 import com.android.mycargenie.pages.manutenzione.ManEvent
@@ -65,10 +70,6 @@ import com.android.mycargenie.pages.manutenzione.ManState
 import com.android.mycargenie.pages.manutenzione.ManViewModel
 import com.android.mycargenie.pages.manutenzione.ManutenzioneScreen
 import com.android.mycargenie.pages.manutenzione.ViewManScreen
-import com.android.mycargenie.pages.profile.CarProfile
-import com.android.mycargenie.pages.profile.ProfileScreen
-import com.android.mycargenie.pages.profile.ProfileSettingsScreen
-import com.android.mycargenie.pages.profile.ProfileViewModel
 import com.android.mycargenie.pages.rifornimento.AddRifScreen
 import com.android.mycargenie.pages.rifornimento.EditRifScreen
 import com.android.mycargenie.pages.rifornimento.RifEvent
@@ -92,9 +93,10 @@ data class BottomNavItem(
 
 @Composable
 fun MainApp(
-    viewModel: ManViewModel,
+    homeViewModel: HomeViewModel,
+    manViewModel: ManViewModel,
     rifViewModel: RifViewModel,
-    profileViewModel: ProfileViewModel,
+    librettoViewModel: LibrettoViewModel,
     expirationsViewModel: ExpirationsViewModel,
     onManEvent: (ManEvent) -> Unit,
     onRifEvent: (RifEvent) -> Unit,
@@ -108,7 +110,7 @@ fun MainApp(
 
     val navController = rememberNavController()
 
-    val observedCarProfile by profileViewModel.carProfile.collectAsState()
+    val observedCarProfile by librettoViewModel.carProfile.collectAsState()
     val observedExpirations by expirationsViewModel.expSettings.collectAsState()
 
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
@@ -118,7 +120,7 @@ fun MainApp(
 
     val shouldShowBottomBar = currentDestination !in listOf("ViewManScreen/{index}", "AddManScreen", "EditManScreen/{manIndex}", "ViewRifScreen/{index}", "AddRifScreen", "EditRifScreen/{rifIndex}", "ProfileSettings", "ExpirationsSettings")
 
-    val shouldShowTopBar = currentDestination !in listOf("LibrettoScreen", "ProfileScreen")
+    val shouldShowTopBar = currentDestination !in listOf("HomeScreen", "ProfileScreen")
 
     val statusBarHeight = with(LocalDensity.current) {
         WindowInsets.statusBars.getBottom(this).toDp()
@@ -231,7 +233,7 @@ fun MainApp(
                                     TextButton(onClick = {
                                         when (currentDestination) {
                                             "ViewManScreen/{index}" -> manItem?.let { item ->
-                                                viewModel.onEvent(ManEvent.DeleteMan(item))
+                                                manViewModel.onEvent(ManEvent.DeleteMan(item))
                                             }
 
                                             "ViewRifScreen/{index}" -> rifItem?.let { item ->
@@ -314,7 +316,7 @@ fun MainApp(
             LaunchedEffect(navController) {
                 navController.addOnDestinationChangedListener { _, destination, _ ->
                     selectedTabIndex = when (destination.route) {
-                        "LibrettoScreen" -> 0
+                        "HomeScreen" -> 0
                         "ManutenzioneScreen" -> 1
                         "RifornimentoScreen" -> 2
                         "ExpirationsScreen" -> 3
@@ -328,11 +330,11 @@ fun MainApp(
                     BottomNavigationBar(
                         items = listOf(
                             BottomNavItem(
-                                "Libretto",
-                                ImageVector.vectorResource(id = R.drawable.assignment)
+                                "Home",
+                                ImageVector.vectorResource(id = R.drawable.home)
                             ) {
                                 selectedTabIndex = 0
-                                navController.navigate("LibrettoScreen")
+                                navController.navigate("HomeScreen")
                             },
                             BottomNavItem(
                                 "Manutenzione",
@@ -356,8 +358,8 @@ fun MainApp(
                                 navController.navigate("ExpirationsScreen")
                             },
                             BottomNavItem(
-                                "Profilo",
-                                ImageVector.vectorResource(id = R.drawable.profile)
+                                "Libretto",
+                                ImageVector.vectorResource(id = R.drawable.assignment)
                             ) {
                                 selectedTabIndex = 4
                                 navController.navigate("ProfileScreen")
@@ -368,7 +370,7 @@ fun MainApp(
                             selectedTabIndex = index
 
                             when (index) {
-                                0 -> navController.navigate("LibrettoScreen")
+                                0 -> navController.navigate("HomeScreen")
                                 1 -> navController.navigate("ManutenzioneScreen")
                                 2 -> navController.navigate("RifornimentoScreen")
                                 3 -> navController.navigate("ExpirationsScreen")
@@ -387,12 +389,13 @@ fun MainApp(
                 .fillMaxSize()
         ) {
 
-            NavHost(navController = navController, startDestination = "LibrettoScreen") {
+            NavHost(navController = navController, startDestination = "HomeScreen") {
 
-                composable("LibrettoScreen") {
-                    LibrettoScreen(
-                        state = viewModel.state.collectAsState().value,
+                composable("HomeScreen") {
+                    HomeScreen(
+                        manState = manViewModel.state.collectAsState().value,
                         rifState = rifViewModel.state.collectAsState().value,
+                        homeViewModel = homeViewModel,
                         carProfile = observedCarProfile,
                         navController = navController
                     )
@@ -400,10 +403,9 @@ fun MainApp(
 
                 composable("ManutenzioneScreen") {
                     ManutenzioneScreen(
-                        state = viewModel.state.collectAsState().value,
+                        state = manViewModel.state.collectAsState().value,
                         navController = navController,
-                        viewModel = viewModel
-                        //onEvent = viewModel::onEvent
+                        viewModel = manViewModel
                     )
                 }
 
@@ -416,9 +418,9 @@ fun MainApp(
                     }
                 ) {
                     AddManScreen(
-                        state = viewModel.state.collectAsState().value,
+                        state = manViewModel.state.collectAsState().value,
                         navController = navController,
-                        onEvent = viewModel::onEvent
+                        onEvent = manViewModel::onEvent
                     )
                 }
 
@@ -432,7 +434,7 @@ fun MainApp(
                     }
                 ) {
                     ViewManScreen(
-                        state = viewModel.state.collectAsState().value,
+                        state = manViewModel.state.collectAsState().value,
                         navController = navController,
                     )
 
@@ -448,9 +450,9 @@ fun MainApp(
                     }
                 ) {
                     EditManScreen(
-                        state = viewModel.state.collectAsState().value,
+                        state = manViewModel.state.collectAsState().value,
                         navController = navController,
-                        onEvent = viewModel::onEvent
+                        onEvent = manViewModel::onEvent
                     )
                 }
 
@@ -458,7 +460,7 @@ fun MainApp(
                     RifornimentoScreen(
                         state = rifViewModel.state.collectAsState().value,
                         navController = navController,
-                        //onEvent = rifViewModel::onEvent
+                        viewModel = rifViewModel
                     )
                 }
                 composable("AddRifScreen",
@@ -508,7 +510,7 @@ fun MainApp(
                 }
 
                 composable("ProfileScreen") {
-                    ProfileScreen(
+                    LibrettoScreen(
                         carProfile = observedCarProfile,
                         navController = navController
                     )
@@ -522,9 +524,9 @@ fun MainApp(
                         slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
                     }
                 ) {
-                    ProfileSettingsScreen(
+                    LibrettoSettingsScreen(
                         carProfile = carProfile,
-                        profileViewModel = profileViewModel,
+                        librettoViewModel = librettoViewModel,
                         navController = navController,
                         context = LocalContext.current
                     )
