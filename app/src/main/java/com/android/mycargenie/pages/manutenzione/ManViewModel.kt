@@ -75,7 +75,6 @@ class ManViewModel(
                 return@launch
             }
 
-            // Pulisci la lista e aggiungi i nuovi dati
             _mans.update { currentList ->
                 val existingIds = currentList.map { it.id }.toSet()
                 val filteredNewMen = newMen.filterNot { existingIds.contains(it.id) }

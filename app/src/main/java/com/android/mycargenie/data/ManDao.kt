@@ -22,13 +22,13 @@ interface ManDao {
     @Query("SELECT MAX(id) FROM man")
     fun getLastInsertedId(): Flow<Int?>
 
-    @Query("SELECT * FROM man ORDER BY substr(date, 7, 4) || '-' || substr(date, 4, 2) || '-' || substr(date, 1, 2) DESC LIMIT :limit OFFSET :offset")
+    @Query("SELECT * FROM man ORDER BY substr(date, 7, 4) || '-' || substr(date, 4, 2) || '-' || substr(date, 1, 2) DESC, id DESC LIMIT :limit OFFSET :offset")
     suspend fun getMenPaginatedOrderedByDate(offset: Int, limit: Int): List<Man>
 
     @Query("SELECT * FROM man ORDER BY id DESC LIMIT :limit OFFSET :offset")
     suspend fun getMenPaginatedOrderedByDateAdded(offset: Int, limit: Int): List<Man>
 
-    @Query("SELECT * FROM man WHERE date <= :today ORDER BY date DESC LIMIT 1")
+    @Query("SELECT * FROM man WHERE date <= :today ORDER BY date DESC, id DESC LIMIT 1")
     fun getLastManBeforeToday(today: String): Flow<Man?>
 
 }

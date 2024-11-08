@@ -14,14 +14,14 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/*
+The viewmodel code base has been created with the use of AI and then customized and optimized.
+The performance optimization to load elements in RifScreen when required has been made through the use of AI.
+*/
+
 class RifViewModel(
     private val dao: RifDao
 ) : ViewModel() {
-
-    /*
-    The viewmodel code base has been created with the use of AI and then customized and optimized.
-    The performance optimization to load elements in RifScreen when required has been made through the use of AI.
-    */
 
     private val _lastInsertedId = MutableStateFlow<Int?>(null)
     private val _state = MutableStateFlow(RifState())
@@ -74,9 +74,13 @@ class RifViewModel(
                 return@launch
             }
 
-            _rifs.update { currentList -> currentList + newRifs }
-
+            _rifs.update { currentList ->
+                val existingIds = currentList.map { it.id }.toSet()
+                val filteredNewRifs = newRifs.filterNot { existingIds.contains(it.id) }
+                currentList + filteredNewRifs
+            }
             currentPage++
+
             println("Nuovi rifornimenti caricati: ${newRifs.size}, Totale: ${_rifs.value.size}")
 
             isLoading = false
@@ -145,6 +149,7 @@ class RifViewModel(
 
                 viewModelScope.launch {
                     dao.updateRif(rif)
+
                     _rifs.update { currentList ->
                         currentList.map { if (it.id == rif.id) rif else it }
                     }
@@ -168,7 +173,7 @@ class RifViewModel(
             is RifEvent.SortRif -> {
                 isSortedByDateAdded.value = !isSortedByDateAdded.value
                 currentPage = 0
-                _rifs.value = emptyList()  // Svuota la lista e ricarica
+                _rifs.value = emptyList()
                 loadMoreRifs()
             }
         }
