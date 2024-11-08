@@ -171,8 +171,8 @@ class ManViewModel(
             is ManEvent.SortMan -> {
                 isSortedByDateAdded.value = !isSortedByDateAdded.value
                 currentPage = 0
-                _mans.value = emptyList() // Pulisce la lista esistente
-                loadMoreMen() // Ricarica i dati ordinati
+                _mans.value = emptyList()
+                loadMoreMen()
             }
         }
     }
