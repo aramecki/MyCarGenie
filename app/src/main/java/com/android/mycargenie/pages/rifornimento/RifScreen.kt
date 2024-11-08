@@ -29,7 +29,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,26 +57,31 @@ fun RifornimentoScreen(
     // The optimization of the element loading has been obtained with the use of AI
 
     val lazyListState = rememberLazyListState()
+    var isLoading by remember { mutableStateOf(false) }
 
     val isAtEndOfList = remember {
         derivedStateOf {
             val lastVisibleIndex = lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: -1
-            val distanceFromEnd = state.rifs.size - lastVisibleIndex
+            val isSmallList = state.rifs.size <= 3
+            val  distanceFromEnd = state.rifs.size - lastVisibleIndex
+
             println("lastVisibleIndex: $lastVisibleIndex, State Size: ${state.rifs.size}, Distance: $distanceFromEnd")
-            distanceFromEnd <= 3
+
+            !isSmallList && distanceFromEnd <= 3
         }
     }
 
     // Watch for when to load more items and when the list changes
     LaunchedEffect(isAtEndOfList.value, state.rifs) {
-        if (isAtEndOfList.value) {
+        if (isAtEndOfList.value && !isLoading) {
             println("Caricamento nuovi dati...")
+            isLoading = true
             viewModel.loadMoreRifs()
+            isLoading = false
         }
     }
 
     Scaffold(
-
         floatingActionButton = {
             FloatingActionButton(onClick = {
                 state.type.value = ""

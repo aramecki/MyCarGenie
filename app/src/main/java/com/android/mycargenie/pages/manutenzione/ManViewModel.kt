@@ -14,17 +14,17 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+/*
+The viewmodel code bas has been created with the use of AI and then customized and optimized.
+The performance optimization to load elements in ManScreen when required has ben made through the use of AI.
+ */
+
+
 class ManViewModel(
     private val dao: ManDao
 ) : ViewModel() {
 
-    /*
-    The viewmodel code bas has been created with the use of AI and then customized and optimized.
-    The performance optimization to load elements in ManScreen when required has ben made through the use of AI.
-     */
-
     private val _lastInsertedId = MutableStateFlow<Int?>(null)
-
     private val _state = MutableStateFlow(ManState())
     private val isSortedByDateAdded = MutableStateFlow(true)
     private val _mans = MutableStateFlow<List<Man>>(emptyList())
@@ -75,7 +75,12 @@ class ManViewModel(
                 return@launch
             }
 
-            _mans.update { currentList -> currentList + newMen }
+            // Pulisci la lista e aggiungi i nuovi dati
+            _mans.update { currentList ->
+                val existingIds = currentList.map { it.id }.toSet()
+                val filteredNewMen = newMen.filterNot { existingIds.contains(it.id) }
+                currentList + filteredNewMen
+            }
             currentPage++
 
             println("Nuovi elementi caricati: ${newMen.size}, Totale: ${_mans.value.size}")
@@ -84,7 +89,6 @@ class ManViewModel(
             _state.update { it.copy(isLoading = false) }
         }
     }
-
 
     fun onEvent(event: ManEvent) {
         when (event) {
@@ -109,8 +113,12 @@ class ManViewModel(
                 viewModelScope.launch {
                     dao.insertMan(man)
 
-                    // Aggiungi solo il nuovo elemento alla lista esistente
-                    _mans.update { currentList -> currentList + man }
+                    val limit = (currentPage + 1) * pageSize
+                    val offset = 0
+
+                    _mans.update {
+                        dao.getMenPaginatedOrderedByDate(offset, limit)
+                    }
 
                     _state.update {
                         it.copy(
@@ -141,11 +149,9 @@ class ManViewModel(
                 viewModelScope.launch {
                     dao.updateMan(man)
 
-                    // Dopo l'aggiornamento, aggiorna solo l'elemento modificato nella lista
                     _mans.update { currentList ->
                         currentList.map { if (it.id == man.id) man else it }
                     }
-
 
                     _state.update {
                         it.copy(
@@ -162,14 +168,12 @@ class ManViewModel(
                 }
             }
 
-
             is ManEvent.SortMan -> {
                 isSortedByDateAdded.value = !isSortedByDateAdded.value
                 currentPage = 0
-                _mans.value = emptyList()
-                loadMoreMen()
+                _mans.value = emptyList() // Pulisce la lista esistente
+                loadMoreMen() // Ricarica i dati ordinati
             }
         }
     }
 }
-
