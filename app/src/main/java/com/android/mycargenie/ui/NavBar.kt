@@ -1,8 +1,7 @@
 package com.android.mycargenie.ui
 
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.background
@@ -389,7 +388,12 @@ fun MainApp(
 
             NavHost(navController = navController, startDestination = "HomeScreen") {
 
-                composable("HomeScreen") {
+                composable("HomeScreen",
+                    enterTransition = { slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    exitTransition = { slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    popEnterTransition = { slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    popExitTransition = { slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) }
+                ) {
                     HomeScreen(
                         manState = manViewModel.state.collectAsState().value,
                         rifState = rifViewModel.state.collectAsState().value,
@@ -399,7 +403,40 @@ fun MainApp(
                     )
                 }
 
-                composable("ManutenzioneScreen") {
+                composable("ManutenzioneScreen",
+                    enterTransition = {
+                        val previousScreen = navController.previousBackStackEntry?.destination?.route
+                        when (previousScreen) {
+                            "HomeScreen" -> slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            "RifornimentoScreen", "ExpirationsScreen", "ProfileScreen" -> slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            else -> slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                        }
+                    },
+                    exitTransition = {
+                        val nextScreen = navController.currentBackStackEntry?.destination?.route
+                        when (nextScreen) {
+                            "HomeScreen" -> slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            "RifornimentoScreen", "ExpirationsScreen", "ProfileScreen" -> slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            else -> slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                        }
+                    },
+                    popEnterTransition = {
+                        val previousScreen = navController.previousBackStackEntry?.destination?.route
+                        when (previousScreen) {
+                            "HomeScreen" -> slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            "RifornimentoScreen", "ExpirationsScreen", "ProfileScreen" -> slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            else -> slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                        }
+                    },
+                    popExitTransition = {
+                        val nextScreen = navController.currentBackStackEntry?.destination?.route
+                        when (nextScreen) {
+                            "HomeScreen" -> slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            "RifornimentoScreen", "ExpirationsScreen", "ProfileScreen" -> slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            else -> slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                        }
+                    }
+                ) {
                     ManutenzioneScreen(
                         state = manViewModel.state.collectAsState().value,
                         navController = navController,
@@ -408,12 +445,10 @@ fun MainApp(
                 }
 
                 composable("AddManScreen",
-                    enterTransition = {
-                        slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500))
-                    },
-                    exitTransition = {
-                        slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
-                    }
+                    enterTransition = { slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    exitTransition = { slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    popEnterTransition = { slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) },
+                    popExitTransition = { slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) }
                 ) {
                     AddManScreen(
                         state = manViewModel.state.collectAsState().value,
@@ -424,12 +459,10 @@ fun MainApp(
 
                 composable("ViewManScreen/{index}",
                     arguments = listOf(navArgument("index") { type = NavType.IntType }),
-                    enterTransition = {
-                        slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500))
-                    },
-                    exitTransition = {
-                        slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
-                    }
+                    enterTransition = { slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    exitTransition = { slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    popEnterTransition = { slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) },
+                    popExitTransition = { slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) }
                 ) {
                     ViewManScreen(
                         state = manViewModel.state.collectAsState().value,
@@ -440,12 +473,10 @@ fun MainApp(
 
                 composable("EditManScreen/{manIndex}",
                     arguments = listOf(navArgument("manIndex") { type = NavType.IntType }),
-                    enterTransition = {
-                        slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500))
-                    },
-                    exitTransition = {
-                        slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
-                    }
+                    enterTransition = { slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    exitTransition = { slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    popEnterTransition = { slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) },
+                    popExitTransition = { slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) }
                 ) {
                     EditManScreen(
                         state = manViewModel.state.collectAsState().value,
@@ -454,7 +485,40 @@ fun MainApp(
                     )
                 }
 
-                composable("RifornimentoScreen") {
+                composable("RifornimentoScreen",
+                    enterTransition = {
+                        val previousScreen = navController.previousBackStackEntry?.destination?.route
+                        when (previousScreen) {
+                            "HomeScreen", "ManutenzioneScreen" -> slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            "ExpirationsScreen", "ProfileScreen" -> slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            else -> slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                        }
+                    },
+                    exitTransition = {
+                        val nextScreen = navController.currentBackStackEntry?.destination?.route
+                        when (nextScreen) {
+                            "HomeScreen", "ManutenzioneScreen" -> slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            "ExpirationsScreen", "ProfileScreen" -> slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            else -> slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                        }
+                    },
+                    popEnterTransition = {
+                        val previousScreen = navController.previousBackStackEntry?.destination?.route
+                        when (previousScreen) {
+                            "HomeScreen", "ManutenzioneScreen" -> slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            "ExpirationsScreen", "ProfileScreen" -> slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            else -> slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                        }
+                    },
+                    popExitTransition = {
+                        val nextScreen = navController.currentBackStackEntry?.destination?.route
+                        when (nextScreen) {
+                            "HomeScreen", "ManutenzioneScreen" -> slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            "ExpirationsScreen", "ProfileScreen" -> slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            else -> slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                        }
+                    }
+                    ) {
                     RifornimentoScreen(
                         state = rifViewModel.state.collectAsState().value,
                         navController = navController,
@@ -462,12 +526,10 @@ fun MainApp(
                     )
                 }
                 composable("AddRifScreen",
-                    enterTransition = {
-                        slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500))
-                    },
-                    exitTransition = {
-                        slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
-                    }
+                    enterTransition = { slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    exitTransition = { slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    popEnterTransition = { slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) },
+                    popExitTransition = { slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) }
                 ) {
                     AddRifScreen(
                         state = rifViewModel.state.collectAsState().value,
@@ -477,12 +539,10 @@ fun MainApp(
                 }
                 composable("ViewRifScreen/{index}",
                     arguments = listOf(navArgument("index") { type = NavType.IntType }),
-                    enterTransition = {
-                        slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500))
-                    },
-                    exitTransition = {
-                        slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
-                    }
+                    enterTransition = { slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    exitTransition = { slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    popEnterTransition = { slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) },
+                    popExitTransition = { slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) }
                 ) {
                     ViewRifScreen(
                         state = rifViewModel.state.collectAsState().value,
@@ -493,12 +553,10 @@ fun MainApp(
 
                 composable("EditRifScreen/{rifIndex}",
                     arguments = listOf(navArgument("rifIndex") { type = NavType.IntType }),
-                    enterTransition = {
-                        slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500))
-                    },
-                    exitTransition = {
-                        slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
-                    }
+                    enterTransition = { slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    exitTransition = { slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    popEnterTransition = { slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) },
+                    popExitTransition = { slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) }
                 ) {
                     EditRifScreen(
                         state = rifViewModel.state.collectAsState().value,
@@ -507,30 +565,40 @@ fun MainApp(
                     )
                 }
 
-                composable("ProfileScreen") {
-                    LibrettoScreen(
-                        carProfile = observedCarProfile,
-                        navController = navController
-                    )
-                }
-
-                composable("ProfileSettings",
+                composable("ExpirationsScreen",
                     enterTransition = {
-                        slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500))
+                        val previousScreen = navController.previousBackStackEntry?.destination?.route
+                        when (previousScreen) {
+                            "HomeScreen", "ManutenzioneScreen", "RifornimentoScreen" -> slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            "ProfileScreen" -> slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            else -> slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                        }
                     },
                     exitTransition = {
-                        slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
+                        val nextScreen = navController.currentBackStackEntry?.destination?.route
+                        when (nextScreen) {
+                            "HomeScreen", "ManutenzioneScreen", "RifornimentoScreen" -> slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            "ProfileScreen" -> slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            else -> slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                        }
+                    },
+                    popEnterTransition = {
+                        val previousScreen = navController.previousBackStackEntry?.destination?.route
+                        when (previousScreen) {
+                            "HomeScreen", "ManutenzioneScreen", "RifornimentoScreen" -> slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            "ProfileScreen" -> slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            else -> slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                        }
+                    },
+                    popExitTransition = {
+                        val nextScreen = navController.currentBackStackEntry?.destination?.route
+                        when (nextScreen) {
+                            "HomeScreen", "ManutenzioneScreen", "RifornimentoScreen" -> slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            "ProfileScreen" -> slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            else -> slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                        }
                     }
                 ) {
-                    LibrettoSettingsScreen(
-                        carProfile = carProfile,
-                        librettoViewModel = librettoViewModel,
-                        navController = navController,
-                        context = LocalContext.current
-                    )
-                }
-
-                composable("ExpirationsScreen") {
                     ExpScreen(
                         expirations = observedExpirations,
                         navController = navController
@@ -538,12 +606,10 @@ fun MainApp(
                 }
 
                 composable("ExpirationsSettings",
-                    enterTransition = {
-                        slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = tween(500)) + fadeIn(animationSpec = tween(500))
-                    },
-                    exitTransition = {
-                        slideOutHorizontally(targetOffsetX = { 1000 }, animationSpec = tween(500)) + fadeOut(animationSpec = tween(500))
-                    }
+                    enterTransition = { slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    exitTransition = { slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) },
+                    popEnterTransition = { slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) },
+                    popExitTransition = { slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) }
                 ) {
                     ExpSettingsScreen(
                         expirations = expirations,
@@ -553,10 +619,37 @@ fun MainApp(
                     )
                 }
 
-            }
+
+                composable("ProfileScreen",
+                    enterTransition = { slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    exitTransition = { slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    popEnterTransition = { slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    popExitTransition = { slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) }
+                ) {
+                    LibrettoScreen(
+                        carProfile = observedCarProfile,
+                        navController = navController
+                    )
+                }
+
+                composable("ProfileSettings",
+                    enterTransition = { slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    exitTransition = { slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    popEnterTransition = { slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) },
+                    popExitTransition = { slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) }
+                ) {
+                    LibrettoSettingsScreen(
+                        carProfile = carProfile,
+                        librettoViewModel = librettoViewModel,
+                        navController = navController,
+                        context = LocalContext.current
+                    )
+                }
+
             }
         }
     }
+}
 
 
 @Composable
