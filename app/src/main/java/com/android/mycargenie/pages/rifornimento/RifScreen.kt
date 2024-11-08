@@ -71,7 +71,7 @@ fun RifornimentoScreen(
         }
     }
 
-    // Watch for when to load more items and when the list changes
+
     LaunchedEffect(isAtEndOfList.value, state.rifs) {
         if (isAtEndOfList.value && !isLoading) {
             println("Caricamento nuovi dati...")
