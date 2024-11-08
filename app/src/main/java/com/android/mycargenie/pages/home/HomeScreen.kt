@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -118,74 +120,79 @@ fun HomeScreen(
 
                     Row {
 
-                        val displacement = formatDisplacement(carProfile.displacement)
+                        if (carProfile.displacement != 0) {
+                            val displacement = formatDisplacement(carProfile.displacement)
 
-                        Text(
-                            text = displacement,
-                            fontSize = 16.sp,
-                            modifier = Modifier
-                                .padding(end = 4.dp)
-                        )
+                            Text(
+                                text = displacement,
+                                fontSize = 16.sp,
+                                modifier = Modifier
+                                    .padding(end = 4.dp)
+                            )
+                        }
 
-                        Text(
-                            text = carProfile.power.toString(),
-                            fontSize = 16.sp,
-                            modifier = Modifier
-                                .padding(end = 4.dp)
-                        )
+                        if (carProfile.power != 0.0f) {
+                            Text(
+                                text = carProfile.power.toInt().toString(),
+                                fontSize = 16.sp,
+                                modifier = Modifier
+                                    .padding(end = 4.dp)
+                            )
+                        }
 
-                        Text(
-                            text = carProfile.horsepower.toString(),
-                            fontSize = 16.sp
-                        )
+                        if (carProfile.horsepower != 0.0f) {
+                            Text(
+                                text = carProfile.horsepower.toInt().toString(),
+                                fontSize = 16.sp
+                            )
+                        }
                     }
                 }
             }
-        }
-
-        if (carProfile.brand == "") {
-            Spacer(modifier = Modifier.height(80.dp))
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Text(
-                    text = "Configura le informazioni sul tuo veicolo per visualizzarne un resoconto.",
-                    fontSize = 18.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(8.dp)
-                )
-
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Button(onClick = {
-                        navController.navigate("ProfileSettings")
-                    }) {
-                        Text(
-                            text = "Imposta",
-                            fontSize = 16.sp
-                        )
-                    }
-                }
-
-            }
-
         }
 
         Spacer(modifier = Modifier.height(38.dp))
 
         Column {
-            Text(
-                "Elementi Recenti",
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.padding(start = 16.dp)
-            )
+            if (lastManutenzione?.title.isNullOrEmpty() && lastRifornimento?.price?.toString().isNullOrEmpty()) {
+                Row(
+                    modifier = Modifier
+                        .padding(top = 180.dp)
+                ) {
+                    Text(
+                        text = "Questa pagina si aggiornerà automaticamente man mano che usi l’app. Aggiungi eventi e scadenze nelle sezioni dedicate: così troverai qui tutte le informazioni più utili.",
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+                            .alpha(0.7f)
+                    )
+                }
+
+                }
+            }
+
+            if (carProfile.brand == "") {
+                Text(
+                    text = "Per iniziare, aggiungi le informazioni sul tuo veicolo.",
+                    fontSize = 18.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+                        .alpha(0.7f)
+                )
+
+                Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                    Button(onClick = {
+                        navController.navigate("ProfileSettings")
+                    }) {
+                        Text(
+                            text = "Configura",
+                            fontSize = 16.sp
+                        )
+                    }
+            }
+
 
             lastManutenzione?.let { manutenzione ->
 
@@ -328,7 +335,8 @@ fun HomeScreen(
                     }
                 }
 
-            } ?: Row(
+            }
+                /*?: Row(
                     modifier = Modifier
                         .padding(top = 32.dp)
                     ) {
@@ -339,6 +347,8 @@ fun HomeScreen(
                             textAlign = TextAlign.Center
                         )
                     }
+
+                 */
 
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -499,7 +509,8 @@ fun HomeScreen(
 
 
 
-            } ?: Row(
+            }
+                /*?: Row(
                     modifier = Modifier
                         .padding(top = 32.dp)
                     ) {
@@ -510,6 +521,8 @@ fun HomeScreen(
                             textAlign = TextAlign.Center
                         )
                      }
+
+                 */
         }
 
 

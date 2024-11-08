@@ -60,7 +60,6 @@ fun LibrettoScreen(
 
     ) {
 
-
         Spacer(modifier = Modifier.height(10.dp))
 
         if (carProfile.brand != "") {
