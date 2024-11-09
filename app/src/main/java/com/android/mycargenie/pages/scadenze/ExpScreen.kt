@@ -86,77 +86,84 @@ fun ExpScreen(
 
             if (expirations.inscheck) {
 
-                Text(
-                    text = "Assicurazione RCA",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier
-                        .padding(bottom = 4.dp)
-                )
+                if (expirations.insstart.isNotEmpty() || expirations.insend.isNotEmpty() || expirations.insdues != 0 || expirations.insend.isNotEmpty() || expirations.insprice != 0.0f) {
+                    Text(
+                        text = "Assicurazione RCA",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier
+                            .padding(bottom = 4.dp)
+                    )
 
+                    if (expirations.insstart.isNotEmpty()) {
+                        Text(text = "Inizio copertura: ${expirations.insstart}", fontSize = 20.sp)
+                    }
+                    if (expirations.insend.isNotEmpty()) {
+                        Text(text = "Fine copertura: ${expirations.insend}", fontSize = 20.sp)
+                    }
+                    if (expirations.insdues != 0) {
+                        Text(text = "Rate: ${expirations.insdues}", fontSize = 20.sp)
+                    }
+                    if (expirations.insplace.isNotEmpty()) {
+                        Text(text = "Assicuratore: ${expirations.insplace}", fontSize = 20.sp)
+                    }
+                    if (expirations.insprice != 0.0f) {
+                        Text(text = "Costo totale: ${expirations.insprice}€", fontSize = 20.sp)
+                    }
 
-                if (expirations.insstart.isNotEmpty()) {
-                    Text(text = "Inizio copertura: ${expirations.insstart}", fontSize = 20.sp)
+                    Spacer(modifier = Modifier.height(28.dp))
                 }
-                if (expirations.insend.isNotEmpty()) {
-                    Text(text = "Fine copertura: ${expirations.insend}", fontSize = 20.sp)
-                }
-                if (expirations.insdues != 0) {
-                    Text(text = "Rate: ${expirations.insdues}", fontSize = 20.sp)
-                }
-                if (expirations.insend.isNotEmpty()) {
-                    Text(text = "Assicuratore: ${expirations.insplace}", fontSize = 20.sp)
-                }
-                if (expirations.insprice != 0.0f) {
-                    Text(text = "Costo totale: ${expirations.insprice}€", fontSize = 20.sp)
-                }
-
-                Spacer(modifier = Modifier.height(28.dp))
             }
 
             if (expirations.taxcheck) {
 
-                Text(
-                    text = "Tassa Automobilistica",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier
-                        .padding(bottom = 4.dp)
-                )
+                if(expirations.taxdate.isNotEmpty() || expirations.taxprice != 0.0f) {
+                    Text(
+                        text = "Tassa Automobilistica",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier
+                            .padding(bottom = 4.dp)
+                    )
 
 
-                if (expirations.taxdate.isNotEmpty()) {
-                    Text(text = "Prossimo saldo: ${expirations.taxdate}", fontSize = 20.sp)
+
+                    if (expirations.taxdate.isNotEmpty()) {
+                        Text(text = "Prossimo saldo: ${expirations.taxdate}", fontSize = 20.sp)
+                    }
+                    if (expirations.taxprice != 0.0f) {
+                        Text(text = "Costo: ${expirations.taxprice}€", fontSize = 20.sp)
+                    }
+
+                    Spacer(modifier = Modifier.height(28.dp))
                 }
-                if (expirations.taxprice != 0.0f) {
-                    Text(text = "Costo: ${expirations.taxprice}€", fontSize = 20.sp)
-                }
-
-                Spacer(modifier = Modifier.height(28.dp))
             }
 
             if (expirations.revcheck) {
 
-                Text(
-                    text = "Revisione",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier
-                        .padding(bottom = 4.dp)
-                )
+                if (expirations.revlast.isNotEmpty() || expirations.revnext.isNotEmpty() || expirations.revplace.isNotEmpty()) {
+
+                    Text(
+                        text = "Revisione",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier
+                            .padding(bottom = 4.dp)
+                    )
 
 
-                if (expirations.revlast.isNotEmpty()) {
-                    Text(text = "Ultima revisione: ${expirations.revlast}", fontSize = 20.sp)
-                }
-                if (expirations.revnext.isNotEmpty()) {
-                    Text(text = "Prossima revisione: ${expirations.revnext}", fontSize = 20.sp)
-                }
-                if (expirations.insend.isNotEmpty()) {
-                    Text(text = "Revisore: ${expirations.revplace}", fontSize = 20.sp)
-                }
+                    if (expirations.revlast.isNotEmpty()) {
+                        Text(text = "Ultima revisione: ${expirations.revlast}", fontSize = 20.sp)
+                    }
+                    if (expirations.revnext.isNotEmpty()) {
+                        Text(text = "Prossima revisione: ${expirations.revnext}", fontSize = 20.sp)
+                    }
+                    if (expirations.revplace.isNotEmpty()) {
+                        Text(text = "Revisore: ${expirations.revplace}", fontSize = 20.sp)
+                    }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
             }
 
         }
