@@ -184,26 +184,28 @@ fun HomeScreen(
                 }
 
             }
-        }
 
-        if (carProfile.brand == "") {
-            Text(
-                text = "Per iniziare, aggiungi i dati del tuo veicolo.",
-                fontSize = 18.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
-                    .alpha(0.7f)
-            )
 
-            Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                Button(onClick = {
-                    navController.navigate("ProfileSettings")
-                }) {
-                    Text(
-                        text = "Configura",
-                        fontSize = 16.sp
-                    )
+            if (carProfile.brand == "") {
+                Text(
+                    text = "Per iniziare, aggiungi i dati del tuo veicolo.",
+                    fontSize = 18.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+                        .alpha(0.7f)
+                )
+
+                Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                    Button(onClick = {
+                        navController.navigate("ProfileSettings")
+                    }) {
+                        Text(
+                            text = "Configura",
+                            fontSize = 16.sp
+                        )
+                    }
                 }
             }
         }

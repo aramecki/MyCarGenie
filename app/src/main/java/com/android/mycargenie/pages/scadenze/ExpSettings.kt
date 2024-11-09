@@ -33,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -103,6 +104,34 @@ fun ExpSettingsScreen(
     val revLastDatePickerState = rememberDatePickerState()
     var showRevNextDatePicker by remember { mutableStateOf(false) }
     val revNextDatePickerState = rememberDatePickerState()
+
+    // Stato del pulsante abilitato o disabilitato
+    val isButtonEnabled = remember {
+        derivedStateOf {
+            val isAnyCheckActive = inscheck || taxcheck || revcheck
+
+            val isInsValid = if (inscheck) {
+                insstart.isNotEmpty() || insend.isNotEmpty() ||
+                        insdues != 0 || insprice != 0.0f || insplace.isNotEmpty()
+            } else {
+                true
+            }
+
+            val isTaxValid = if (taxcheck) {
+                taxdate.isNotEmpty() || taxprice != 0.0f
+            } else {
+                true
+            }
+
+            val isRevValid = if (revcheck) {
+                revlast.isNotEmpty() || revnext.isNotEmpty() || revplace.isNotEmpty()
+            } else {
+                true
+            }
+
+            isAnyCheckActive && isInsValid && isTaxValid && isRevValid
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -839,6 +868,7 @@ fun ExpSettingsScreen(
 
                 navController.navigate("ExpirationsScreen")
             },
+                enabled = isButtonEnabled.value,
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
@@ -846,8 +876,45 @@ fun ExpSettingsScreen(
             }
         }
 
-    }
+            Text(
+                "Resetta tutti i campi",
+                textAlign = TextAlign.Center,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        expirationsViewModel.updateExpSettings(
+                            Expirations(
+                                inscheck = false,
+                                insstart = "",
+                                insend = "",
+                                insdues = 0,
+                                insprice = 0.0f,
+                                insplace = "",
+                                insnot = false,
+                                taxcheck = false,
+                                taxdate = "",
+                                taxprice = 0.0f,
+                                taxnot = false,
+                                revcheck = false,
+                                revlast = "",
+                                revnext = "",
+                                revplace = "",
+                                revnot = false
+                            )
+                        )
 
+                        notificationManager.disableNotifications("insurance")
+                        notificationManager.disableNotifications("tax")
+                        notificationManager.disableNotifications("rev")
+
+                        navController.navigate("ExpirationsScreen")
+                    }
+            )
+
+    }
 
 
     if (showInsStartDatePicker) {

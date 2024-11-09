@@ -12,6 +12,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -29,7 +33,9 @@ fun ExpScreen(
     navController: NavController
 ) {
 
-
+    var isInsActive by remember { mutableStateOf(false) }
+    var isTaxActive by remember { mutableStateOf(false) }
+    var isRevActive by remember { mutableStateOf(false) }
 
     Row {
         Column(
@@ -53,40 +59,14 @@ fun ExpScreen(
 
     Spacer(modifier = Modifier.height(16.dp))
 
-    if (!expirations.inscheck && !expirations.taxcheck && !expirations.revcheck) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            Text(
-                text = "Configura le tue scadenze per visualizzarne un resoconto.",
-                fontSize = 20.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(start = 32.dp, top = 82.dp, bottom = 15.dp, end = 32.dp)
-            )
-
-            Button(onClick = {
-                navController.navigate("ExpirationsSettings")
-            }) {
-                Text(
-                    text = "Configura",
-                    fontSize = 16.sp
-                )
-            }
-        }
-    } else {
-
-
         Column(
             modifier = Modifier
                 .padding(top = 32.dp, start = 8.dp)
         ) {
 
-
             if (expirations.inscheck) {
-
-                if (expirations.insstart.isNotEmpty() || expirations.insend.isNotEmpty() || expirations.insdues != 0 || expirations.insend.isNotEmpty() || expirations.insprice != 0.0f) {
+                if (expirations.insstart.isNotEmpty() || expirations.insend.isNotEmpty() || expirations.insdues != 0 || expirations.insplace.isNotEmpty() || expirations.insprice != 0.0f) {
+                    isInsActive = true
                     Text(
                         text = "Assicurazione RCA",
                         fontSize = 24.sp,
@@ -116,8 +96,8 @@ fun ExpScreen(
             }
 
             if (expirations.taxcheck) {
-
                 if(expirations.taxdate.isNotEmpty() || expirations.taxprice != 0.0f) {
+                    isTaxActive = true
                     Text(
                         text = "Tassa Automobilistica",
                         fontSize = 24.sp,
@@ -125,8 +105,6 @@ fun ExpScreen(
                         modifier = Modifier
                             .padding(bottom = 4.dp)
                     )
-
-
 
                     if (expirations.taxdate.isNotEmpty()) {
                         Text(text = "Prossimo saldo: ${expirations.taxdate}", fontSize = 20.sp)
@@ -142,7 +120,7 @@ fun ExpScreen(
             if (expirations.revcheck) {
 
                 if (expirations.revlast.isNotEmpty() || expirations.revnext.isNotEmpty() || expirations.revplace.isNotEmpty()) {
-
+                    isRevActive = true
                     Text(
                         text = "Revisione",
                         fontSize = 24.sp,
@@ -150,7 +128,6 @@ fun ExpScreen(
                         modifier = Modifier
                             .padding(bottom = 4.dp)
                     )
-
 
                     if (expirations.revlast.isNotEmpty()) {
                         Text(text = "Ultima revisione: ${expirations.revlast}", fontSize = 20.sp)
@@ -167,6 +144,28 @@ fun ExpScreen(
             }
 
         }
-    }
 
+    if (!isInsActive && !isTaxActive && !isRevActive) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Text(
+                text = "Configura le tue scadenze per visualizzarne un resoconto.",
+                fontSize = 20.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(start = 32.dp, top = 82.dp, bottom = 15.dp, end = 32.dp)
+            )
+
+            Button(onClick = {
+                navController.navigate("ExpirationsSettings")
+            }) {
+                Text(
+                    text = "Configura",
+                    fontSize = 16.sp
+                )
+            }
+        }
+    }
 }
