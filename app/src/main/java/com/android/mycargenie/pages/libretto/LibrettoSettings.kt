@@ -3,6 +3,7 @@ package com.android.mycargenie.pages.libretto
 import android.content.Context
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -60,7 +61,7 @@ fun LibrettoSettingsScreen(
     var displacement by remember { mutableIntStateOf(carProfile.displacement) }
     var power by remember { mutableFloatStateOf(carProfile.power) }
     var horsepower by remember { mutableFloatStateOf(carProfile.horsepower) }
-    var savedImagePath by remember { mutableStateOf(carProfile.savedImagePath) }
+    val savedImagePath by remember { mutableStateOf(carProfile.savedImagePath) }
     var type by remember { mutableStateOf(carProfile.type) }
     var fuel by remember { mutableStateOf(carProfile.fuel) }
     var year by remember { mutableIntStateOf(carProfile.year) }
@@ -69,12 +70,22 @@ fun LibrettoSettingsScreen(
 
     var showError by remember { mutableStateOf(false) }
 
+    val tag = "ProfilePic"
+    Log.d(tag, "Immagine già presente: $savedImagePath")
+
+    //Variabile che contiene il percorso nel dispositivo della nuova immagine
+    var newImagePath by remember { mutableStateOf("") }
+
+    //Quando lancio il photopicker, asssegno il risultato a newImagePath
     val photoPicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { it: Uri? ->
-            savedImagePath = it.toString()
+            Log.d(tag, "Hai selezionato l'uri: ${it.toString()}")
+            newImagePath = it?.toString() ?: savedImagePath
+            Log.d(tag, "L'uri è stato traformato in: $newImagePath")
         }
     )
+
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -84,10 +95,14 @@ fun LibrettoSettingsScreen(
             .verticalScroll(rememberScrollState())
     ) {
 
-        if (savedImagePath != "") {
+        if (savedImagePath.isNotEmpty() || newImagePath.isNotEmpty()) {
 
                 AsyncImage(
-                    model = savedImagePath,
+                    model = when {
+                        newImagePath.isNotEmpty() -> newImagePath
+                        savedImagePath.isNotEmpty() && newImagePath == "" -> savedImagePath
+                        else -> null
+                    },
                     contentDescription = null,
                     modifier = Modifier
                         .size(200.dp)
@@ -96,6 +111,7 @@ fun LibrettoSettingsScreen(
                     contentScale = ContentScale.Crop
                 )
 
+            Log.d(tag, "mostro l'immagine: $savedImagePath")
 
         } else {
             Text(
@@ -114,11 +130,15 @@ fun LibrettoSettingsScreen(
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 
                 photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                Log.d(tag, "Immagine già presente dopo il photoPicker: $savedImagePath")
+                Log.d(tag, "Immagine scelta come nuova: $newImagePath")
 
             } else {
                 // Android <= 12
 
                 photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                Log.d(tag, "Immagine già presente dopo il photoPicker: $savedImagePath")
+                Log.d(tag, "Immagine scelta come nuova: $newImagePath")
 
             }
         }) {
@@ -432,7 +452,16 @@ fun LibrettoSettingsScreen(
 
                     if (brand.isNotBlank() && model.isNotBlank()) {
 
-                            val newImagePath = saveImageToMmry(context = context, Uri.parse(savedImagePath))
+                        Log.d(tag, "Prima della funzione: $savedImagePath")
+
+                        val imageToSave =
+                            if (newImagePath != savedImagePath && newImagePath != "") {
+                                saveImageToMmry(context = context, Uri.parse(newImagePath))
+                            } else {
+                                savedImagePath
+                            }
+
+                        Log.d(tag, "dopo la funzione: $newImagePath")
 
                         librettoViewModel.updateCarProfile(
                             CarProfile(
@@ -441,7 +470,7 @@ fun LibrettoSettingsScreen(
                                 displacement,
                                 power,
                                 horsepower,
-                                savedImagePath = newImagePath,
+                                savedImagePath = imageToSave,
                                 type,
                                 fuel,
                                 year,
