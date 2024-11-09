@@ -272,7 +272,8 @@ fun HomeScreen(
                             Text(
                                 text = manutenzione.date,
                                 fontSize = 18.sp,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.primary
                             )
                         }
                     }
@@ -351,19 +352,6 @@ fun HomeScreen(
             }
 
         }
-        /*?: Row(
-                    modifier = Modifier
-                        .padding(top = 32.dp)
-                    ) {
-                        Text(
-                            text = "Aggiungi la tua prima manutenzione per visualizzare un resoconto.",
-                            modifier = Modifier.padding(16.dp),
-                            fontSize = 18.sp,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-
-                 */
 
 
         Spacer(modifier = Modifier.height(16.dp))
