@@ -9,6 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,6 +26,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -137,7 +139,7 @@ fun MainApp(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(topBarHeight)
-                        .background(MaterialTheme.colorScheme.primary)
+                        .background(NavigationBarDefaults.containerColor)
                         .padding(horizontal = 16.dp, vertical = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -155,7 +157,7 @@ fun MainApp(
                                     .offset(y = 12.dp),
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onPrimary
+                                //color = MaterialTheme.colorScheme.onPrimary
                             )
                         }
 
@@ -172,7 +174,7 @@ fun MainApp(
                                     contentDescription = "Indietro",
                                     modifier = Modifier
                                         .size(35.dp),
-                                    tint = MaterialTheme.colorScheme.onPrimary
+                                    //tint = MaterialTheme.colorScheme.onPrimary
                                 )
                             }
                         }
@@ -196,12 +198,14 @@ fun MainApp(
                                 contentDescription = "Ordina",
                                 modifier = Modifier
                                     .size(35.dp),
-                                tint = MaterialTheme.colorScheme.onPrimary
+                                //tint = MaterialTheme.colorScheme.onPrimary
                             )
                         }
                     }
 
-
+                    if (currentDestination == "ExpirationsScreen") {
+                        Spacer(modifier = Modifier.height(48.dp))
+                    }
 
                     if (currentDestination == "ViewManScreen/{index}" || currentDestination == "ViewRifScreen/{index}") {
                         val rifIndex =
@@ -280,7 +284,7 @@ fun MainApp(
                                         contentDescription = "Modifica",
                                         modifier = Modifier
                                             .size(30.dp),
-                                        tint = MaterialTheme.colorScheme.onPrimary
+                                        //tint = MaterialTheme.colorScheme.onPrimary
                                     )
                                 }
 
@@ -298,7 +302,7 @@ fun MainApp(
                                         contentDescription = "Elimina",
                                         modifier = Modifier
                                             .size(30.dp),
-                                        tint = MaterialTheme.colorScheme.onPrimary
+                                        //tint = MaterialTheme.colorScheme.onPrimary
                                     )
                                 }
                             }

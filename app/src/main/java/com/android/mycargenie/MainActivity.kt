@@ -121,7 +121,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // Inizializza il gestore dei permessi
         permissionHandler = PermissionHandler(this)
 
         setContent {
@@ -159,17 +158,14 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        // Inizializza il CustomNotificationManager
         notificationManager = CustomNotificationManager(this)
 
-        // Crea il canale di notifica (se necessario)
         notificationManager.createNotificationChannel()
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    // Logica per API 33+
                     finish()
                 }
             })

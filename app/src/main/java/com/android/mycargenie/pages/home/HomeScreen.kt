@@ -64,6 +64,17 @@ fun HomeScreen(
         localCarProfile = carProfile
     }
 
+    /*
+    Box {
+        Image(
+            painter = painterResource(id = R.drawable.filigrana),
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
+
+     */
 
     Column {
 
@@ -76,11 +87,12 @@ fun HomeScreen(
 
                 if (carProfile.savedImagePath != "") {
                     Column(
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                        .padding(start = 32.dp)
-                ) {
-                        val imagePainter = rememberAsyncImagePainter(model = carProfile.savedImagePath)
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f)
+                            .padding(start = 32.dp)
+                    ) {
+                        val imagePainter =
+                            rememberAsyncImagePainter(model = carProfile.savedImagePath)
 
                         Image(
                             painter = imagePainter,
@@ -151,10 +163,12 @@ fun HomeScreen(
             }
         }
 
-        //Spacer(modifier = Modifier.height(38.dp))
+        Spacer(modifier = Modifier.height(38.dp))
 
         Column {
-            if (lastManutenzione?.title.isNullOrEmpty() && lastRifornimento?.price?.toString().isNullOrEmpty()) {
+            if (lastManutenzione?.title.isNullOrEmpty() && lastRifornimento?.price?.toString()
+                    .isNullOrEmpty()
+            ) {
                 Row(
                     modifier = Modifier
                         .padding(top = 180.dp)
@@ -172,141 +186,111 @@ fun HomeScreen(
             }
         }
 
-            if (carProfile.brand == "") {
-                Text(
-                    text = "Per iniziare, aggiungi i dati del tuo veicolo.",
-                    fontSize = 18.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
-                        .alpha(0.7f)
-                )
+        if (carProfile.brand == "") {
+            Text(
+                text = "Per iniziare, aggiungi i dati del tuo veicolo.",
+                fontSize = 18.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+                    .alpha(0.7f)
+            )
 
-                Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                    Button(onClick = {
-                        navController.navigate("ProfileSettings")
-                    }) {
-                        Text(
-                            text = "Configura",
-                            fontSize = 16.sp
-                        )
-                    }
+            Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                Button(onClick = {
+                    navController.navigate("ProfileSettings")
+                }) {
+                    Text(
+                        text = "Configura",
+                        fontSize = 16.sp
+                    )
                 }
             }
+        }
 
 
-            lastManutenzione?.let { manutenzione ->
+        lastManutenzione?.let { manutenzione ->
 
-                val index = manState.men.indexOf(manutenzione)
+            val index = manState.men.indexOf(manutenzione)
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(MaterialTheme.colorScheme.primaryContainer)
-                        .padding(12.dp)
-                        .clickable {
-                            navController.navigate("ViewManScreen/$index")
-                        }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .padding(12.dp)
+                    .clickable {
+                        navController.navigate("ViewManScreen/$index")
+                    }
+            ) {
+
+                val icon = when (manutenzione.type) {
+                    "Meccanico" -> ImageVector.vectorResource(id = R.drawable.manufacturing)
+                    "Elettrauto" -> ImageVector.vectorResource(id = R.drawable.lightbulb)
+                    "Carrozziere" -> ImageVector.vectorResource(id = R.drawable.brush)
+                    else -> ImageVector.vectorResource(id = R.drawable.repair)
+                }
+
+                Column(
+                    verticalArrangement = Arrangement.SpaceEvenly
                 ) {
 
-                    val icon = when (manutenzione.type) {
-                        "Meccanico" -> ImageVector.vectorResource(id = R.drawable.manufacturing)
-                        "Elettrauto" -> ImageVector.vectorResource(id = R.drawable.lightbulb)
-                        "Carrozziere" -> ImageVector.vectorResource(id = R.drawable.brush)
-                        else -> ImageVector.vectorResource(id = R.drawable.repair)
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(bottom = 4.dp)
+                    ) {
+                        Column {
+                            Icon(
+                                imageVector = icon,
+                                contentDescription = manutenzione.type,
+                                modifier = Modifier
+                                    .size(34.dp)
+                                    .padding(end = 4.dp),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+
+
+                        Column {
+
+                            //Titolo
+                            Text(
+                                text = manutenzione.title,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        }
+                        Column(
+                            horizontalAlignment = Alignment.End,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            Text(
+                                text = manutenzione.date,
+                                fontSize = 18.sp,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                            )
+                        }
                     }
 
-                    Column(
-                        verticalArrangement = Arrangement.SpaceEvenly
+
+                    //Luogo
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(bottom = 4.dp)
                     ) {
+                        val place = manutenzione.place
 
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .padding(bottom = 4.dp)
-                        ) {
-                            Column {
-                                Icon(
-                                    imageVector = icon,
-                                    contentDescription = manutenzione.type,
-                                    modifier = Modifier
-                                        .size(34.dp)
-                                        .padding(end = 4.dp),
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                            }
-
-
-                            Column {
-
-                                //Titolo
-                                Text(
-                                    text = manutenzione.title,
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                                )
-                            }
-                            Column(
-                                horizontalAlignment = Alignment.End,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                            ) {
-                                Text(
-                                    text = manutenzione.date,
-                                    fontSize = 18.sp,
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer
-                                )
-                            }
-                        }
-
-
-                        //Luogo
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .padding(bottom = 4.dp)
-                        ) {
-                            val place = manutenzione.place
-
-                            if (place.isNotEmpty()) {
-                                Icon(
-                                    imageVector = ImageVector.vectorResource(id = R.drawable.location),
-                                    contentDescription = "Luogo",
-                                    tint = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier
-                                        .size(34.dp)
-                                        .padding(end = 4.dp),
-                                )
-
-                                Text(
-                                    text = manutenzione.place,
-                                    fontSize = 18.sp,
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer
-                                )
-                            } else {
-                                Spacer(
-                                    modifier = Modifier
-                                        .height(34.dp)
-                                )
-                            }
-                        }
-
-                        //Kilometri
-
-                        val kmt = formatKmt(manutenzione.kmt)
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                        ) {
+                        if (place.isNotEmpty()) {
                             Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.time_to_leave),
-                                contentDescription = "Icona automobile",
+                                imageVector = ImageVector.vectorResource(id = R.drawable.location),
+                                contentDescription = "Luogo",
                                 tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier
                                     .size(34.dp)
@@ -314,30 +298,60 @@ fun HomeScreen(
                             )
 
                             Text(
-                                text = "$kmt km",
+                                text = manutenzione.place,
                                 fontSize = 18.sp,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                                color = MaterialTheme.colorScheme.onSecondaryContainer
                             )
-
-                            Column(
-                                horizontalAlignment = Alignment.End,
+                        } else {
+                            Spacer(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                            ) {
-                                val price = formatPrice(manState.men[index].price)
+                                    .height(34.dp)
+                            )
+                        }
+                    }
 
-                                Text(
-                                    text = "$price €",
-                                    fontSize = 18.sp,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                )
-                            }
+                    //Kilometri
+
+                    val kmt = formatKmt(manutenzione.kmt)
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.time_to_leave),
+                            contentDescription = "Icona automobile",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .size(34.dp)
+                                .padding(end = 4.dp),
+                        )
+
+                        Text(
+                            text = "$kmt km",
+                            fontSize = 18.sp,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+
+                        Column(
+                            horizontalAlignment = Alignment.End,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            val price = formatPrice(manState.men[index].price)
+
+                            Text(
+                                text = "$price €",
+                                fontSize = 18.sp,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            )
                         }
                     }
                 }
-
             }
-                /*?: Row(
+
+        }
+        /*?: Row(
                     modifier = Modifier
                         .padding(top = 32.dp)
                     ) {
@@ -352,163 +366,165 @@ fun HomeScreen(
                  */
 
 
-            Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
 
-            //RIFORNIMENTO
-            lastRifornimento?.let { rifornimento ->
+        //RIFORNIMENTO
+        lastRifornimento?.let { rifornimento ->
 
-                val rifIndex = rifState.rifs.indexOf(rifornimento)
+            val rifIndex = rifState.rifs.indexOf(rifornimento)
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(MaterialTheme.colorScheme.primaryContainer)
-                        .padding(12.dp)
-                        .clickable {
-                            navController.navigate("ViewRifScreen/$rifIndex")
-                        }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .padding(12.dp)
+                    .clickable {
+                        navController.navigate("ViewRifScreen/$rifIndex")
+                    }
+            ) {
+
+                //Icona tipo
+                val icon = when (rifornimento.type) {
+                    "Elettrico" -> ImageVector.vectorResource(id = R.drawable.electric)
+                    else -> ImageVector.vectorResource(id = R.drawable.oil)
+                }
+
+                Column(
+                    verticalArrangement = Arrangement.SpaceEvenly
                 ) {
-
-                    //Icona tipo
-                    val icon = when (rifornimento.type) {
-                        "Elettrico" -> ImageVector.vectorResource(id = R.drawable.electric)
-                        else -> ImageVector.vectorResource(id = R.drawable.oil)
-                    }
-
-                    Column(
-                        verticalArrangement = Arrangement.SpaceEvenly
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(bottom = 4.dp)
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .padding(bottom = 4.dp)
-                        ) {
-                            Column {
-                                Icon(
-                                    imageVector = icon,
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .size(34.dp)
-                                        .padding(end = 4.dp),
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                            }
-
-
-                            Column {
-
-                                //Data
-                                Text(
-                                    text = rifornimento.date,
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                            }
-                            Column(
-                                horizontalAlignment = Alignment.End,
+                        Column {
+                            Icon(
+                                imageVector = icon,
+                                contentDescription = null,
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                            ) {
-
-                                //Prezzo
-                                val price = formatPrice(rifornimento.price)
-
-                                Text(
-                                    text = "$price €",
-                                    fontSize = 18.sp,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                )
-                            }
-                        }
-
-                        //Prezzo per unità
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .padding(bottom = 4.dp)
-                        ) {
-                            Column(
-                                horizontalAlignment = Alignment.End,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                            ) {
-                                val uvalue =
-                                    formatPrice(rifornimento.uvalue).replace('.', ',')
-
-                                val unitprice = if (rifornimento.type == "Elettrico") {
-                                    "$uvalue €/kWh"
-                                } else {
-                                    "$uvalue €/l"
-                                }
-
-                                Text(
-                                    text = unitprice,
-                                    fontSize = 18.sp,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                )
-                            }
+                                    .size(34.dp)
+                                    .padding(end = 4.dp),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
                         }
 
 
-                        //Luogo
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
+                        Column {
+
+                            //Data
+                            Text(
+                                text = rifornimento.date,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        Column(
+                            horizontalAlignment = Alignment.End,
+                            modifier = Modifier
+                                .fillMaxWidth()
                         ) {
-                            val place = rifornimento.place
 
-                            if (place.isNotEmpty()) {
+                            //Prezzo
+                            val price = formatPrice(rifornimento.price)
 
-                                Icon(
-                                    imageVector = ImageVector.vectorResource(id = R.drawable.location),
-                                    contentDescription = "Luogo",
-                                    tint = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier
-                                        .size(34.dp)
-                                        .padding(end = 4.dp),
-                                )
-
-                                Text(
-                                    text = rifornimento.place,
-                                    fontSize = 18.sp,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                                )
-                            } else {
-                                Spacer(modifier = Modifier
-                                    .height(34.dp)
-                                )
-                            }
-
-                            //Unità totali
-                            Column(
-                                horizontalAlignment = Alignment.End,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                            ) {
-                                val totunit = formatPrice(rifornimento.totunit)
-
-                                val showunit = if (rifornimento.type == "Elettrico") {
-                                    "$totunit kWh"
-                                } else {
-                                    "$totunit l"
-                                }
-
-                                Text(
-                                    text = showunit,
-                                    fontSize = 18.sp,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                )
-                            }
+                            Text(
+                                text = "$price €",
+                                fontSize = 18.sp,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            )
                         }
                     }
 
+                    //Prezzo per unità
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(bottom = 4.dp)
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.End,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            val uvalue =
+                                formatPrice(rifornimento.uvalue).replace('.', ',')
+
+                            val unitprice = if (rifornimento.type == "Elettrico") {
+                                "$uvalue €/kWh"
+                            } else {
+                                "$uvalue €/l"
+                            }
+
+                            Text(
+                                text = unitprice,
+                                fontSize = 18.sp,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            )
+                        }
+                    }
+
+
+                    //Luogo
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        val place = rifornimento.place
+
+                        if (place.isNotEmpty()) {
+
+                            Icon(
+                                imageVector = ImageVector.vectorResource(id = R.drawable.location),
+                                contentDescription = "Luogo",
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier
+                                    .size(34.dp)
+                                    .padding(end = 4.dp),
+                            )
+
+                            Text(
+                                text = rifornimento.place,
+                                fontSize = 18.sp,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        } else {
+                            Spacer(
+                                modifier = Modifier
+                                    .height(34.dp)
+                            )
+                        }
+
+                        //Unità totali
+                        Column(
+                            horizontalAlignment = Alignment.End,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            val totunit = formatPrice(rifornimento.totunit)
+
+                            val showunit = if (rifornimento.type == "Elettrico") {
+                                "$totunit kWh"
+                            } else {
+                                "$totunit l"
+                            }
+
+                            Text(
+                                text = showunit,
+                                fontSize = 18.sp,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            )
+                        }
+                    }
                 }
 
             }
+
+        }
     }
 }
+
 
 
