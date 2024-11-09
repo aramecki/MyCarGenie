@@ -151,7 +151,7 @@ fun HomeScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(38.dp))
+        //Spacer(modifier = Modifier.height(38.dp))
 
         Column {
             if (lastManutenzione?.title.isNullOrEmpty() && lastRifornimento?.price?.toString().isNullOrEmpty()) {
@@ -160,7 +160,7 @@ fun HomeScreen(
                         .padding(top = 180.dp)
                 ) {
                     Text(
-                        text = "Questa pagina si aggiornerà automaticamente man mano che usi l’app. Aggiungi eventi e scadenze nelle sezioni dedicate: così troverai qui tutte le informazioni più utili.",
+                        text = "Questa pagina si aggiorna automaticamente man mano che usi l’app. Aggiungi eventi e scadenze nelle sezioni dedicate: così troverai qui le informazioni più utili.",
                         fontSize = 16.sp,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
@@ -169,12 +169,12 @@ fun HomeScreen(
                     )
                 }
 
-                }
             }
+        }
 
             if (carProfile.brand == "") {
                 Text(
-                    text = "Per iniziare, aggiungi le informazioni sul tuo veicolo.",
+                    text = "Per iniziare, aggiungi i dati del tuo veicolo.",
                     fontSize = 18.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
@@ -191,6 +191,7 @@ fun HomeScreen(
                             fontSize = 16.sp
                         )
                     }
+                }
             }
 
 
@@ -504,29 +505,10 @@ fun HomeScreen(
                         }
                     }
 
-
                 }
 
-
-
             }
-                /*?: Row(
-                    modifier = Modifier
-                        .padding(top = 32.dp)
-                    ) {
-                        Text(
-                            text = "Aggiungi il tuo primo rifornimento per visualizzare un resoconto.",
-                            modifier = Modifier.padding(16.dp),
-                            fontSize = 18.sp,
-                            textAlign = TextAlign.Center
-                        )
-                     }
-
-                 */
-        }
-
-
     }
-
 }
+
 
