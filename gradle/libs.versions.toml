@@ -1,45 +1,73 @@
 [versions]
-agp = "8.5.2"
+agp = "8.7.2"
 androidxJunit = "1.2.1"
+animationCore = "1.7.5"
+annotation = "1.9.1"
 coilCompose = "2.4.0"
 compiler = "1.5.15"
-espressoCoreVersion = "3.6.1"
+core = "1.15.0"
+datastoreCore = "1.1.1"
+foundation = "1.7.5"
+foundationLayout = "1.7.5"
 kotlin = "2.0.20"
-coreKtx = "1.15.0"
 junit = "4.13.2"
-lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.9.3"
 composeBom = "2024.10.01"
+kotlinxCoroutinesCore = "1.7.3"
+lifecycleViewmodel = "2.8.7"
+materialIconsCore = "1.7.5"
+monitor = "1.7.2"
 navigationCompose = "2.8.3"
 roomVersion = "2.6.1"
-voyagerKoin = "1.1.0-beta02"
 datastore = "1.1.1"
-workRuntimeKtxVersion = "2.10.0"
+runtime = "1.7.5"
+runtimeSaveable = "1.7.5"
+sqlite = "2.4.0"
+uiGraphics = "1.7.5"
+uiText = "1.7.5"
+uiUnit = "1.7.5"
 
 [libraries]
 
+androidx-activity = { module = "androidx.activity:activity", version.ref = "activityCompose" }
+androidx-animation = { module = "androidx.compose.animation:animation", version.ref = "animationCore" }
+androidx-animation-core = { module = "androidx.compose.animation:animation-core", version.ref = "animationCore" }
+androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
 androidx-compiler = { module = "androidx.compose.compiler:compiler", version.ref = "compiler" }
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-androidx-espresso-core-v351 = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCoreVersion" }
+androidx-core = { module = "androidx.core:core", version.ref = "core" }
+androidx-datastore-core = { module = "androidx.datastore:datastore-core", version.ref = "datastoreCore" }
+androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastoreCore" }
+androidx-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
+androidx-foundation-layout = { module = "androidx.compose.foundation:foundation-layout", version.ref = "foundationLayout" }
 androidx-junit-v115 = { module = "androidx.test.ext:junit", version.ref = "androidxJunit" }
+androidx-lifecycle-common = { module = "androidx.lifecycle:lifecycle-common", version.ref = "lifecycleViewmodel" }
+androidx-lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycleViewmodel" }
+androidx-material-icons-core = { module = "androidx.compose.material:material-icons-core", version.ref = "materialIconsCore" }
+androidx-monitor = { module = "androidx.test:monitor", version.ref = "monitor" }
+androidx-navigation-common = { module = "androidx.navigation:navigation-common", version.ref = "navigationCompose" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-navigation-runtime = { module = "androidx.navigation:navigation-runtime", version.ref = "navigationCompose" }
+androidx-room-common = { module = "androidx.room:room-common", version.ref = "roomVersion" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomVersion" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomVersion" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomVersion" }
+androidx-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "runtime" }
+androidx-runtime-saveable = { module = "androidx.compose.runtime:runtime-saveable", version.ref = "runtimeSaveable" }
+androidx-sqlite = { module = "androidx.sqlite:sqlite", version.ref = "sqlite" }
+androidx-ui-graphics = { module = "androidx.compose.ui:ui-graphics", version.ref = "uiGraphics" }
+androidx-ui-text = { module = "androidx.compose.ui:ui-text", version.ref = "uiText" }
+androidx-ui-unit = { module = "androidx.compose.ui:ui-unit", version.ref = "uiUnit" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+coil-compose-base = { module = "io.coil-kt:coil-compose-base", version.ref = "coilCompose" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
-androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
-androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
-voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyagerKoin" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workRuntimeKtxVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

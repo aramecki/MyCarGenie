@@ -4,8 +4,8 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-parcelize")
     id("com.google.devtools.ksp")
-    id("kotlin-kapt")
     alias(libs.plugins.compose.compiler)
+    id("com.autonomousapps.dependency-analysis")
 }
 
 android {
@@ -55,40 +55,54 @@ android {
 }
 
 dependencies {
-
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.voyager.koin)
-    implementation(libs.androidx.compiler)
+    runtimeOnly(libs.androidx.compiler)
 
     //Datastore
     implementation(libs.androidx.datastore.preferences)
 
-    //WorkManager
-    implementation(libs.work.runtime.ktx)
-
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit.v115)
-    androidTestImplementation(libs.androidx.espresso.core.v351)
-    androidTestImplementation(libs.ui.test.junit4)
-    debugImplementation(libs.ui.tooling)
-    debugImplementation(libs.ui.test.manifest)
-
     implementation(libs.coil.compose)
-
 
     // Room
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
+    androidTestImplementation(libs.androidx.monitor)
+    androidTestImplementation(libs.junit)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.annotation)
+    implementation(libs.androidx.animation.core)
+    implementation(libs.androidx.animation)
+    implementation(libs.androidx.foundation.layout)
+    implementation(libs.androidx.foundation)
+    implementation(libs.androidx.material.icons.core)
+    implementation(libs.androidx.runtime.saveable)
+    implementation(libs.androidx.runtime)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.text)
+    implementation(libs.androidx.ui.unit)
+    implementation(libs.androidx.core)
+    implementation(libs.androidx.datastore.core)
+    implementation(libs.androidx.datastore.preferences.core)
+    implementation(libs.androidx.lifecycle.common)
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.navigation.common)
+    implementation(libs.androidx.navigation.runtime)
+    implementation(libs.androidx.room.common)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.sqlite)
+    implementation(libs.coil.compose.base)
+    implementation(libs.kotlinx.coroutines.core)
+
     // Test
     androidTestImplementation(platform(libs.androidx.compose.bom))
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit.v115)
+    debugImplementation(libs.ui.tooling)
+    debugRuntimeOnly(libs.ui.test.manifest)
 
 }
