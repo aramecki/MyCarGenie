@@ -85,11 +85,11 @@ fun HomeScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                if (carProfile.savedImagePath != "") {
+                if (carProfile.savedImagePath.isNotEmpty()) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth(0.5f)
-                            .padding(start = 32.dp)
+                            .padding(start = 18.dp)
                     ) {
                         val imagePainter =
                             rememberAsyncImagePainter(model = carProfile.savedImagePath)
@@ -108,16 +108,34 @@ fun HomeScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 32.dp)
+                        .padding(start = 16.dp)
                 ) {
+
+                    val brandFontSize = when {
+                        carProfile.brand.length < 10 -> 22.sp
+                        carProfile.brand.length < 12 -> 20.sp
+                        else -> 19.sp
+                    }
+
                     Row {
                         Text(
                             text = carProfile.brand,
-                            fontSize = 22.sp,
+                            fontSize = brandFontSize,
                             fontWeight = FontWeight.SemiBold,
                             modifier = Modifier
                                 .padding(top = 16.dp)
                         )
+                    }
+
+                    val modelFontSize = when {
+                        carProfile.model.length < 6 -> 34.sp
+                        carProfile.model.length < 8 -> 32.sp
+                        carProfile.model.length < 10 -> 24.sp
+                        carProfile.model.length < 12 -> 17.sp
+                        carProfile.model.length < 14 -> 15.sp
+                        carProfile.model.length < 18 -> 13.sp
+                        carProfile.model.length < 20 -> 11.sp
+                        else -> 10.sp
                     }
 
                     Row(
@@ -125,7 +143,7 @@ fun HomeScreen(
                     ) {
                         Text(
                             text = carProfile.model,
-                            fontSize = 32.sp,
+                            fontSize = modelFontSize,
                             fontWeight = FontWeight.Bold
                         )
                     }

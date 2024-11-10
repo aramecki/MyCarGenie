@@ -161,7 +161,9 @@ fun ExpSettingsScreen(
             Text(
                 text = "Assicurazione RCA",
                 fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier
+                    .clickable { inscheck = !inscheck }
             )
 
         }
@@ -417,7 +419,9 @@ fun ExpSettingsScreen(
             Text(
                 text = "Tassa Automobilistica",
                 fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier
+                    .clickable { taxcheck = !taxcheck }
             )
 
         }
@@ -554,7 +558,9 @@ fun ExpSettingsScreen(
             Text(
                 text = "Revisione",
                 fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier
+                    .clickable { revcheck = !revcheck }
             )
 
         }

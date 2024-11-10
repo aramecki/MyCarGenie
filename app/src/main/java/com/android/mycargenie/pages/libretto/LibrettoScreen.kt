@@ -153,11 +153,11 @@ fun LibrettoScreen(
                 )
 
                 val modelFontSize = when {
-                    carProfile.model.length < 5 -> 35.sp
-                    carProfile.model.length < 10 -> 33.sp
-                    carProfile.model.length < 15 -> 31.sp
-                    carProfile.model.length < 20 -> 29.sp
-                    else -> 27.sp
+                    carProfile.model.length < 5 -> 34.sp
+                    carProfile.model.length < 10 -> 32.sp
+                    carProfile.model.length < 15 -> 29.sp
+                    carProfile.model.length < 20 -> 25.sp
+                    else -> 24.sp
                 }
 
                 Text(
@@ -221,13 +221,24 @@ fun LibrettoScreen(
                             )
                             Text(
                                 text = "cc",
-                                fontSize = 11.sp
+                                fontSize = 10.sp
                             )
                         }
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                 }
 
+
+
+                val powerHorseFontSize = when {
+                    carProfile.power.toString().length < 6 -> 24.sp
+                    else -> 15.sp
+                }
+
+                val powerHorseInnerPadding = when {
+                    carProfile.type.length < 6 -> 12.dp
+                    else -> 14.dp
+                }
 
                 //Potenza
                 if (carProfile.power > 0.0) {
@@ -245,16 +256,16 @@ fun LibrettoScreen(
                                     border = ButtonDefaults.outlinedButtonBorder(),
                                     shape = RoundedCornerShape(6.dp)
                                 )
-                                .padding(12.dp)
+                                .padding(powerHorseInnerPadding)
                                 .fillMaxWidth()
                         ) {
                             Text(
                                 text = "${carProfile.power}",
-                                fontSize = 23.sp,
+                                fontSize = powerHorseFontSize,
                             )
                             Text(
                                 text = "kW",
-                                fontSize = 11.sp
+                                fontSize = 10.sp
                             )
                         }
                     }
@@ -278,16 +289,16 @@ fun LibrettoScreen(
                                     border = ButtonDefaults.outlinedButtonBorder(),
                                     shape = RoundedCornerShape(6.dp)
                                 )
-                                .padding(12.dp)
+                                .padding(powerHorseInnerPadding)
                                 .fillMaxWidth()
                         ) {
                             Text(
                                 text = "${carProfile.horsepower}",
-                                fontSize = 23.sp
+                                fontSize = powerHorseFontSize
                             )
                             Text(
                                 text = "CV",
-                                fontSize = 11.sp
+                                fontSize = 10.sp
                             )
                         }
                     }
@@ -311,6 +322,18 @@ fun LibrettoScreen(
                 ) {
 
                     //Tipo
+                    val typeFontSize = when {
+                        carProfile.type.length < 10 -> 24.sp
+                        carProfile.type.length < 13 -> 18.sp
+                        else -> 15.sp
+                    }
+
+                    val typeInnerPadding = when {
+                        carProfile.type.length < 10 -> 12.dp
+                        carProfile.type.length < 13 -> 14.dp
+                        else -> 14.dp
+                    }
+
                     if (carProfile.type.isNotEmpty()) {
                         Row {
                             Column {
@@ -324,12 +347,12 @@ fun LibrettoScreen(
                                             border = ButtonDefaults.outlinedButtonBorder(),
                                             shape = RoundedCornerShape(6.dp)
                                         )
-                                        .padding(12.dp)
+                                        .padding(typeInnerPadding)
                                         .fillMaxWidth()
                                 ) {
                                     Text(
                                         text = carProfile.type,
-                                        fontSize = 24.sp,
+                                        fontSize = typeFontSize,
                                         modifier = Modifier
                                             .fillMaxWidth()
                                     )
@@ -407,10 +430,8 @@ fun LibrettoScreen(
                         }
                     }
 
-
+                    //Inquinamento
                     if (carProfile.eco.isNotEmpty()) {
-                        //Inquinamento
-
                         Row {
                             Column {
                                 Text(
