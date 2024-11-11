@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -66,7 +67,7 @@ fun ManutenzioneScreen(
             val isSmallList = state.men.size <= 3
             val distanceFromEnd = state.men.size - lastVisibleIndex
 
-            println("lastVisibleIndex: $lastVisibleIndex, State Size: ${state.men.size}, Distance: $distanceFromEnd")
+            //println("lastVisibleIndex: $lastVisibleIndex, State Size: ${state.men.size}, Distance: $distanceFromEnd")
 
             !isSmallList && distanceFromEnd <= 3
         }
@@ -75,7 +76,7 @@ fun ManutenzioneScreen(
 
     LaunchedEffect(isAtEndOfList.value, state.men) {
         if (isAtEndOfList.value && !isLoading) {
-            println("Caricamento nuovi dati...")
+            //println("Caricamento nuovi dati...")
             isLoading = true
             viewModel.loadMoreMen()
             isLoading = false
@@ -94,7 +95,7 @@ fun ManutenzioneScreen(
                 state.price.value = 0.0
                 navController.navigate("AddManScreen")
             }) {
-                Icon(imageVector = Icons.Rounded.Add, contentDescription = "Aggiungi Manutenzione")
+                Icon(imageVector = Icons.Rounded.Add, contentDescription = "${stringResource(R.string.add)} ${stringResource(R.string.maintenance)}")
             }
         }
     ) { paddingValues ->
@@ -104,7 +105,7 @@ fun ManutenzioneScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Aggiungi la tua prima manutenzione per visualizzare una card.",
+                    text = stringResource(R.string.add_main_message),
                     fontSize = 18.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
@@ -122,7 +123,7 @@ fun ManutenzioneScreen(
                     navController.navigate("AddManScreen")
                 }) {
                     Text(
-                        text = "Inserisci",
+                        text = stringResource(R.string.insert),
                         fontSize = 16.sp
                     )
                 }
@@ -187,9 +188,9 @@ fun ManItem(
             }
     ) {
         val icon = when (state.men[index].type) {
-            "Meccanico" -> ImageVector.vectorResource(id = R.drawable.manufacturing)
-            "Elettrauto" -> ImageVector.vectorResource(id = R.drawable.lightbulb)
-            "Carrozziere" -> ImageVector.vectorResource(id = R.drawable.brush)
+            stringResource(R.string.mechanic) -> ImageVector.vectorResource(id = R.drawable.manufacturing)
+            stringResource(R.string.electrician) -> ImageVector.vectorResource(id = R.drawable.lightbulb)
+            stringResource(R.string.coachbuilder) -> ImageVector.vectorResource(id = R.drawable.brush)
             else -> ImageVector.vectorResource(id = R.drawable.repair)
         }
 
@@ -249,7 +250,7 @@ fun ManItem(
                 if (place.isNotEmpty()) {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.location),
-                        contentDescription = "Luogo",
+                        contentDescription = stringResource(R.string.place),
                         tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
                             .size(34.dp)
@@ -277,7 +278,7 @@ fun ManItem(
             ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(id = R.drawable.time_to_leave),
-                    contentDescription = "Data",
+                    contentDescription = stringResource(R.string.date),
                     tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier
                         .size(34.dp)
@@ -285,7 +286,7 @@ fun ManItem(
                 )
 
                 Text(
-                    text = "$kmt km",
+                    text = stringResource(R.string.value_km, kmt),
                     fontSize = 16.sp,
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
@@ -300,7 +301,7 @@ fun ManItem(
                     val price = formatPrice(state.men[index].price)
 
                     Text(
-                        text = "$price €",
+                        text = stringResource(R.string.value_euro, price),
                         fontSize = 18.sp,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                     )

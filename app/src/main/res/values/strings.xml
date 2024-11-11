@@ -53,4 +53,20 @@
     <string name="e5">Euro 5</string>
     <string name="e6">Euro 6</string>
     <string name="save">Salva</string>
+    <string name="maintenance">Manutenzione</string>
+    <string name="title">Titolo</string>
+    <string name="kilometers">Kilometri</string>
+    <string name="description">Descrizione</string>
+    <string name="price">Prezzo</string>
+    <string name="value">Euro</string>
+    <string name="req_fields">I campi contrassegnati da * sono obbligatori.</string>
+    <string name="ok">OK</string>
+    <string name="cancel">ANNULLA</string>
+    <string name="changes">Modifiche</string>
+    <string name="date">Data</string>
+    <string name="amount">Importo</string>
+    <string name="element_not_found_err">Errore: Elemento non trovato.</string>
+    <string name="add">Aggiungi</string>
+    <string name="add_main_message">Aggiungi la tua prima manutenzione per visualizzare una card.</string>
+    <string name="insert">Inserisci</string>
 </resources>

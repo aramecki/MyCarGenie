@@ -1,6 +1,5 @@
 package com.android.mycargenie.pages.manutenzione
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -44,6 +43,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -70,8 +70,8 @@ fun EditManScreen(
     val manItem = manIndex?.takeIf { it in state.men.indices }?.let { state.men[it] }
 
 
-    Log.d("manIndex", "manIndex: $manIndex")
-    Log.d("manItem", "manItem: $manItem")
+    //Log.d("manIndex", "manIndex: $manIndex")
+    //Log.d("manItem", "manItem: $manItem")
 
 
 
@@ -107,12 +107,12 @@ fun EditManScreen(
                     }
                     showDatePicker = false
                 }) {
-                    Text("OK")
+                    Text(stringResource(R.string.ok))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDatePicker = false }) {
-                    Text("ANNULLA")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         ) {
@@ -126,7 +126,7 @@ fun EditManScreen(
             FloatingActionButton(onClick = {
                 if (state.title.value.isNotBlank() && state.date.value.isNotBlank() && state.description.value.isNotBlank()) {
 
-                    Log.d("SaveMan", "Saving: Title: ${state.title.value}, Type: ${state.type.value} id: ${state.id.value}")
+                    //Log.d("SaveMan", "Saving: Title: ${state.title.value}, Type: ${state.type.value} id: ${state.id.value}")
 
                     onEvent(
                         ManEvent.UpdateMan(
@@ -147,7 +147,7 @@ fun EditManScreen(
             }) {
                 Icon(
                     imageVector = Icons.Rounded.Check,
-                    contentDescription = "Salva Modifiche Manutenzione"
+                    contentDescription = "${stringResource(R.string.save)} ${stringResource(R.string.changes)} ${stringResource(R.string.maintenance)}"
                 )
             }
         }
@@ -191,7 +191,7 @@ fun EditManScreen(
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 17.sp
                         ),
-                        placeholder = {if (state.title.value.isEmpty()) Text(text = "Titolo*") },
+                        placeholder = {if (state.title.value.isEmpty()) Text(text = "${stringResource(R.string.title)}*") },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             imeAction = ImeAction.Next,
                             capitalization = KeyboardCapitalization.Sentences
@@ -203,7 +203,7 @@ fun EditManScreen(
                 }
 
 
-                val types = listOf("Meccanico", "Elettrauto", "Carrozziere", "Altro")
+                val types = listOf(stringResource(R.string.mechanic), stringResource(R.string.electrician), stringResource(R.string.coachbuilder), stringResource(R.string.different))
 
                 Row {
                     Column {
@@ -239,7 +239,7 @@ fun EditManScreen(
                                     textStyle = TextStyle(
                                         fontSize = 17.sp
                                     ),
-                                    placeholder = { if (state.place.value.isEmpty()) Text(text = "Luogo") },
+                                    placeholder = { if (state.place.value.isEmpty()) Text(text = stringResource(R.string.place)) },
                                     keyboardOptions = KeyboardOptions.Default.copy(
                                         imeAction = ImeAction.Next,
                                         capitalization = KeyboardCapitalization.Sentences
@@ -274,10 +274,10 @@ fun EditManScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Rounded.DateRange,
-                                contentDescription = "Calendario"
+                                contentDescription = null
                             )
                             Text(
-                                text = state.date.value.ifEmpty { "Data*" },
+                                text = state.date.value.ifEmpty { "${stringResource(R.string.date)}*" },
                                 fontSize = 17.sp,
                                 modifier = Modifier
                                     .padding(start = 8.dp)
@@ -303,7 +303,7 @@ fun EditManScreen(
                                     }
                                 }
                             },
-                            placeholder = {if (state.kmt.value == 0) Text(text = "Kilometri") },
+                            placeholder = {if (state.kmt.value == 0) Text(text = stringResource(R.string.kilometers)) },
                             keyboardOptions = KeyboardOptions(
                                 keyboardType = KeyboardType.Number,
                                 imeAction = ImeAction.Next
@@ -328,7 +328,7 @@ fun EditManScreen(
                                     state.description.value = newValue
                                 }
                             },
-                            placeholder = {if (state.description.value.isEmpty()) Text(text = "Descrizione*") },
+                            placeholder = {if (state.description.value.isEmpty()) Text(text = "${stringResource(R.string.description)}*") },
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 capitalization = KeyboardCapitalization.Sentences
                             ),
@@ -387,11 +387,11 @@ fun EditManScreen(
                                     }
                                 }
                             },
-                            placeholder = { Text(text = "Importo") },
+                            placeholder = { Text(text = stringResource(R.string.amount)) },
                             leadingIcon = {
                                 Icon(
                                     imageVector = ImageVector.vectorResource(id = R.drawable.euro_symbol),
-                                    contentDescription = "Euro Icon",
+                                    contentDescription = stringResource(R.string.value),
                                     modifier = Modifier.size(20.dp)
                                 )
                             },
@@ -431,7 +431,7 @@ fun EditManScreen(
                         .padding(16.dp)
                 ) {
                     Text(
-                        text = "I campi contrassegnati da * sono obbligatori.",
+                        text = stringResource(R.string.req_fields),
                         fontSize = 14.sp,
                         modifier = Modifier
                             .fillMaxWidth(),
@@ -447,7 +447,7 @@ fun EditManScreen(
                     .padding(16.dp)
             ) {
                 Text(
-                    text = "Errore: Elemento non trovato.",
+                    text = stringResource(R.string.element_not_found_err),
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodyLarge
                 )
@@ -457,7 +457,7 @@ fun EditManScreen(
 
         if (showError) {
             Text(
-                text = "Compila tutti i campi obbligatori.",
+                text = stringResource(R.string.compile_req_fields),
                 color = MaterialTheme.colorScheme.error,
                 modifier = Modifier.padding(16.dp)
             )

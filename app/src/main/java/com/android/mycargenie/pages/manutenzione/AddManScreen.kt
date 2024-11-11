@@ -48,6 +48,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -130,7 +131,7 @@ fun AddManScreen(
             }) {
                 Icon(
                     imageVector = Icons.Rounded.Check,
-                    contentDescription = "Salva Manutenzione"
+                    contentDescription = "${stringResource(R.string.save)} ${stringResource(R.string.maintenance)}"
                 )
             }
         }
@@ -170,7 +171,7 @@ fun AddManScreen(
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 17.sp
                     ),
-                    placeholder = { Text(text = "Titolo*") },
+                    placeholder = { Text(text = "${stringResource(R.string.title)}*") },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Next,
                         capitalization = KeyboardCapitalization.Sentences
@@ -182,7 +183,7 @@ fun AddManScreen(
             }
 
 
-            val types = listOf("Meccanico", "Elettrauto", "Carrozziere", "Altro")
+            val types = listOf(stringResource(R.string.mechanic), stringResource(R.string.electrician), stringResource(R.string.coachbuilder), stringResource(R.string.different))
 
             Row {
                 Column {
@@ -218,7 +219,7 @@ fun AddManScreen(
                                 textStyle = TextStyle(
                                     fontSize = 17.sp
                                 ),
-                                placeholder = { Text(text = "Luogo") },
+                                placeholder = { Text(text = stringResource(R.string.place)) },
                                 keyboardOptions = KeyboardOptions.Default.copy(
                                     imeAction = ImeAction.Next,
                                     capitalization = KeyboardCapitalization.Sentences
@@ -253,7 +254,7 @@ fun AddManScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.DateRange,
-                            contentDescription = "Calendario"
+                            contentDescription = null
                         )
                         Text(
                             text = state.date.value.ifEmpty { formatDateToString(Instant.now().toEpochMilli()) },
@@ -282,7 +283,7 @@ fun AddManScreen(
                                 }
                             }
                         },
-                        placeholder = { Text(text = "Kilometri") },
+                        placeholder = { Text(text = stringResource(R.string.kilometers)) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
                             imeAction = ImeAction.Next
@@ -308,7 +309,7 @@ fun AddManScreen(
                                 state.description.value = newValue
                             }
                         },
-                        placeholder = { Text(text = "Descrizione*") },
+                        placeholder = { Text(text = "${stringResource(R.string.description)}*") },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             capitalization = KeyboardCapitalization.Sentences
                         ),
@@ -364,11 +365,11 @@ fun AddManScreen(
                                 }
                             }
                         },
-                        placeholder = { Text(text = "Prezzo") },
+                        placeholder = { Text(text = stringResource(R.string.price)) },
                         leadingIcon = {
                             Icon(
                                 imageVector = ImageVector.vectorResource(id = R.drawable.euro_symbol),
-                                contentDescription = "Euro Icon",
+                                contentDescription = stringResource(R.string.value),
                                 modifier = Modifier.size(20.dp)
                             )
                         },
@@ -408,7 +409,7 @@ fun AddManScreen(
                     .padding(16.dp)
             ) {
                 Text(
-                    text = "I campi contrassegnati da * sono obbligatori.",
+                    text = stringResource(R.string.req_fields),
                     fontSize = 14.sp,
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -421,7 +422,7 @@ fun AddManScreen(
 
             if (showError) {
                 Text(
-                    text = "Compila tutti i campi obbligatori.",
+                    text = stringResource(R.string.compile_req_fields),
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(16.dp)
                 )
@@ -431,7 +432,7 @@ fun AddManScreen(
 
 
 @Composable
-fun TypeDropdownMenu(types: List<String>, selectedType: MutableState<String>, placeholder: String = "Tipo") {
+fun TypeDropdownMenu(types: List<String>, selectedType: MutableState<String>, placeholder: String = stringResource(R.string.type)) {
     var isDropDownExpanded by remember { mutableStateOf(false) }
 
     Box(
@@ -451,7 +452,7 @@ fun TypeDropdownMenu(types: List<String>, selectedType: MutableState<String>, pl
             Text(text = selectedType.value.ifEmpty { placeholder })
             Icon(
                 imageVector = Icons.Rounded.ArrowDropDown,
-                contentDescription = "Dropdown Arrow"
+                contentDescription = null
             )
         }
 
@@ -471,86 +472,3 @@ fun TypeDropdownMenu(types: List<String>, selectedType: MutableState<String>, pl
         }
     }
 }
-
-/*
-@SuppressLint("UnrememberedMutableState")
-@Preview(
-    name = "Light Mode",
-    showBackground = true
-)
-@Composable
-fun PreviewAddManScreenLight() {
-    val exampleState = ManState(
-        title = mutableStateOf("Titolo"),
-        date = mutableStateOf("01/01/2024"),
-        place = mutableStateOf("12345678912345"),
-        description = mutableStateOf("Descrizione di esempio")
-    )
-
-    val navController = rememberNavController()
-
-    val onEvent: (ManEvent) -> Unit = { event ->
-        when (event) {
-            is ManEvent.SaveMan -> {
-                println("Salvato: ${event.title}, ${event.date}, ${event.place}, ${event.description}")
-            }
-            is ManEvent.UpdateMan -> {
-                println("Aggiornato: ${event.id}, ${event.title}, ${event.date}, ${event.place}, ${event.description}")
-            }
-
-            is ManEvent.DeleteMan -> TODO()
-            ManEvent.SortMan -> TODO()
-        }
-    }
-
-    // Preview in modalità chiara
-    MyCarGenieTheme(darkTheme = false) {
-        AddManScreen(
-            state = exampleState,
-            navController = navController,
-            onEvent = onEvent
-        )
-    }
-}
-
-@SuppressLint("UnrememberedMutableState")
-@Preview(
-    name = "Dark Mode",
-    showBackground = true
-)
-@Composable
-fun PreviewAddManScreenDark() {
-    val exampleState = ManState(
-        title = mutableStateOf("Titolo"),
-        date = mutableStateOf("01/01/2024"),
-        place = mutableStateOf("12345678912345"),
-        description = mutableStateOf("Descrizione di esempio")
-    )
-
-    val navController = rememberNavController()
-
-    val onEvent: (ManEvent) -> Unit = { event ->
-        when (event) {
-            is ManEvent.SaveMan -> {
-                println("Salvato: ${event.title}, ${event.date}, ${event.place}, ${event.description}")
-            }
-            is ManEvent.UpdateMan -> {
-                println("Aggiornato: ${event.id}, ${event.title}, ${event.date}, ${event.place}, ${event.description}")
-            }
-
-            is ManEvent.DeleteMan -> TODO()
-            ManEvent.SortMan -> TODO()
-        }
-    }
-
-    // Preview in modalità scura
-    MyCarGenieTheme(darkTheme = true) {
-        AddManScreen(
-            state = exampleState,
-            navController = navController,
-            onEvent = onEvent
-        )
-    }
-}
-
- */

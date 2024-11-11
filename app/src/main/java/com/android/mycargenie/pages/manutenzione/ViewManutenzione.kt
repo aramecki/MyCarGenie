@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -57,9 +58,9 @@ fun ViewManScreen(
 
                     //Icona tipo
                     val icon = when (manItem.type) {
-                        "Meccanico" -> ImageVector.vectorResource(id = R.drawable.manufacturing)
-                        "Elettrauto" -> ImageVector.vectorResource(id = R.drawable.lightbulb)
-                        "Carrozziere" -> ImageVector.vectorResource(id = R.drawable.brush)
+                        stringResource(R.string.mechanic) -> ImageVector.vectorResource(id = R.drawable.manufacturing)
+                        stringResource(R.string.electrician) -> ImageVector.vectorResource(id = R.drawable.lightbulb)
+                        stringResource(R.string.coachbuilder) -> ImageVector.vectorResource(id = R.drawable.brush)
                         else -> ImageVector.vectorResource(id = R.drawable.repair)
                     }
 
@@ -121,7 +122,7 @@ fun ViewManScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Rounded.DateRange,
-                                contentDescription = "Data",
+                                contentDescription = stringResource(R.string.date),
                                 tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier
                                     .size(30.dp)
@@ -145,7 +146,7 @@ fun ViewManScreen(
                         ) {
                             Icon(
                                 imageVector = ImageVector.vectorResource(id = R.drawable.location),
-                                contentDescription = "Luogo",
+                                contentDescription = stringResource(R.string.place),
                                 tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier
                                     .size(30.dp)
@@ -164,7 +165,7 @@ fun ViewManScreen(
 
 
                 Text(
-                    text = "Descrizione: ${manItem.description}",
+                    text = "${stringResource(R.string.description)}: ${manItem.description}",
                     style = MaterialTheme.typography.bodyMedium
                 )
 
@@ -182,7 +183,7 @@ fun ViewManScreen(
                         val kmt = formatKmt(manItem.kmt)
 
                         Text(
-                            text = "$kmt km",
+                            text = stringResource(R.string.value_km, kmt),
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontSize = 16.sp
                             )
@@ -198,7 +199,7 @@ fun ViewManScreen(
                             .fillMaxWidth()
                     ) {
                         Text(
-                            text = "$price €",
+                            text = stringResource(R.string.value_euro, price),
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontSize = 16.sp
                             ),
@@ -218,7 +219,7 @@ fun ViewManScreen(
                     .padding(16.dp)
             ) {
                 Text(
-                    text = "Errore: Elemento non trovato.",
+                    text = stringResource(R.string.element_not_found_err),
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodyLarge
                 )

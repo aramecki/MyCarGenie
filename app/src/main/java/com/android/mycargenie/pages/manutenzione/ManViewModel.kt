@@ -46,7 +46,7 @@ class ManViewModel(
     init {
         viewModelScope.launch {
             dao.getLastInsertedId().collect { lastId ->
-                println("Ultimo ID inserito: $lastId")
+                //println("Ultimo ID inserito: $lastId")
                 _lastInsertedId.value = lastId
             }
         }
@@ -60,7 +60,7 @@ class ManViewModel(
             isLoading = true
             _state.update { it.copy(isLoading = true) }
 
-            println("Caricamento pagina: $currentPage, Offset: ${currentPage * pageSize}")
+            //println("Caricamento pagina: $currentPage, Offset: ${currentPage * pageSize}")
 
             val newMen = if (isSortedByDateAdded.value) {
                 dao.getMenPaginatedOrderedByDate(currentPage * pageSize, pageSize)
@@ -69,7 +69,7 @@ class ManViewModel(
             }
 
             if (newMen.isEmpty()) {
-                println("Nessun dato da caricare.")
+                //println("Nessun dato da caricare.")
                 isLoading = false
                 _state.update { it.copy(isLoading = false) }
                 return@launch
@@ -82,7 +82,7 @@ class ManViewModel(
             }
             currentPage++
 
-            println("Nuovi elementi caricati: ${newMen.size}, Totale: ${_mans.value.size}")
+            //println("Nuovi elementi caricati: ${newMen.size}, Totale: ${_mans.value.size}")
 
             isLoading = false
             _state.update { it.copy(isLoading = false) }
