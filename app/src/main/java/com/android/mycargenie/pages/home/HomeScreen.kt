@@ -514,9 +514,9 @@ fun HomeScreen(
                             val totunit = formatPrice(rifornimento.totunit)
 
                             val showunit = if (rifornimento.type == stringResource(R.string.electric)) {
-                                stringResource(R.string.kwh, totunit)
+                                stringResource(R.string.value_kwh, totunit)
                             } else {
-                                stringResource(R.string.l, totunit)
+                                stringResource(R.string.value_l, totunit)
                             }
 
                             Text(

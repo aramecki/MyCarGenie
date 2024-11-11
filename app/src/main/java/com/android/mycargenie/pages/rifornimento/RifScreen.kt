@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -65,7 +66,7 @@ fun RifornimentoScreen(
             val isSmallList = state.rifs.size <= 3
             val  distanceFromEnd = state.rifs.size - lastVisibleIndex
 
-            println("lastVisibleIndex: $lastVisibleIndex, State Size: ${state.rifs.size}, Distance: $distanceFromEnd")
+            //println("lastVisibleIndex: $lastVisibleIndex, State Size: ${state.rifs.size}, Distance: $distanceFromEnd")
 
             !isSmallList && distanceFromEnd <= 3
         }
@@ -74,7 +75,7 @@ fun RifornimentoScreen(
 
     LaunchedEffect(isAtEndOfList.value, state.rifs) {
         if (isAtEndOfList.value && !isLoading) {
-            println("Caricamento nuovi dati...")
+            //println("Caricamento nuovi dati...")
             isLoading = true
             viewModel.loadMoreRifs()
             isLoading = false
@@ -94,7 +95,7 @@ fun RifornimentoScreen(
                 state.kmt.value = 0
                 navController.navigate("AddRifScreen")
             }) {
-                Icon(imageVector = Icons.Rounded.Add, contentDescription = "Aggiungi Rifornimento")
+                Icon(imageVector = Icons.Rounded.Add, contentDescription = "${R.string.add} ${R.string.refueling}")
             }
         }
     ) { paddingValues ->
@@ -104,7 +105,7 @@ fun RifornimentoScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Aggiungi il tuo primo rifornimento per visualizzare una card.",
+                    text = stringResource(R.string.add_ref_message),
                     fontSize = 18.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
@@ -123,7 +124,7 @@ fun RifornimentoScreen(
                     navController.navigate("AddRifScreen")
                 }) {
                     Text(
-                        text = "Inserisci",
+                        text = stringResource(R.string.insert),
                         fontSize = 16.sp
                     )
                 }
@@ -189,7 +190,7 @@ fun RifItem(
 
         //Icona tipo
         val icon = when (state.rifs[index].type) {
-            "Elettrico" -> ImageVector.vectorResource(id = R.drawable.electric)
+            stringResource(R.string.electric) -> ImageVector.vectorResource(id = R.drawable.electric)
             else -> ImageVector.vectorResource(id = R.drawable.oil)
         }
 
@@ -234,7 +235,7 @@ fun RifItem(
                     val price = formatPrice(state.rifs[index].price)
 
                     Text(
-                        text = "$price €",
+                        text = stringResource(R.string.value_euro, price),
                         fontSize = 18.sp,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                         )
@@ -255,10 +256,10 @@ fun RifItem(
                     val uvalue =
                         formatPrice(state.rifs[index].uvalue)
 
-                    val unitprice = if (state.rifs[index].type == "Elettrico") {
-                        "$uvalue €/kWh"
+                    val unitprice = if (state.rifs[index].type == stringResource(R.string.electric)) {
+                        stringResource(R.string.value_eur_kWh, uvalue)
                     } else {
-                        "$uvalue €/l"
+                        stringResource(R.string.value_euro_liter, uvalue)
                     }
 
                     Text(
@@ -279,7 +280,7 @@ fun RifItem(
                 if (place.isNotEmpty()) {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.location),
-                            contentDescription = "Luogo",
+                            contentDescription = stringResource(R.string.place),
                             tint = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier
                                 .size(34.dp)
@@ -304,10 +305,10 @@ fun RifItem(
                 ) {
                     val totunit = formatPrice(state.rifs[index].totunit)
 
-                    val showunit = if (state.rifs[index].type == "Elettrico") {
-                        "$totunit kWh"
+                    val showunit = if (state.rifs[index].type == stringResource(R.string.electric)) {
+                        stringResource(R.string.value_kwh, totunit)
                     } else {
-                        "$totunit l"
+                        stringResource(R.string.value_l, totunit)
                     }
 
                     Text(

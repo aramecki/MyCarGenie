@@ -1,6 +1,5 @@
 package com.android.mycargenie.pages.scadenze
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -44,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -53,6 +53,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.android.mycargenie.R
 import com.android.mycargenie.shared.formatDateToLong
 import com.android.mycargenie.shared.formatDateToString
 import java.time.Instant
@@ -141,7 +142,7 @@ fun ExpSettingsScreen(
     ) {
 
             Text(
-                text = "Seleziona un campo per abilitarlo e gestirne le impostazioni.",
+                text = stringResource(R.string.select_field_message),
                 fontSize = 18.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
@@ -159,7 +160,7 @@ fun ExpSettingsScreen(
                 onCheckedChange = { inscheck = it }
             )
             Text(
-                text = "Assicurazione RCA",
+                text = stringResource(R.string.insurance),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier
@@ -178,7 +179,7 @@ fun ExpSettingsScreen(
 
 
                 Text(
-                    text = "Inizio copertura:",
+                    text = "${R.string.start} ${R.string.coverage}:",
                     fontSize = 18.sp,
                     modifier = Modifier
                         .weight(1f)
@@ -225,7 +226,7 @@ fun ExpSettingsScreen(
 
 
                 Text(
-                    text = "Fine copertura:",
+                    text = "${R.string.end} ${R.string.coverage}:",
                     fontSize = 18.sp,
                     modifier = Modifier
                         .weight(1f)
@@ -270,7 +271,7 @@ fun ExpSettingsScreen(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "Rate:",
+                    text = "${R.string.dues}:",
                     fontSize = 18.sp,
                     modifier = Modifier
                         .weight(2f)
@@ -327,7 +328,7 @@ fun ExpSettingsScreen(
                         textStyle = TextStyle(
                             fontSize = 19.sp
                         ),
-                        label = { Text("Assicuratore") },
+                        label = { Text(stringResource(R.string.insurer)) },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             imeAction = ImeAction.Next,
                             capitalization = KeyboardCapitalization.Sentences
@@ -366,7 +367,7 @@ fun ExpSettingsScreen(
                         textStyle = TextStyle(
                             fontSize = 20.sp
                         ),
-                        label = { Text("Costo Totale") },
+                        label = { Text("${R.string.amount} ${R.string.total}") },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Decimal,
                             imeAction = ImeAction.Next
@@ -389,7 +390,7 @@ fun ExpSettingsScreen(
                         }
                     )
                     Text(
-                        "Ricevi notifiche sulla scadenza."
+                        stringResource(R.string.get_exp_not)
                     )
 
                 }
@@ -417,7 +418,7 @@ fun ExpSettingsScreen(
                 onCheckedChange = { taxcheck = it }
             )
             Text(
-                text = "Tassa Automobilistica",
+                text = "${R.string.tax} ${R.string.automotive}",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier
@@ -436,7 +437,7 @@ fun ExpSettingsScreen(
 
 
                 Text(
-                    text = "Prossimo saldo:",
+                    text = "${R.string.next} ${R.string.payment}:",
                     fontSize = 18.sp,
                     modifier = Modifier
                         .weight(1f)
@@ -509,7 +510,7 @@ fun ExpSettingsScreen(
                         textStyle = TextStyle(
                             fontSize = 20.sp
                         ),
-                        label = { Text("Costo") },
+                        label = { Text(stringResource(R.string.amount)) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Decimal,
                             imeAction = ImeAction.Next
@@ -531,7 +532,7 @@ fun ExpSettingsScreen(
                         }
                     )
                     Text(
-                        "Ricevi notifiche sulla scadenza."
+                        stringResource(R.string.get_exp_not)
                     )
 
                 }
@@ -556,7 +557,7 @@ fun ExpSettingsScreen(
                 onCheckedChange = { revcheck = it }
             )
             Text(
-                text = "Revisione",
+                text = stringResource(R.string.revision),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier
@@ -574,7 +575,7 @@ fun ExpSettingsScreen(
             ) {
 
                 Text(
-                    text = "Ultima revisione:",
+                    text = "${R.string.last} ${R.string.revision_low}:",
                     fontSize = 18.sp,
                     modifier = Modifier
                         .weight(1f)
@@ -621,7 +622,7 @@ fun ExpSettingsScreen(
 
 
                 Text(
-                    text = "Prossima revisione:",
+                    text = "${R.string.next} ${R.string.revision_low}:",
                     fontSize = 18.sp,
                     modifier = Modifier
                         .weight(1f)
@@ -679,7 +680,7 @@ fun ExpSettingsScreen(
                         textStyle = TextStyle(
                             fontSize = 19.sp
                         ),
-                        label = { Text("Revisore") },
+                        label = { Text(stringResource(R.string.revplace)) },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             imeAction = ImeAction.Next,
                             capitalization = KeyboardCapitalization.Sentences
@@ -701,7 +702,7 @@ fun ExpSettingsScreen(
                         }
                     )
                     Text(
-                        "Ricevi notifiche sulla scadenza."
+                        stringResource(R.string.get_exp_not)
                     )
 
                 }
@@ -744,7 +745,7 @@ fun ExpSettingsScreen(
                     )
                 )
 
-                val tag = "ReminderApp"
+                //val tag = "ReminderApp"
 
                 val oneMonthMillis = 30L * 24 * 60 * 60 * 1000
                 val oneWeekMillis = 7L * 24 * 60 * 60 * 1000
@@ -754,13 +755,13 @@ fun ExpSettingsScreen(
                 val hour8Millis = 8 * 60 * 60 * 1000
 
 
-                Log.d(tag, "Stato di insnot: $insnot")
+                //Log.d(tag, "Stato di insnot: $insnot")
 
                 if (insnot) {
 
                     notificationManager.disableNotifications("insurance")
 
-                    Log.d(tag, "insend: $insend")
+                    //Log.d(tag, "insend: $insend")
                     val insTimestamp = formatDateToLong(insend)
 
                     notificationManager.scheduleNotification(
@@ -794,12 +795,12 @@ fun ExpSettingsScreen(
                     notificationManager.disableNotifications("insurance")
                 }
 
-                Log.d(tag, "Stato di taxnot: $taxnot")
+                //Log.d(tag, "Stato di taxnot: $taxnot")
                 if (taxnot) {
 
                     notificationManager.disableNotifications("tax")
 
-                    Log.d(tag, "taxdate: $taxdate")
+                    //Log.d(tag, "taxdate: $taxdate")
                     val taxTimestamp = formatDateToLong(taxdate)
 
                     notificationManager.scheduleNotification(
@@ -833,12 +834,12 @@ fun ExpSettingsScreen(
                     notificationManager.disableNotifications("tax")
                 }
 
-                Log.d(tag, "Stato di revnot: $revnot")
+                //Log.d(tag, "Stato di revnot: $revnot")
                 if (revnot) {
 
                     notificationManager.disableNotifications("rev")
 
-                    Log.d(tag, "revnext: $revnext")
+                    //Log.d(tag, "revnext: $revnext")
                     val revTimestamp = formatDateToLong(revnext)
 
                     notificationManager.scheduleNotification(
@@ -878,12 +879,12 @@ fun ExpSettingsScreen(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                Text("Salva")
+                Text(stringResource(R.string.save))
             }
         }
 
             Text(
-                "Resetta tutti i campi",
+                stringResource(R.string.reset_fields),
                 textAlign = TextAlign.Center,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.SemiBold,
@@ -984,12 +985,12 @@ fun CustomDatePickerDialog(
                 }
                 onDismissRequest()
             }) {
-                Text("OK")
+                Text(stringResource(R.string.ok))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismissRequest) {
-                Text("ANNULLA")
+                Text(stringResource(R.string.cancel))
             }
         }
 

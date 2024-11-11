@@ -46,6 +46,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -89,7 +90,6 @@ data class BottomNavItem(
     val icon: ImageVector,
     val screen: @Composable () -> Unit
 )
-
 
 @Composable
 fun MainApp(
@@ -147,9 +147,9 @@ fun MainApp(
                         "ManutenzioneScreen", "RifornimentoScreen", "ExpirationsScreen" -> {
                             Text(
                                 text = when (currentDestination) {
-                                    "ManutenzioneScreen" -> "Manutenzione"
-                                    "RifornimentoScreen" -> "Rifornimento"
-                                    "ExpirationsScreen" -> "Scadenze"
+                                    "ManutenzioneScreen" -> stringResource(R.string.maintenance)
+                                    "RifornimentoScreen" -> stringResource(R.string.refueling)
+                                    "ExpirationsScreen" -> stringResource(R.string.expirations)
                                     else -> ""
                                 },
                                 modifier = Modifier
@@ -171,7 +171,7 @@ fun MainApp(
                             ) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                    contentDescription = "Indietro",
+                                    contentDescription = stringResource(R.string.back),
                                     modifier = Modifier
                                         .size(35.dp),
                                     //tint = MaterialTheme.colorScheme.onPrimary
@@ -195,7 +195,7 @@ fun MainApp(
                         ) {
                             Icon(
                                 imageVector = ImageVector.vectorResource(id = R.drawable.sort),
-                                contentDescription = "Ordina",
+                                contentDescription = stringResource(R.string.order),
                                 modifier = Modifier
                                     .size(35.dp),
                                 //tint = MaterialTheme.colorScheme.onPrimary
@@ -227,7 +227,7 @@ fun MainApp(
                                     showDeleteDialog = false
                                 },
                                 title = {
-                                    Text(text = "Confermi?")
+                                    Text(text = stringResource(R.string.confirm_question))
                                 },
                                 confirmButton = {
                                     TextButton(onClick = {
@@ -247,14 +247,14 @@ fun MainApp(
                                         }
 
                                     }) {
-                                        Text("Elimina")
+                                        Text(stringResource(R.string.delete))
                                     }
                                 },
                                 dismissButton = {
                                     TextButton(onClick = {
                                         showDeleteDialog = false
                                     }) {
-                                        Text("Annulla")
+                                        Text(stringResource(R.string.cancel_up_low))
                                     }
                                 }
                             )
@@ -281,10 +281,9 @@ fun MainApp(
                                 ) {
                                     Icon(
                                         imageVector = Icons.Filled.Edit,
-                                        contentDescription = "Modifica",
+                                        contentDescription = stringResource(R.string.edit),
                                         modifier = Modifier
-                                            .size(30.dp),
-                                        //tint = MaterialTheme.colorScheme.onPrimary
+                                            .size(30.dp)
                                     )
                                 }
 
@@ -299,10 +298,9 @@ fun MainApp(
                                 ) {
                                     Icon(
                                         imageVector = Icons.Filled.Delete,
-                                        contentDescription = "Elimina",
+                                        contentDescription = stringResource(R.string.delete),
                                         modifier = Modifier
-                                            .size(30.dp),
-                                        //tint = MaterialTheme.colorScheme.onPrimary
+                                            .size(30.dp)
                                     )
                                 }
                             }
@@ -332,35 +330,35 @@ fun MainApp(
                     BottomNavigationBar(
                         items = listOf(
                             BottomNavItem(
-                                "Home",
+                                stringResource(R.string.home),
                                 ImageVector.vectorResource(id = R.drawable.home)
                             ) {
                                 selectedTabIndex = 0
                                 navController.navigate("HomeScreen")
                             },
                             BottomNavItem(
-                                "Manutenzione",
+                                stringResource(R.string.maintenance),
                                 ImageVector.vectorResource(id = R.drawable.time_to_leave)
                             ) {
                                 selectedTabIndex = 1
                                 navController.navigate("ManutenzioneScreen")
                             },
                             BottomNavItem(
-                                "Rifornimento",
+                                stringResource(R.string.refueling),
                                 ImageVector.vectorResource(id = R.drawable.gas_station)
                             ) {
                                 selectedTabIndex = 2
                                 navController.navigate("RifornimentoScreen")
                             },
                             BottomNavItem(
-                                "Scadenze",
+                                stringResource(R.string.expirations),
                                 ImageVector.vectorResource(id = R.drawable.calendar)
                             ) {
                                 selectedTabIndex = 3
                                 navController.navigate("ExpirationsScreen")
                             },
                             BottomNavItem(
-                                "Libretto",
+                                stringResource(R.string.profile),
                                 ImageVector.vectorResource(id = R.drawable.assignment)
                             ) {
                                 selectedTabIndex = 4

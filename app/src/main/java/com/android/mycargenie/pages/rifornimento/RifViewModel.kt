@@ -45,7 +45,7 @@ class RifViewModel(
     init {
         viewModelScope.launch {
             dao.getLastInsertedId().collect { lastId ->
-                println("Ultimo ID inserito: $lastId")
+                //println("Ultimo ID inserito: $lastId")
                 _lastInsertedId.value = lastId
             }
         }
@@ -58,7 +58,7 @@ class RifViewModel(
         isLoading = true
         _state.update { it.copy(isLoading = true) }
 
-        println("Caricamento pagina: $currentPage, Offset: ${currentPage * pageSize}")
+        //println("Caricamento pagina: $currentPage, Offset: ${currentPage * pageSize}")
 
         viewModelScope.launch {
             val newRifs = if (isSortedByDateAdded.value) {
@@ -68,7 +68,7 @@ class RifViewModel(
             }
 
             if (newRifs.isEmpty()) {
-                println("Nessun dato da caricare.")
+                //println("Nessun dato da caricare.")
                 isLoading = false
                 _state.update { it.copy(isLoading = false) }
                 return@launch
@@ -81,7 +81,7 @@ class RifViewModel(
             }
             currentPage++
 
-            println("Nuovi rifornimenti caricati: ${newRifs.size}, Totale: ${_rifs.value.size}")
+            //println("Nuovi rifornimenti caricati: ${newRifs.size}, Totale: ${_rifs.value.size}")
 
             isLoading = false
             _state.update { it.copy(isLoading = false) }

@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -55,7 +56,7 @@ fun ViewRifScreen(
 
                     //Icona tipo
                     val icon = when (rifItem.type) {
-                        "Elettrico" -> ImageVector.vectorResource(id = R.drawable.electric)
+                        stringResource(R.string.electric) -> ImageVector.vectorResource(id = R.drawable.electric)
                         else -> ImageVector.vectorResource(id = R.drawable.oil)
                     }
 
@@ -114,7 +115,7 @@ fun ViewRifScreen(
                     ) {
                         val price = formatPrice(rifItem.price)
                         Text(
-                            text = "Importo: $price €",
+                            text = "${R.string.amount}: ${stringResource(R.string.value_euro, price)}",
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontSize = 18.sp
                             )
@@ -131,8 +132,8 @@ fun ViewRifScreen(
                         val uPrice = formatPrice(rifItem.uvalue)
 
                         val unitValue = when (rifItem.type) {
-                            "Elettrico" -> "€/kWh: $uPrice"
-                            else -> "€/l: $uPrice"
+                            stringResource(R.string.electric) -> "${R.string.eur_kwh}: $uPrice"
+                            else -> "${R.string.eur_l}: $uPrice"
                         }
 
                         Text(
@@ -147,8 +148,8 @@ fun ViewRifScreen(
                         val units = formatPrice(rifItem.totunit)
 
                         val unitsText = when (rifItem.type) {
-                            "Elettrico" -> "kWh ricaricati: $units"
-                            else -> "l riforniti: $units"
+                            stringResource(R.string.electric) -> "${R.string.kWh} ${R.string.charged}: $units"
+                            else -> "${R.string.l} ${R.string.refueled_s}: $units"
                         }
 
                         Text(
@@ -168,7 +169,7 @@ fun ViewRifScreen(
                     Spacer(modifier = Modifier.height(52.dp))
 
                     Text(
-                        text = "Note: ${rifItem.note}",
+                        text = "${R.string.notes}: ${rifItem.note}",
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontSize = 16.sp
                         )
@@ -191,7 +192,7 @@ fun ViewRifScreen(
                         val kmt = formatKmt(rifItem.kmt)
 
                         Text(
-                            text = "Km veicolo: $kmt km",
+                            text = "${R.string.km_maiusc} ${R.string.vehicle}: $kmt ${R.string.km_lower}",
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontSize = 14.sp
                             )
@@ -211,7 +212,7 @@ fun ViewRifScreen(
                     .padding(16.dp)
             ) {
                 Text(
-                    text = "Errore: Elemento non trovato.",
+                    text = stringResource(R.string.element_not_found_err),
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodyLarge
                 )

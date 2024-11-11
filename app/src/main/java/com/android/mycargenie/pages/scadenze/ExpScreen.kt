@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -48,7 +49,7 @@ fun ExpScreen(
             }) {
                 Icon(
                     imageVector = ImageVector.vectorResource(id = R.drawable.settings),
-                    contentDescription = "Impostazioni",
+                    contentDescription = stringResource(R.string.settings),
                     modifier = Modifier
                         .size(42.dp)
                         .padding(top = 8.dp, end = 8.dp),
@@ -68,7 +69,7 @@ fun ExpScreen(
                 if (expirations.insstart.isNotEmpty() || expirations.insend.isNotEmpty() || expirations.insdues != 0 || expirations.insplace.isNotEmpty() || expirations.insprice != 0.0f) {
                     isInsActive = true
                     Text(
-                        text = "Assicurazione RCA",
+                        text = stringResource(R.string.insurance),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier
@@ -76,19 +77,19 @@ fun ExpScreen(
                     )
 
                     if (expirations.insstart.isNotEmpty()) {
-                        Text(text = "Inizio copertura: ${expirations.insstart}", fontSize = 20.sp)
+                        Text(text = "${R.string.start} ${R.string.coverage}: ${expirations.insstart}", fontSize = 20.sp)
                     }
                     if (expirations.insend.isNotEmpty()) {
-                        Text(text = "Fine copertura: ${expirations.insend}", fontSize = 20.sp)
+                        Text(text = "${R.string.end} ${R.string.coverage}: ${expirations.insend}", fontSize = 20.sp)
                     }
                     if (expirations.insdues != 0) {
-                        Text(text = "Rate: ${expirations.insdues}", fontSize = 20.sp)
+                        Text(text = "${R.string.dues}: ${expirations.insdues}", fontSize = 20.sp)
                     }
                     if (expirations.insplace.isNotEmpty()) {
-                        Text(text = "Assicuratore: ${expirations.insplace}", fontSize = 20.sp)
+                        Text(text = "${R.string.insurer}: ${expirations.insplace}", fontSize = 20.sp)
                     }
                     if (expirations.insprice != 0.0f) {
-                        Text(text = "Costo totale: ${expirations.insprice}€", fontSize = 20.sp)
+                        Text(text = "${R.string.amount} ${R.string.total_e}: ${expirations.insprice}€", fontSize = 20.sp)
                     }
 
                     Spacer(modifier = Modifier.height(28.dp))
@@ -99,7 +100,7 @@ fun ExpScreen(
                 if(expirations.taxdate.isNotEmpty() || expirations.taxprice != 0.0f) {
                     isTaxActive = true
                     Text(
-                        text = "Tassa Automobilistica",
+                        text = "${R.string.tax} ${R.string.automotive}",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier
@@ -107,10 +108,10 @@ fun ExpScreen(
                     )
 
                     if (expirations.taxdate.isNotEmpty()) {
-                        Text(text = "Prossimo saldo: ${expirations.taxdate}", fontSize = 20.sp)
+                        Text(text = "${R.string.next} ${R.string.payment}: ${expirations.taxdate}", fontSize = 20.sp)
                     }
                     if (expirations.taxprice != 0.0f) {
-                        Text(text = "Costo: ${expirations.taxprice}€", fontSize = 20.sp)
+                        Text(text = "${R.string.amount}: ${expirations.taxprice}€", fontSize = 20.sp)
                     }
 
                     Spacer(modifier = Modifier.height(28.dp))
@@ -122,7 +123,7 @@ fun ExpScreen(
                 if (expirations.revlast.isNotEmpty() || expirations.revnext.isNotEmpty() || expirations.revplace.isNotEmpty()) {
                     isRevActive = true
                     Text(
-                        text = "Revisione",
+                        text = stringResource(R.string.revision),
                         fontSize = 24.sp,
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier
@@ -130,13 +131,13 @@ fun ExpScreen(
                     )
 
                     if (expirations.revlast.isNotEmpty()) {
-                        Text(text = "Ultima revisione: ${expirations.revlast}", fontSize = 20.sp)
+                        Text(text = "${R.string.last} ${R.string.revision}: ${expirations.revlast}", fontSize = 20.sp)
                     }
                     if (expirations.revnext.isNotEmpty()) {
-                        Text(text = "Prossima revisione: ${expirations.revnext}", fontSize = 20.sp)
+                        Text(text = "${R.string.next} ${R.string.revision}: ${expirations.revnext}", fontSize = 20.sp)
                     }
                     if (expirations.revplace.isNotEmpty()) {
-                        Text(text = "Revisore: ${expirations.revplace}", fontSize = 20.sp)
+                        Text(text = "${R.string.revplace}: ${expirations.revplace}", fontSize = 20.sp)
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -151,7 +152,7 @@ fun ExpScreen(
         ) {
 
             Text(
-                text = "Configura le tue scadenze per visualizzarne un resoconto.",
+                text = stringResource(R.string.configure_exp_message),
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
@@ -162,7 +163,7 @@ fun ExpScreen(
                 navController.navigate("ExpirationsSettings")
             }) {
                 Text(
-                    text = "Configura",
+                    text = stringResource(R.string.configure),
                     fontSize = 16.sp
                 )
             }

@@ -48,6 +48,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -93,12 +94,12 @@ fun AddRifScreen(
                     }
                     showDatePicker = false
                 }) {
-                    Text("OK")
+                    Text(stringResource(R.string.ok))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDatePicker = false }) {
-                    Text("ANNULLA")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         ) {
@@ -132,7 +133,7 @@ fun AddRifScreen(
             }) {
                 Icon(
                     imageVector = Icons.Rounded.Check,
-                    contentDescription = "Salva Rifornimento"
+                    contentDescription = "${stringResource(R.string.save)} ${stringResource(R.string.refueling)}"
                 )
             }
         }
@@ -159,7 +160,8 @@ fun AddRifScreen(
         ) {
 
 
-            val types = listOf("Benzina", "Gasolio", "GPL", "Metano", "Elettrico", "Altro")
+            val types = listOf(stringResource(R.string.gasoline), stringResource(R.string.diesel), stringResource(R.string.lpg),
+                stringResource(R.string.cng), stringResource(R.string.electric), stringResource(R.string.different))
 
             Row {
                 Column {
@@ -195,7 +197,7 @@ fun AddRifScreen(
                                 textStyle = TextStyle(
                                     fontSize = 17.sp
                                 ),
-                                placeholder = { Text(text = "Luogo") },
+                                placeholder = { Text(text = stringResource(R.string.place)) },
                                 keyboardOptions = KeyboardOptions.Default.copy(
                                     imeAction = ImeAction.Next,
                                     capitalization = KeyboardCapitalization.Sentences
@@ -243,11 +245,11 @@ fun AddRifScreen(
                                 }
                             }
                         },
-                        placeholder = { Text(text = "Importo*") },
+                        placeholder = { Text(text = "${stringResource(R.string.amount)}*") },
                         leadingIcon = {
                             Icon(
                                 imageVector = ImageVector.vectorResource(id = R.drawable.euro_symbol),
-                                contentDescription = "Euro Icon",
+                                contentDescription = stringResource(R.string.value),
                                 modifier = Modifier.size(20.dp)
                             )
                         },
@@ -269,7 +271,7 @@ fun AddRifScreen(
                     {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.euro_symbol),
-                            contentDescription = "Cost per fuel unit",
+                            contentDescription = stringResource(R.string.unit_cost),
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -302,9 +304,9 @@ fun AddRifScreen(
                             }
                         },
                         placeholder = {
-                            if (state.type.value == "Elettrico") Text(text = "€/kWh")
-                            else if (state.type.value.isEmpty() || state.type.value == "Altro") Text(text = "€/l o €/kWh")
-                            else Text(text = "€/l")
+                            if (state.type.value == stringResource(R.string.electric)) Text(text = stringResource(R.string.eur_kwh))
+                            else if (state.type.value.isEmpty() || state.type.value == stringResource(R.string.different)) Text(text = "${stringResource(R.string.eur_l)} ${stringResource(R.string.or)} ${stringResource(R.string.eur_kwh)}")
+                            else Text(text = stringResource(R.string.eur_l))
                         },
                         leadingIcon = uValueLeadingIcon,
                         keyboardOptions = KeyboardOptions(
@@ -321,12 +323,12 @@ fun AddRifScreen(
 
             //Quantità totale
             val totUnitLeadingIcon: @Composable (() -> Unit)? = when {
-                state.totunit.value != 0.0 && state.type.value == "Elettrico" -> {
-                    { Text(text = "kWh") }
+                state.totunit.value != 0.0 && state.type.value == stringResource(R.string.electric) -> {
+                    { Text(text = stringResource(R.string.kWh)) }
                 }
-                state.totunit.value == 0.0 || state.type.value.isEmpty() || state.type.value == "Altro" -> null
+                state.totunit.value == 0.0 || state.type.value.isEmpty() || state.type.value == stringResource(R.string.different) -> null
                 else -> {
-                    { Text(text = "l") }
+                    { Text(text = stringResource(R.string.l)) }
                 }
             }
 
@@ -381,9 +383,9 @@ fun AddRifScreen(
                         ),
                         placeholder = {
                             if (totUnit.value.isEmpty()) {
-                                if (state.type.value == "Elettrico") Text(text = "kWh Totali")
-                                else if (state.type.value.isEmpty() || state.type.value == "Altro") Text(text = "Litri o kWh Totali")
-                                else Text(text = "Litri Totali")
+                                if (state.type.value == stringResource(R.string.electric)) Text(text = "${stringResource(R.string.kWh)} ${stringResource(R.string.total)}")
+                                else if (state.type.value.isEmpty() || state.type.value == stringResource(R.string.different)) Text(text = "${stringResource(R.string.liters)} ${stringResource(R.string.or)} ${stringResource(R.string.kWh)} ${stringResource(R.string.total)}")
+                                else Text(text = "${stringResource(R.string.liters)} ${stringResource(R.string.total)}")
                             }
                         },
                         leadingIcon = totUnitLeadingIcon,
@@ -415,7 +417,7 @@ fun AddRifScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.DateRange,
-                            contentDescription = "Calendario"
+                            contentDescription = null
                         )
                         Text(
                             text = state.date.value.ifEmpty { formatDateToString(Instant.now().toEpochMilli()) },
@@ -443,7 +445,7 @@ fun AddRifScreen(
                                 state.note.value = newValue
                             }
                         },
-                        placeholder = { Text(text = "Note") },
+                        placeholder = { Text(text = stringResource(R.string.notes)) },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             capitalization = KeyboardCapitalization.Sentences
                         ),
@@ -493,7 +495,7 @@ fun AddRifScreen(
                                 }
                             }
                         },
-                        placeholder = { Text(text = "Kilometri") },
+                        placeholder = { Text(text = stringResource(R.string.kilometers)) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
                             imeAction = ImeAction.Done
@@ -531,10 +533,8 @@ fun AddRifScreen(
                     .padding(16.dp)
             ) {
 
-
-
                 Text(
-                    text = "I campi contrassegnati da * sono obbligatori.",
+                    text = stringResource(R.string.req_fields),
                     fontSize = 14.sp,
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -548,7 +548,7 @@ fun AddRifScreen(
             if (showError) {
 
                     Text(
-                        text = "Compila tutti i campi obbligatori.",
+                        text = stringResource(R.string.compile_req_fields),
                         color = MaterialTheme.colorScheme.error,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -580,10 +580,10 @@ fun TypeDropdownMenu(types: List<String>, selectedType: MutableState<String>) {
                 .padding(16.dp)
                 .fillMaxWidth()
         ) {
-            Text(text = selectedType.value.ifEmpty { "Tipo" })
+            Text(text = selectedType.value.ifEmpty { stringResource(R.string.type) })
             Icon(
                 imageVector = Icons.Rounded.ArrowDropDown,
-                contentDescription = "Dropdown Arrow"
+                contentDescription = null
             )
         }
 
@@ -603,86 +603,3 @@ fun TypeDropdownMenu(types: List<String>, selectedType: MutableState<String>) {
         }
     }
 }
-
-/*
-@SuppressLint("UnrememberedMutableState")
-@Preview(
-    name = "Light Mode",
-    showBackground = true
-)
-@Composable
-fun PreviewAddCarScreenLight() {
-    val exampleState = RifState(
-        title = mutableStateOf("Titolo"),
-        date = mutableStateOf("01/01/2024"),
-        place = mutableStateOf("12345678912345"),
-        description = mutableStateOf("Descrizione di esempio")
-    )
-
-    val navController = rememberNavController()
-
-    val onEvent: (RifEvent) -> Unit = { event ->
-        when (event) {
-            is RifEvent.SaveRif -> {
-                println("Salvato: ${event.title}, ${event.date}, ${event.place}, ${event.description}")
-            }
-            is RifEvent.UpdateRif -> {
-                println("Aggiornato: ${event.id}, ${event.title}, ${event.date}, ${event.place}, ${event.description}")
-            }
-
-            is RifEvent.DeleteRif -> TODO()
-            RifEvent.SortRif -> TODO()
-        }
-    }
-
-    // Preview in modalità chiara
-    MyCarGenieTheme(darkTheme = false) {
-        AddRifScreen(
-            state = exampleState,
-            navController = navController,
-            onEvent = onEvent
-        )
-    }
-}
-
-@SuppressLint("UnrememberedMutableState")
-@Preview(
-    name = "Dark Mode",
-    showBackground = true
-)
-@Composable
-fun PreviewAddCarScreenDark() {
-    val exampleState = RifState(
-        title = mutableStateOf("Titolo"),
-        date = mutableStateOf("01/01/2024"),
-        place = mutableStateOf("12345678912345"),
-        description = mutableStateOf("Descrizione di esempio")
-    )
-
-    val navController = rememberNavController()
-
-    val onEvent: (RifEvent) -> Unit = { event ->
-        when (event) {
-            is RifEvent.SaveRif -> {
-                println("Salvato: ${event.title}, ${event.date}, ${event.place}, ${event.description}")
-            }
-            is RifEvent.UpdateRif -> {
-                println("Aggiornato: ${event.id}, ${event.title}, ${event.date}, ${event.place}, ${event.description}")
-            }
-
-            is RifEvent.DeleteRif -> TODO()
-            RifEvent.SortRif -> TODO()
-        }
-    }
-
-    // Preview in modalità scura
-    MyCarGenieTheme(darkTheme = true) {
-        AddRifScreen(
-            state = exampleState,
-            navController = navController,
-            onEvent = onEvent
-        )
-    }
-}
-
- */
