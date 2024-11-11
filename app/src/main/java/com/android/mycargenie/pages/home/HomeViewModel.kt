@@ -14,6 +14,8 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+//Part of the code to store datas about lastRifornimento and lastManutenzione have been made with the help of AI
+
 class HomeViewModel(
     private val manDao: ManDao,
     private val rifDao: RifDao
@@ -32,19 +34,17 @@ class HomeViewModel(
     private fun observeLatestEntries() {
         val today = getCurrentDateString()
 
-        // Osserva gli aggiornamenti di Manutenzione
         viewModelScope.launch {
             manDao.getLastManBeforeToday(today)
-                .distinctUntilChanged()  // Evita aggiornamenti inutili
+                .distinctUntilChanged()
                 .collect { man ->
                     _lastManutenzione.value = man
                 }
         }
 
-        // Osserva gli aggiornamenti di Rifornimento
         viewModelScope.launch {
             rifDao.getLastRifBeforeToday(today)
-                .distinctUntilChanged()  // Evita aggiornamenti inutili
+                .distinctUntilChanged()
                 .collect { rif ->
                     _lastRifornimento.value = rif
                 }

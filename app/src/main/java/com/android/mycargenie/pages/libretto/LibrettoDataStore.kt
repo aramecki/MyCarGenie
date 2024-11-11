@@ -25,7 +25,7 @@ data class CarProfile(
 
 val Context.dataStore by preferencesDataStore(name = "car_profile")
 
-// Campi del profilo
+// Profile fields
 private val BRAND_KEY = stringPreferencesKey("brand")
 private val MODEL_KEY = stringPreferencesKey("model")
 private val DISPLACEMENT_KEY = intPreferencesKey("displacement")
@@ -38,7 +38,7 @@ private val YEAR_KEY = intPreferencesKey("year")
 private val ECO_KEY = stringPreferencesKey("eco")
 private val CONF_KEY = stringPreferencesKey("conf")
 
-// Salvare il profilo
+// Save profile
 suspend fun saveCarProfile(context: Context, carProfile: CarProfile) {
     context.dataStore.edit { preferences ->
         preferences[BRAND_KEY] = carProfile.brand
@@ -55,7 +55,7 @@ suspend fun saveCarProfile(context: Context, carProfile: CarProfile) {
     }
 }
 
-// Leggere il progilo
+// Read profile
 fun getCarProfile(context: Context): Flow<CarProfile> {
     return context.dataStore.data.map { preferences ->
         CarProfile(

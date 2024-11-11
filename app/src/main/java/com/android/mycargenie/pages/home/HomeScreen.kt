@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -96,7 +97,7 @@ fun HomeScreen(
 
                         Image(
                             painter = imagePainter,
-                            contentDescription = "Automobile",
+                            contentDescription = stringResource(R.string.car),
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .size(160.dp),
@@ -192,7 +193,7 @@ fun HomeScreen(
                         .padding(top = 180.dp)
                 ) {
                     Text(
-                        text = "Questa pagina si aggiorna automaticamente man mano che usi l’app. Aggiungi eventi e scadenze nelle sezioni dedicate: così troverai qui le informazioni più utili.",
+                        text = stringResource(R.string.home_message1),
                         fontSize = 16.sp,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
@@ -204,9 +205,9 @@ fun HomeScreen(
             }
 
 
-            if (carProfile.brand == "") {
+            if (carProfile.brand.isEmpty()) {
                 Text(
-                    text = "Per iniziare, aggiungi i dati del tuo veicolo.",
+                    text = stringResource(R.string.home_message2),
                     fontSize = 18.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
@@ -220,9 +221,10 @@ fun HomeScreen(
                         navController.navigate("ProfileSettings")
                     }) {
                         Text(
-                            text = "Configura",
+                            text = stringResource(R.string.configure),
                             fontSize = 16.sp
                         )
+
                     }
                 }
             }
@@ -246,9 +248,9 @@ fun HomeScreen(
             ) {
 
                 val icon = when (manutenzione.type) {
-                    "Meccanico" -> ImageVector.vectorResource(id = R.drawable.manufacturing)
-                    "Elettrauto" -> ImageVector.vectorResource(id = R.drawable.lightbulb)
-                    "Carrozziere" -> ImageVector.vectorResource(id = R.drawable.brush)
+                    stringResource(R.string.mechanic) -> ImageVector.vectorResource(id = R.drawable.manufacturing)
+                    stringResource(R.string.electrician) -> ImageVector.vectorResource(id = R.drawable.lightbulb)
+                    stringResource(R.string.coachbuilder) -> ImageVector.vectorResource(id = R.drawable.brush)
                     else -> ImageVector.vectorResource(id = R.drawable.repair)
                 }
 
@@ -311,7 +313,7 @@ fun HomeScreen(
                         if (place.isNotEmpty()) {
                             Icon(
                                 imageVector = ImageVector.vectorResource(id = R.drawable.location),
-                                contentDescription = "Luogo",
+                                contentDescription = stringResource(R.string.place),
                                 tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier
                                     .size(34.dp)
@@ -341,7 +343,7 @@ fun HomeScreen(
                     ) {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.time_to_leave),
-                            contentDescription = "Icona automobile",
+                            contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier
                                 .size(34.dp)
@@ -349,7 +351,7 @@ fun HomeScreen(
                         )
 
                         Text(
-                            text = "$kmt km",
+                            text = stringResource(R.string.value_km, kmt),
                             fontSize = 18.sp,
                             color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
@@ -362,7 +364,7 @@ fun HomeScreen(
                             val price = formatPrice(manState.men[index].price)
 
                             Text(
-                                text = "$price €",
+                                text = stringResource(R.string.value_euro, price),
                                 fontSize = 18.sp,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                             )
@@ -373,9 +375,7 @@ fun HomeScreen(
 
         }
 
-
         Spacer(modifier = Modifier.height(16.dp))
-
 
         //RIFORNIMENTO
         lastRifornimento?.let { rifornimento ->
@@ -396,7 +396,7 @@ fun HomeScreen(
 
                 //Icona tipo
                 val icon = when (rifornimento.type) {
-                    "Elettrico" -> ImageVector.vectorResource(id = R.drawable.electric)
+                    stringResource(R.string.electric) -> ImageVector.vectorResource(id = R.drawable.electric)
                     else -> ImageVector.vectorResource(id = R.drawable.oil)
                 }
 
@@ -440,7 +440,7 @@ fun HomeScreen(
                             val price = formatPrice(rifornimento.price)
 
                             Text(
-                                text = "$price €",
+                                text = stringResource(R.string.value_euro, price),
                                 fontSize = 18.sp,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                             )
@@ -459,12 +459,12 @@ fun HomeScreen(
                                 .fillMaxWidth()
                         ) {
                             val uvalue =
-                                formatPrice(rifornimento.uvalue).replace('.', ',')
+                                formatPrice(rifornimento.uvalue)
 
-                            val unitprice = if (rifornimento.type == "Elettrico") {
-                                "$uvalue €/kWh"
+                            val unitprice = if (rifornimento.type == stringResource(R.string.electric)) {
+                                stringResource(R.string.value_eur_kWh, uvalue)
                             } else {
-                                "$uvalue €/l"
+                                stringResource(R.string.value_euro_liter, uvalue)
                             }
 
                             Text(
@@ -486,7 +486,7 @@ fun HomeScreen(
 
                             Icon(
                                 imageVector = ImageVector.vectorResource(id = R.drawable.location),
-                                contentDescription = "Luogo",
+                                contentDescription = stringResource(R.string.place),
                                 tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier
                                     .size(34.dp)
@@ -513,10 +513,10 @@ fun HomeScreen(
                         ) {
                             val totunit = formatPrice(rifornimento.totunit)
 
-                            val showunit = if (rifornimento.type == "Elettrico") {
-                                "$totunit kWh"
+                            val showunit = if (rifornimento.type == stringResource(R.string.electric)) {
+                                stringResource(R.string.kwh, totunit)
                             } else {
-                                "$totunit l"
+                                stringResource(R.string.l, totunit)
                             }
 
                             Text(

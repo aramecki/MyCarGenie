@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -75,7 +76,7 @@ fun LibrettoScreen(
                     }) {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.settings),
-                            contentDescription = "Impostazioni",
+                            contentDescription = stringResource(R.string.settings),
                             modifier = Modifier
                                 .size(42.dp)
                                 .padding(top = 8.dp, end = 8.dp),
@@ -99,7 +100,7 @@ fun LibrettoScreen(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "Configura le informazioni sul tuo veicolo per visualizzarne il libretto.",
+                    text = stringResource(R.string.configure_profile_message),
                     fontSize = 20.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
@@ -110,14 +111,14 @@ fun LibrettoScreen(
                 Button(onClick = {
                     navController.navigate("ProfileSettings")
                 }) {
-                    Text("Configura")
+                    Text(stringResource(R.string.configure))
                 }
             }
 
         }
 
 
-        if (carProfile.brand != "") {
+        if (carProfile.brand.isNotEmpty()) {
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -125,12 +126,12 @@ fun LibrettoScreen(
                     .fillMaxWidth()
                 //.padding(start = 32.dp)
             ) {
-                if (carProfile.savedImagePath != "") {
+                if (carProfile.savedImagePath.isNotEmpty()) {
                     val imagePainter = rememberAsyncImagePainter(model = carProfile.savedImagePath)
 
                     Image(
                         painter = imagePainter,
-                        contentDescription = "Automobile",
+                        contentDescription = null,
                         modifier = Modifier
                             .clip(CircleShape)
                             .size(250.dp),
@@ -201,7 +202,7 @@ fun LibrettoScreen(
                             .weight(1f)
                     ) {
                         Text(
-                            text = "Cilindrata",
+                            text = stringResource(R.string.displacement),
                             fontSize = 14.sp,
 
                             )
@@ -220,7 +221,7 @@ fun LibrettoScreen(
                                 fontSize = 23.sp,
                             )
                             Text(
-                                text = "cc",
+                                text = stringResource(R.string.cc),
                                 fontSize = 10.sp
                             )
                         }
@@ -247,7 +248,7 @@ fun LibrettoScreen(
                             .weight(1f)
                     ) {
                         Text(
-                            text = "Potenza",
+                            text = stringResource(R.string.power),
                             fontSize = 14.sp
                         )
                         Row(
@@ -264,7 +265,7 @@ fun LibrettoScreen(
                                 fontSize = powerHorseFontSize,
                             )
                             Text(
-                                text = "kW",
+                                text = stringResource(R.string.kW),
                                 fontSize = 10.sp
                             )
                         }
@@ -280,7 +281,7 @@ fun LibrettoScreen(
                             .weight(1f)
                     ) {
                         Text(
-                            text = "Cavalli",
+                            text = stringResource(R.string.horses),
                             fontSize = 14.sp
                         )
                         Row(
@@ -297,7 +298,7 @@ fun LibrettoScreen(
                                 fontSize = powerHorseFontSize
                             )
                             Text(
-                                text = "CV",
+                                text = stringResource(R.string.CV),
                                 fontSize = 10.sp
                             )
                         }
@@ -338,7 +339,7 @@ fun LibrettoScreen(
                         Row {
                             Column {
                                 Text(
-                                    text = "Tipo",
+                                    text = stringResource(R.string.type),
                                     fontSize = 14.sp
                                 )
                                 Row(
@@ -367,7 +368,7 @@ fun LibrettoScreen(
                         Row {
                             Column {
                                 Text(
-                                    text = "Alimentazione",
+                                    text = stringResource(R.string.fuel),
                                     fontSize = 14.sp
                                 )
                                 Row(
@@ -406,7 +407,7 @@ fun LibrettoScreen(
                         Row {
                             Column {
                                 Text(
-                                    text = "Anno",
+                                    text = stringResource(R.string.year),
                                     fontSize = 14.sp
                                 )
                                 Row(
@@ -435,7 +436,7 @@ fun LibrettoScreen(
                         Row {
                             Column {
                                 Text(
-                                    text = "Inquinamento",
+                                    text = stringResource(R.string.eco),
                                     fontSize = 14.sp
                                 )
                                 Row(

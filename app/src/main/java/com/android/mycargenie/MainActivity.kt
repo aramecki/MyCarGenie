@@ -80,7 +80,7 @@ class MainActivity : ComponentActivity() {
                 if (modelClass.isAssignableFrom(ManViewModel::class.java)) {
                     return ManViewModel(manDatabase.dao()) as T
                 }
-                throw IllegalArgumentException("Unknown ViewModel class ManViewModel")
+                throw IllegalArgumentException(getString(R.string.unkViewModel))
             }
         }
     }
@@ -92,7 +92,7 @@ class MainActivity : ComponentActivity() {
                 if (modelClass.isAssignableFrom(RifViewModel::class.java)) {
                     return RifViewModel(rifDatabase.dao()) as T
                 }
-                throw IllegalArgumentException("Unknown ViewModel class RifViewModel")
+                throw IllegalArgumentException(getString(R.string.unkViewModel))
             }
         }
     }

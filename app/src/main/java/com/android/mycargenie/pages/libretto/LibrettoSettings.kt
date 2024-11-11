@@ -38,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -46,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.android.mycargenie.R
 import com.android.mycargenie.pages.manutenzione.TypeDropdownMenu
 import com.android.mycargenie.shared.saveImageToMmry
 
@@ -115,7 +117,7 @@ fun LibrettoSettingsScreen(
 
         } else {
             Text(
-                text = "Imposta un'immagine del profilo",
+                text = stringResource(R.string.set_pp_message),
                 modifier = Modifier.padding(16.dp),
                 color = Color.Gray
             )
@@ -142,7 +144,7 @@ fun LibrettoSettingsScreen(
 
             }
         }) {
-            Text("Seleziona")
+            Text(stringResource(R.string.select))
         }
 
 
@@ -155,7 +157,7 @@ fun LibrettoSettingsScreen(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "Compila tutti i campi obbligatori.",
+                    text = stringResource(R.string.compile_req_fields),
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier
                         .padding(top = 16.dp)
@@ -177,7 +179,7 @@ fun LibrettoSettingsScreen(
                 textStyle = TextStyle(
                     fontSize = 19.sp
                 ),
-                label = { Text("Marca*") },
+                label = { Text(text = "${stringResource(id = R.string.brand)}*") },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Next,
                     capitalization = KeyboardCapitalization.Sentences
@@ -197,7 +199,7 @@ fun LibrettoSettingsScreen(
                 textStyle = TextStyle(
                     fontSize = 18.sp
                 ),
-                label = { Text("Modello*") },
+                label = { Text("${stringResource(R.string.model)}*") },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Next,
                     capitalization = KeyboardCapitalization.Sentences
@@ -222,7 +224,7 @@ fun LibrettoSettingsScreen(
                 textStyle = TextStyle(
                     fontSize = 18.sp
                 ),
-                label = { Text("Configurazione") },
+                label = { Text(stringResource(R.string.configuration)) },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Next,
                     capitalization = KeyboardCapitalization.Sentences
@@ -257,7 +259,7 @@ fun LibrettoSettingsScreen(
                 textStyle = TextStyle(
                     fontSize = 20.sp
                 ),
-                label = { Text(text = "Anno") },
+                label = { Text(text = stringResource(R.string.year)) },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Next
@@ -282,7 +284,7 @@ fun LibrettoSettingsScreen(
                 textStyle = TextStyle(
                     fontSize = 20.sp
                 ),
-                label = { Text(text = "Cilindrata(cc)") },
+                label = { Text(text = "${stringResource(R.string.displacement)}(${stringResource(R.string.cc)})") },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Next
@@ -323,7 +325,7 @@ fun LibrettoSettingsScreen(
                 textStyle = TextStyle(
                     fontSize = 20.sp
                 ),
-                label = { Text("Potenza(kW)") },
+                label = { Text("${stringResource(R.string.power)}(${stringResource(R.string.kW)})") },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Decimal,
                     imeAction = ImeAction.Next
@@ -358,7 +360,7 @@ fun LibrettoSettingsScreen(
                 textStyle = TextStyle(
                     fontSize = 20.sp
                 ),
-                label = { Text("Cavalli(CV)") },
+                label = { Text("${stringResource(R.string.horses)}(${stringResource(R.string.CV)})") },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Decimal,
                     imeAction = ImeAction.Done
@@ -379,7 +381,9 @@ fun LibrettoSettingsScreen(
                 type = selectedType.value
             }
 
-            val types = listOf("Berlina", "Coupé", "Sportiva", "SUV", "Station Wagon", "Monovolume", "Supercar", "Altro")
+            val types = listOf(stringResource(R.string.sedan), stringResource(R.string.coupe),
+                stringResource(R.string.sportscar), stringResource(R.string.suv), stringResource(R.string.stationwagon),
+                stringResource(R.string.minivan), stringResource(R.string.supercar), stringResource(R.string.different))
 
             Box(modifier = Modifier
                 .fillMaxWidth(0.5f)
@@ -399,7 +403,8 @@ fun LibrettoSettingsScreen(
                 fuel = selectedFuelType.value
             }
 
-            val fuelTypes = listOf("Benzina", "Gasolio", "GPL", "Metano", "Elettrico", "Altro")
+            val fuelTypes = listOf(stringResource(R.string.gasoline), stringResource(R.string.diesel), stringResource(R.string.lpg),
+                stringResource(R.string.cng), stringResource(R.string.electric), stringResource(R.string.different))
 
             Box(modifier = Modifier
                 .fillMaxWidth()
@@ -408,7 +413,7 @@ fun LibrettoSettingsScreen(
                 TypeDropdownMenu(
                     types = fuelTypes,
                     selectedType = selectedFuelType,
-                    placeholder = "Alimentazione"
+                    placeholder = stringResource(R.string.fuel)
                 )
 
             }
@@ -427,7 +432,8 @@ fun LibrettoSettingsScreen(
                 eco = selectedEcoType.value
             }
 
-            val ecoTypes = listOf("Euro 1", "Euro 2", "Euro 3", "Euro 4", "Euro 5", "Euro 6", "Altro")
+            val ecoTypes = listOf(stringResource(R.string.e1), stringResource(R.string.e2), stringResource(R.string.e3),
+                stringResource(R.string.e4), stringResource(R.string.e5), stringResource(R.string.e6), stringResource(R.string.different))
 
             Box(modifier = Modifier
                 .fillMaxWidth(0.5f)
@@ -436,7 +442,7 @@ fun LibrettoSettingsScreen(
                 TypeDropdownMenu(
                     types = ecoTypes,
                     selectedType = selectedEcoType,
-                    placeholder = "Categoria Eco"
+                    placeholder = stringResource(R.string.eco)
                 )
 
             }
@@ -452,7 +458,7 @@ fun LibrettoSettingsScreen(
 
                     if (brand.isNotBlank() && model.isNotBlank()) {
 
-                        Log.d(tag, "Prima della funzione: $savedImagePath")
+                        //Log.d(tag, "Prima della funzione: $savedImagePath")
 
                         val imageToSave =
                             if (newImagePath != savedImagePath && newImagePath != "") {
@@ -461,7 +467,7 @@ fun LibrettoSettingsScreen(
                                 savedImagePath
                             }
 
-                        Log.d(tag, "dopo la funzione: $newImagePath")
+                        //Log.d(tag, "dopo la funzione: $newImagePath")
 
                         librettoViewModel.updateCarProfile(
                             CarProfile(
@@ -486,19 +492,13 @@ fun LibrettoSettingsScreen(
                     modifier = Modifier
                         .fillMaxWidth(0.8f)
                     ) {
-                    Text("Salva")
+                    Text(stringResource(R.string.save))
                 }
 
 
             }
-
-
-
         }
-
-
     }
-
 }
 
 
