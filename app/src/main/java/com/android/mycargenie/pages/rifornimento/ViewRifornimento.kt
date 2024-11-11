@@ -115,7 +115,7 @@ fun ViewRifScreen(
                     ) {
                         val price = formatPrice(rifItem.price)
                         Text(
-                            text = "${R.string.amount}: ${stringResource(R.string.value_euro, price)}",
+                            text = "${stringResource(R.string.amount)}: ${stringResource(R.string.value_euro, price)}",
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontSize = 18.sp
                             )
@@ -132,8 +132,8 @@ fun ViewRifScreen(
                         val uPrice = formatPrice(rifItem.uvalue)
 
                         val unitValue = when (rifItem.type) {
-                            stringResource(R.string.electric) -> "${R.string.eur_kwh}: $uPrice"
-                            else -> "${R.string.eur_l}: $uPrice"
+                            stringResource(R.string.electric) -> "${stringResource(R.string.eur_kwh)}: $uPrice"
+                            else -> "${stringResource(R.string.eur_l)}: $uPrice"
                         }
 
                         Text(
@@ -148,8 +148,8 @@ fun ViewRifScreen(
                         val units = formatPrice(rifItem.totunit)
 
                         val unitsText = when (rifItem.type) {
-                            stringResource(R.string.electric) -> "${R.string.kWh} ${R.string.charged}: $units"
-                            else -> "${R.string.l} ${R.string.refueled_s}: $units"
+                            stringResource(R.string.electric) -> "${stringResource(R.string.kWh)} ${stringResource(R.string.charged)}: $units"
+                            else -> "${stringResource(R.string.l)} ${stringResource(R.string.refueled_s)}: $units"
                         }
 
                         Text(
@@ -169,7 +169,7 @@ fun ViewRifScreen(
                     Spacer(modifier = Modifier.height(52.dp))
 
                     Text(
-                        text = "${R.string.notes}: ${rifItem.note}",
+                        text = "${stringResource(R.string.notes)}: ${rifItem.note}",
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontSize = 16.sp
                         )
@@ -192,7 +192,7 @@ fun ViewRifScreen(
                         val kmt = formatKmt(rifItem.kmt)
 
                         Text(
-                            text = "${R.string.km_maiusc} ${R.string.vehicle}: $kmt ${R.string.km_lower}",
+                            text = "${stringResource(R.string.km_maiusc)} ${stringResource(R.string.vehicle)}: $kmt ${stringResource(R.string.km_lower)}",
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontSize = 14.sp
                             )

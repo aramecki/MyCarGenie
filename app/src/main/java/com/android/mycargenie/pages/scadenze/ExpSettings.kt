@@ -179,7 +179,7 @@ fun ExpSettingsScreen(
 
 
                 Text(
-                    text = "${R.string.start} ${R.string.coverage}:",
+                    text = "${stringResource(R.string.start)} ${stringResource(R.string.coverage)}:",
                     fontSize = 18.sp,
                     modifier = Modifier
                         .weight(1f)
@@ -226,7 +226,7 @@ fun ExpSettingsScreen(
 
 
                 Text(
-                    text = "${R.string.end} ${R.string.coverage}:",
+                    text = "${stringResource(R.string.end)} ${stringResource(R.string.coverage)}:",
                     fontSize = 18.sp,
                     modifier = Modifier
                         .weight(1f)
@@ -271,7 +271,7 @@ fun ExpSettingsScreen(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "${R.string.dues}:",
+                    text = "${stringResource(R.string.dues)}:",
                     fontSize = 18.sp,
                     modifier = Modifier
                         .weight(2f)
@@ -367,7 +367,7 @@ fun ExpSettingsScreen(
                         textStyle = TextStyle(
                             fontSize = 20.sp
                         ),
-                        label = { Text("${R.string.amount} ${R.string.total}") },
+                        label = { Text("${stringResource(R.string.amount)} ${stringResource(R.string.total)}") },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Decimal,
                             imeAction = ImeAction.Next
@@ -418,7 +418,7 @@ fun ExpSettingsScreen(
                 onCheckedChange = { taxcheck = it }
             )
             Text(
-                text = "${R.string.tax} ${R.string.automotive}",
+                text = "${stringResource(R.string.tax)} ${stringResource(R.string.automotive)}",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier
@@ -437,7 +437,7 @@ fun ExpSettingsScreen(
 
 
                 Text(
-                    text = "${R.string.next} ${R.string.payment}:",
+                    text = "${stringResource(R.string.next)} ${stringResource(R.string.payment)}:",
                     fontSize = 18.sp,
                     modifier = Modifier
                         .weight(1f)
@@ -575,7 +575,7 @@ fun ExpSettingsScreen(
             ) {
 
                 Text(
-                    text = "${R.string.last} ${R.string.revision_low}:",
+                    text = "${stringResource(R.string.last)} ${stringResource(R.string.revision_low)}:",
                     fontSize = 18.sp,
                     modifier = Modifier
                         .weight(1f)
@@ -622,7 +622,7 @@ fun ExpSettingsScreen(
 
 
                 Text(
-                    text = "${R.string.next} ${R.string.revision_low}:",
+                    text = "${stringResource(R.string.next)} ${stringResource(R.string.revision_low)}:",
                     fontSize = 18.sp,
                     modifier = Modifier
                         .weight(1f)

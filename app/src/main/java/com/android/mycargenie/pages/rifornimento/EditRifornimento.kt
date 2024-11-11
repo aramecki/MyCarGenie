@@ -415,9 +415,9 @@ fun EditRifScreen(
                             ),
                             placeholder = {
                                 if (totUnit.isEmpty()) {
-                                    if (state.type.value == stringResource(R.string.electric)) Text(text = "${R.string.kWh} ${R.string.total}")
-                                    else if (state.type.value.isEmpty() || state.type.value == stringResource(R.string.different)) Text(text = "${R.string.liters} ${R.string.or} ${R.string.kWh} ${R.string.total}")
-                                    else Text(text = "${R.string.liters} ${R.string.total}")
+                                    if (state.type.value == stringResource(R.string.electric)) Text(text = "${stringResource(R.string.kWh)} ${stringResource(R.string.total)}")
+                                    else if (state.type.value.isEmpty() || state.type.value == stringResource(R.string.different)) Text(text = "${stringResource(R.string.liters)} ${stringResource(R.string.or)} ${stringResource(R.string.kWh)} ${stringResource(R.string.total)}")
+                                    else Text(text = "${stringResource(R.string.liters)} ${stringResource(R.string.total)}")
                                 }
                             },
                             leadingIcon = totUnitLeadingIcon,
