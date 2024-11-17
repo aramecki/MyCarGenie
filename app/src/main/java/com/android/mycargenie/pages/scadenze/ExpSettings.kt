@@ -41,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -54,6 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.mycargenie.R
+import com.android.mycargenie.shared.CircleCheckbox
 import com.android.mycargenie.shared.formatDateToLong
 import com.android.mycargenie.shared.formatDateToString
 import java.time.Instant
@@ -141,20 +143,20 @@ fun ExpSettingsScreen(
             .verticalScroll(rememberScrollState())
     ) {
 
-            Text(
-                text = stringResource(R.string.select_field_message),
-                fontSize = 18.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
+            CircleCheckbox(
+                label = stringResource(R.string.insurance),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.SemiBold,
+                isChecked = inscheck,
+                onValueChange = { inscheck = it },
+                modifier = Modifier
+                    .padding(12.dp)
+            )
 
+            /*
             Checkbox(
                 checked = inscheck,
                 onCheckedChange = { inscheck = it }
@@ -166,6 +168,8 @@ fun ExpSettingsScreen(
                 modifier = Modifier
                     .clickable { inscheck = !inscheck }
             )
+
+             */
 
         }
 
@@ -377,7 +381,7 @@ fun ExpSettingsScreen(
                 }
             }
 
-            if (insend != "") {
+            if (insend.isNotEmpty()) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -392,13 +396,8 @@ fun ExpSettingsScreen(
                     Text(
                         stringResource(R.string.get_exp_not)
                     )
-
                 }
-
             }
-
-
-
 
             HorizontalDivider(
                 modifier = Modifier
@@ -412,7 +411,17 @@ fun ExpSettingsScreen(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
+            CircleCheckbox(
+                label = "${stringResource(R.string.tax)} ${stringResource(R.string.automotive)}",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.SemiBold,
+                isChecked = taxcheck,
+                onValueChange = { taxcheck = it },
+                modifier = Modifier
+                    .padding(12.dp)
+            )
 
+            /*
             Checkbox(
                 checked = taxcheck,
                 onCheckedChange = { taxcheck = it }
@@ -424,6 +433,8 @@ fun ExpSettingsScreen(
                 modifier = Modifier
                     .clickable { taxcheck = !taxcheck }
             )
+
+             */
 
         }
 
@@ -519,7 +530,7 @@ fun ExpSettingsScreen(
                 }
             }
 
-            if (taxdate != "") {
+            if (taxdate.isNotEmpty()) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -551,7 +562,17 @@ fun ExpSettingsScreen(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
+            CircleCheckbox(
+                label = stringResource(R.string.revision),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.SemiBold,
+                isChecked = revcheck,
+                onValueChange = { revcheck = it },
+                modifier = Modifier
+                    .padding(12.dp)
+            )
 
+            /*
             Checkbox(
                 checked = revcheck,
                 onCheckedChange = { revcheck = it }
@@ -563,6 +584,7 @@ fun ExpSettingsScreen(
                 modifier = Modifier
                     .clickable { revcheck = !revcheck }
             )
+             */
 
         }
 
@@ -882,7 +904,7 @@ fun ExpSettingsScreen(
                 Text(stringResource(R.string.save))
             }
         }
-
+/*
             Text(
                 stringResource(R.string.reset_fields),
                 textAlign = TextAlign.Center,
@@ -920,6 +942,19 @@ fun ExpSettingsScreen(
                         navController.navigate("ExpirationsScreen")
                     }
             )
+
+ */
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = stringResource(R.string.select_field_message),
+            fontSize = 12.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .alpha(0.5f)
+        )
 
     }
 

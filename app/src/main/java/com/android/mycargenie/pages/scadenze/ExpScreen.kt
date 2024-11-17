@@ -60,91 +60,91 @@ fun ExpScreen(
 
     Spacer(modifier = Modifier.height(16.dp))
 
-        Column(
-            modifier = Modifier
-                .padding(top = 32.dp, start = 8.dp)
-        ) {
+    Column(
+        modifier = Modifier
+            .padding(top = 32.dp, start = 8.dp)
+    ) {
 
-            if (expirations.inscheck) {
-                if (expirations.insstart.isNotEmpty() || expirations.insend.isNotEmpty() || expirations.insdues != 0 || expirations.insplace.isNotEmpty() || expirations.insprice != 0.0f) {
-                    isInsActive = true
-                    Text(
-                        text = stringResource(R.string.insurance),
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier
-                            .padding(bottom = 4.dp)
-                    )
+        if (expirations.inscheck) {
+            if (expirations.insstart.isNotEmpty() || expirations.insend.isNotEmpty() || expirations.insdues != 0 || expirations.insplace.isNotEmpty() || expirations.insprice != 0.0f) {
+                isInsActive = true
+                Text(
+                    text = stringResource(R.string.insurance),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier
+                        .padding(bottom = 4.dp)
+                )
 
-                    if (expirations.insstart.isNotEmpty()) {
-                        Text(text = "${R.string.start} ${R.string.coverage}: ${expirations.insstart}", fontSize = 20.sp)
-                    }
-                    if (expirations.insend.isNotEmpty()) {
-                        Text(text = "${R.string.end} ${R.string.coverage}: ${expirations.insend}", fontSize = 20.sp)
-                    }
-                    if (expirations.insdues != 0) {
-                        Text(text = "${R.string.dues}: ${expirations.insdues}", fontSize = 20.sp)
-                    }
-                    if (expirations.insplace.isNotEmpty()) {
-                        Text(text = "${R.string.insurer}: ${expirations.insplace}", fontSize = 20.sp)
-                    }
-                    if (expirations.insprice != 0.0f) {
-                        Text(text = "${R.string.amount} ${R.string.total_e}: ${expirations.insprice}€", fontSize = 20.sp)
-                    }
-
-                    Spacer(modifier = Modifier.height(28.dp))
+                if (expirations.insstart.isNotEmpty()) {
+                    Text(text = "${stringResource(R.string.start)} ${stringResource(R.string.coverage)}: ${expirations.insstart}", fontSize = 20.sp)
                 }
-            }
-
-            if (expirations.taxcheck) {
-                if(expirations.taxdate.isNotEmpty() || expirations.taxprice != 0.0f) {
-                    isTaxActive = true
-                    Text(
-                        text = "${R.string.tax} ${R.string.automotive}",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier
-                            .padding(bottom = 4.dp)
-                    )
-
-                    if (expirations.taxdate.isNotEmpty()) {
-                        Text(text = "${R.string.next} ${R.string.payment}: ${expirations.taxdate}", fontSize = 20.sp)
-                    }
-                    if (expirations.taxprice != 0.0f) {
-                        Text(text = "${R.string.amount}: ${expirations.taxprice}€", fontSize = 20.sp)
-                    }
-
-                    Spacer(modifier = Modifier.height(28.dp))
+                if (expirations.insend.isNotEmpty()) {
+                    Text(text = "${stringResource(R.string.end)} ${stringResource(R.string.coverage)}: ${expirations.insend}", fontSize = 20.sp)
                 }
-            }
-
-            if (expirations.revcheck) {
-
-                if (expirations.revlast.isNotEmpty() || expirations.revnext.isNotEmpty() || expirations.revplace.isNotEmpty()) {
-                    isRevActive = true
-                    Text(
-                        text = stringResource(R.string.revision),
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier
-                            .padding(bottom = 4.dp)
-                    )
-
-                    if (expirations.revlast.isNotEmpty()) {
-                        Text(text = "${R.string.last} ${R.string.revision}: ${expirations.revlast}", fontSize = 20.sp)
-                    }
-                    if (expirations.revnext.isNotEmpty()) {
-                        Text(text = "${R.string.next} ${R.string.revision}: ${expirations.revnext}", fontSize = 20.sp)
-                    }
-                    if (expirations.revplace.isNotEmpty()) {
-                        Text(text = "${R.string.revplace}: ${expirations.revplace}", fontSize = 20.sp)
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
+                if (expirations.insdues != 0) {
+                    Text(text = "${stringResource(R.string.dues)}: ${expirations.insdues}", fontSize = 20.sp)
                 }
-            }
+                if (expirations.insplace.isNotEmpty()) {
+                    Text(text = "${stringResource(R.string.insurer)}: ${expirations.insplace}", fontSize = 20.sp)
+                }
+                if (expirations.insprice != 0.0f) {
+                    Text(text = "${stringResource(R.string.amount)} ${stringResource(R.string.total_e)}: ${expirations.insprice}€", fontSize = 20.sp)
+                }
 
+                Spacer(modifier = Modifier.height(28.dp))
+            }
         }
+
+        if (expirations.taxcheck) {
+            if(expirations.taxdate.isNotEmpty() || expirations.taxprice != 0.0f) {
+                isTaxActive = true
+                Text(
+                    text = "${stringResource(R.string.tax)} ${stringResource(R.string.automotive)}",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier
+                        .padding(bottom = 4.dp)
+                )
+
+                if (expirations.taxdate.isNotEmpty()) {
+                    Text(text = "${stringResource(R.string.next)} ${stringResource(R.string.payment)}: ${expirations.taxdate}", fontSize = 20.sp)
+                }
+                if (expirations.taxprice != 0.0f) {
+                    Text(text = "${stringResource(R.string.amount)}: ${expirations.taxprice}€", fontSize = 20.sp)
+                }
+
+                Spacer(modifier = Modifier.height(28.dp))
+            }
+        }
+
+        if (expirations.revcheck) {
+
+            if (expirations.revlast.isNotEmpty() || expirations.revnext.isNotEmpty() || expirations.revplace.isNotEmpty()) {
+                isRevActive = true
+                Text(
+                    text = stringResource(R.string.revision),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier
+                        .padding(bottom = 4.dp)
+                )
+
+                if (expirations.revlast.isNotEmpty()) {
+                    Text(text = "${stringResource(R.string.last)} ${stringResource(R.string.revision)}: ${expirations.revlast}", fontSize = 20.sp)
+                }
+                if (expirations.revnext.isNotEmpty()) {
+                    Text(text = "${stringResource(R.string.next)} ${stringResource(R.string.revision)}: ${expirations.revnext}", fontSize = 20.sp)
+                }
+                if (expirations.revplace.isNotEmpty()) {
+                    Text(text = "${stringResource(R.string.revplace)}: ${expirations.revplace}", fontSize = 20.sp)
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
+
+    }
 
     if (!isInsActive && !isTaxActive && !isRevActive) {
         Column(
