@@ -102,7 +102,7 @@
     <string name="revplace">Revisore</string>
     <string name="configure_exp_message">Configura le tue scadenze per visualizzarne un resoconto.</string>
     <string name="select_field_message">Seleziona un campo per abilitarlo e gestirne le impostazioni.</string>
-    <string name="get_exp_not">Ricevi notifiche sulla scadenza.</string>
+    <string name="reminders">Ricevi promemoria.</string>
     <string name="reset_fields">Resetta tutti i campi.</string>
     <string name="expirations">Scadenze</string>
     <string name="back">Indietro</string>

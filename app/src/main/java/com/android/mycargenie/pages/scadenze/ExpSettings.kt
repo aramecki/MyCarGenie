@@ -19,7 +19,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.DateRange
 import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DatePickerState
@@ -28,6 +27,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
@@ -148,7 +148,7 @@ fun ExpSettingsScreen(
         ) {
             CircleCheckbox(
                 label = stringResource(R.string.insurance),
-                fontSize = 20.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
                 isChecked = inscheck,
                 onValueChange = { inscheck = it },
@@ -313,7 +313,9 @@ fun ExpSettingsScreen(
 
 
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(top = 4.dp)
             ) {
 
                 Column(
@@ -325,12 +327,12 @@ fun ExpSettingsScreen(
                     OutlinedTextField(
                         value = insplace,
                         onValueChange = { newValue ->
-                            if (newValue.length <= 12) {
+                            if (newValue.length <= 23) {
                                 insplace = newValue
                             }
                         },
                         textStyle = TextStyle(
-                            fontSize = 19.sp
+                            fontSize = 16.sp
                         ),
                         label = { Text(stringResource(R.string.insurer)) },
                         keyboardOptions = KeyboardOptions.Default.copy(
@@ -382,26 +384,45 @@ fun ExpSettingsScreen(
             }
 
             if (insend.isNotEmpty()) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                    Column(
+                        horizontalAlignment = Alignment.End,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 4.dp)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                stringResource(R.string.reminders),
+                                modifier = Modifier
+                                    .padding(end = 8.dp)
+                            )
 
-                    Checkbox(
-                        checked = insnot,
-                        onCheckedChange = { checked ->
-                            insnot = checked
-                            permissionHandler.initialize()
+                            Switch(
+                                checked = insnot,
+                                onCheckedChange = { checked ->
+                                    insnot = checked
+                                    permissionHandler.initialize()
+                                }
+                            )
                         }
-                    )
-                    Text(
-                        stringResource(R.string.get_exp_not)
-                    )
-                }
+                    }
             }
+
+            /*
+            Checkbox(
+            checked = insnot,
+            onCheckedChange = { checked ->
+            insnot = checked
+            permissionHandler.initialize()
+            }
+            )
+            */
 
             HorizontalDivider(
                 modifier = Modifier
-                    .padding(top = 16.dp, bottom = 8.dp),
+                    .padding(top = 4.dp, bottom = 8.dp),
                 thickness = 2.dp
             )
 
@@ -413,7 +434,7 @@ fun ExpSettingsScreen(
         ) {
             CircleCheckbox(
                 label = "${stringResource(R.string.tax)} ${stringResource(R.string.automotive)}",
-                fontSize = 20.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
                 isChecked = taxcheck,
                 onValueChange = { taxcheck = it },
@@ -501,7 +522,8 @@ fun ExpSettingsScreen(
 
                     OutlinedTextField(
                         modifier = Modifier
-                            .fillMaxWidth(0.6f),
+                            .fillMaxWidth(0.6f)
+                            .padding(top = 4.dp),
                         value = taxPriceString,
                         onValueChange = { newValue ->
                             val formattedValue = newValue.replace(',', '.')
@@ -531,28 +553,35 @@ fun ExpSettingsScreen(
             }
 
             if (taxdate.isNotEmpty()) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp)
                 ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            stringResource(R.string.reminders),
+                            modifier = Modifier
+                                .padding(end = 8.dp)
+                        )
 
-                    Checkbox(
-                        checked = taxnot,
-                        onCheckedChange = { checked ->
-                            taxnot = checked
-                            permissionHandler.initialize()
-                        }
-                    )
-                    Text(
-                        stringResource(R.string.get_exp_not)
-                    )
-
+                        Switch(
+                            checked = taxnot,
+                            onCheckedChange = { checked ->
+                                taxnot = checked
+                                permissionHandler.initialize()
+                            }
+                        )
+                    }
                 }
-
             }
 
             HorizontalDivider(
                 modifier = Modifier
-                    .padding(top = 16.dp, bottom = 8.dp),
+                    .padding(top = 4.dp, bottom = 8.dp),
                 thickness = 2.dp
             )
 
@@ -564,7 +593,7 @@ fun ExpSettingsScreen(
         ) {
             CircleCheckbox(
                 label = stringResource(R.string.revision),
-                fontSize = 20.sp,
+                fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
                 isChecked = revcheck,
                 onValueChange = { revcheck = it },
@@ -692,15 +721,16 @@ fun ExpSettingsScreen(
 
                     OutlinedTextField(
                         modifier = Modifier
-                            .fillMaxWidth(0.6f),
+                            .fillMaxWidth(0.6f)
+                            .padding(top = 4.dp),
                         value = revplace,
                         onValueChange = { newValue ->
-                            if (newValue.length <= 12) {
+                            if (newValue.length <= 20) {
                                 revplace = newValue
                             }
                         },
                         textStyle = TextStyle(
-                            fontSize = 19.sp
+                            fontSize = 15.sp
                         ),
                         label = { Text(stringResource(R.string.revplace)) },
                         keyboardOptions = KeyboardOptions.Default.copy(
@@ -712,28 +742,35 @@ fun ExpSettingsScreen(
             }
 
             if (revnext.isNotEmpty()) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp)
                 ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            stringResource(R.string.reminders),
+                            modifier = Modifier
+                                .padding(end = 8.dp)
+                        )
 
-                    Checkbox(
-                        checked = revnot,
-                        onCheckedChange = { checked ->
-                            revnot = checked
-                            permissionHandler.initialize()
-                        }
-                    )
-                    Text(
-                        stringResource(R.string.get_exp_not)
-                    )
-
+                        Switch(
+                            checked = revnot,
+                            onCheckedChange = { checked ->
+                                revnot = checked
+                                permissionHandler.initialize()
+                            }
+                        )
+                    }
                 }
-
             }
 
             HorizontalDivider(
                 modifier = Modifier
-                    .padding(top = 16.dp, bottom = 8.dp),
+                    .padding(top = 4.dp, bottom = 8.dp),
                 thickness = 2.dp
             )
 
