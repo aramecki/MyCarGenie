@@ -32,7 +32,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -109,6 +108,7 @@ fun ExpSettingsScreen(
     val revNextDatePickerState = rememberDatePickerState()
 
     // Stato del pulsante abilitato o disabilitato
+    /*
     val isButtonEnabled = remember {
         derivedStateOf {
             val isAnyCheckActive = inscheck || taxcheck || revcheck
@@ -135,6 +135,8 @@ fun ExpSettingsScreen(
             isAnyCheckActive && isInsValid && isTaxValid && isRevValid
         }
     }
+
+     */
 
     Column(
         modifier = Modifier
@@ -849,158 +851,188 @@ fun ExpSettingsScreen(
 
             Button(onClick = {
 
-                expirationsViewModel.updateExpSettings(
-                    Expirations(
-                        inscheck,
-                        insstart,
-                        insend,
-                        insdues,
-                        insprice,
-                        insplace,
-                        insnot,
-                        taxcheck,
-                        taxdate,
-                        taxprice,
-                        taxnot,
-                        revcheck,
-                        revlast,
-                        revnext,
-                        revplace,
-                        revnot
+                if (inscheck || taxcheck || revcheck) {
+
+                    expirationsViewModel.updateExpSettings(
+                        Expirations(
+                            inscheck,
+                            insstart,
+                            insend,
+                            insdues,
+                            insprice,
+                            insplace,
+                            insnot,
+                            taxcheck,
+                            taxdate,
+                            taxprice,
+                            taxnot,
+                            revcheck,
+                            revlast,
+                            revnext,
+                            revplace,
+                            revnot
+                        )
                     )
-                )
 
-                //val tag = "ReminderApp"
+                    //val tag = "ReminderApp"
 
-                val oneMonthMillis = 30L * 24 * 60 * 60 * 1000
-                val oneWeekMillis = 7L * 24 * 60 * 60 * 1000
-                val oneDayMillis = 1L * 24 * 60 * 60 * 1000
+                    val oneMonthMillis = 30L * 24 * 60 * 60 * 1000
+                    val oneWeekMillis = 7L * 24 * 60 * 60 * 1000
+                    val oneDayMillis = 1L * 24 * 60 * 60 * 1000
 
-                val hour14Millis = 14 * 60 * 60 * 1000
-                val hour8Millis = 8 * 60 * 60 * 1000
+                    val hour14Millis = 14 * 60 * 60 * 1000
+                    val hour8Millis = 8 * 60 * 60 * 1000
 
 
-                //Log.d(tag, "Stato di insnot: $insnot")
+                    //Log.d(tag, "Stato di insnot: $insnot")
 
-                if (insnot) {
+                    if (insnot) {
+
+                        notificationManager.disableNotifications("insurance")
+
+                        //Log.d(tag, "insend: $insend")
+                        val insTimestamp = formatDateToLong(insend)
+
+                        notificationManager.scheduleNotification(
+                            (insTimestamp - oneMonthMillis) + hour14Millis,
+                            "La tua assicurazione auto sta per scadere.",
+                            "Il Genio ti ricorda che la polizza scadrà il $insend. Evita sanzioni pagando in tempo.",
+                            "insurance"
+                        )
+
+                        notificationManager.scheduleNotification(
+                            (insTimestamp - oneWeekMillis) + hour14Millis,
+                            "La tua assicurazione auto è in scadenza.",
+                            "Il Genio ti ricorda che la polizza scadrà fra una settimana esatta. Evita sanzioni pagando in tempo.",
+                            "insurance"
+                        )
+
+                        notificationManager.scheduleNotification(
+                            (insTimestamp - oneDayMillis) + hour8Millis,
+                            "La tua assicurazione auto è in scadenza.",
+                            "Il Genio ti ricorda che la polizza scadrà domani. Evita sanzioni pagando oggi stesso.",
+                            "insurance"
+                        )
+
+                        notificationManager.scheduleNotification(
+                            insTimestamp + hour8Millis,
+                            "Rinnova adesso la tua assicurazione auto.",
+                            "Il Genio ti ricorda che la polizza è scaduta oggi. Contatta subito l'ente assicuratore per evitare sanzioni.",
+                            "insurance"
+                        )
+                    } else {
+                        notificationManager.disableNotifications("insurance")
+                    }
+
+                    //Log.d(tag, "Stato di taxnot: $taxnot")
+                    if (taxnot) {
+
+                        notificationManager.disableNotifications("tax")
+
+                        //Log.d(tag, "taxdate: $taxdate")
+                        val taxTimestamp = formatDateToLong(taxdate)
+
+                        notificationManager.scheduleNotification(
+                            (taxTimestamp - oneMonthMillis) + hour14Millis,
+                            "La tassa automobilistica sta per scadere.",
+                            "Il Genio ti ricorda che la tassa automobilistica scadrà il $taxdate. Evita sanzioni pagando in tempo.",
+                            "tax"
+                        )
+
+                        notificationManager.scheduleNotification(
+                            (taxTimestamp - oneWeekMillis) + hour14Millis,
+                            "La tassa automobilistica è in scadenza.",
+                            "Il Genio ti ricorda che la tassa automobilistica scadrà fra una settimana esatta. Evita sanzioni pagando in tempo.",
+                            "tax"
+                        )
+
+                        notificationManager.scheduleNotification(
+                            (taxTimestamp - oneDayMillis) + hour8Millis,
+                            "La tassa automobilistica è in scadenza.",
+                            "Il Genio ti ricorda che la tassa automobilistica scadrà domani. Evita sanzioni pagando oggi stesso.",
+                            "tax"
+                        )
+
+                        notificationManager.scheduleNotification(
+                            taxTimestamp + hour8Millis,
+                            "Paga adesso la tassa automobilistica.",
+                            "Il Genio ti ricorda che la tassa automobilistica è scaduta oggi.",
+                            "tax"
+                        )
+                    } else {
+                        notificationManager.disableNotifications("tax")
+                    }
+
+                    //Log.d(tag, "Stato di revnot: $revnot")
+                    if (revnot) {
+
+                        notificationManager.disableNotifications("rev")
+
+                        //Log.d(tag, "revnext: $revnext")
+                        val revTimestamp = formatDateToLong(revnext)
+
+                        notificationManager.scheduleNotification(
+                            (revTimestamp - oneMonthMillis) + hour14Millis,
+                            "La tua revisione auto sta per scadere.",
+                            "Il Genio ti ricorda che la revisione scadrà il $revnext. Evita sanzioni effettuandola in tempo.",
+                            "rev"
+                        )
+
+                        notificationManager.scheduleNotification(
+                            (revTimestamp - oneWeekMillis) + hour14Millis,
+                            "La tua revisione auto è in scadenza.",
+                            "Il Genio ti ricorda che la revisione scadrà fra una settimana esatta. Evita sanzioni effettuandola in tempo.",
+                            "rev"
+                        )
+
+                        notificationManager.scheduleNotification(
+                            (revTimestamp - oneDayMillis) + hour8Millis,
+                            "La tua revisione auto è in scadenza.",
+                            "Il Genio ti ricorda che la revisione scadrà domani. Evita sanzioni effettuandola oggi stesso.",
+                            "rev"
+                        )
+
+                        notificationManager.scheduleNotification(
+                            revTimestamp + hour8Millis,
+                            "Effettua adesso la revisione della tua auto.",
+                            "Il Genio ti ricorda che la revisione è scaduta oggi. Contatta subito un'officina autorizzata per evitare sanzioni.",
+                            "rev"
+                        )
+                    } else {
+                        notificationManager.disableNotifications("rev")
+                    }
+
+                    navController.navigate("ExpirationsScreen")
+
+                } else {
+                    expirationsViewModel.updateExpSettings(
+                        Expirations(
+                            inscheck = false,
+                            insstart = "",
+                            insend = "",
+                            insdues = 0,
+                            insprice = 0.0f,
+                            insplace = "",
+                            insnot = false,
+                            taxcheck = false,
+                            taxdate = "",
+                            taxprice = 0.0f,
+                            taxnot = false,
+                            revcheck = false,
+                            revlast = "",
+                            revnext = "",
+                            revplace = "",
+                            revnot = false
+                        )
+                    )
 
                     notificationManager.disableNotifications("insurance")
-
-                    //Log.d(tag, "insend: $insend")
-                    val insTimestamp = formatDateToLong(insend)
-
-                    notificationManager.scheduleNotification(
-                        (insTimestamp - oneMonthMillis) + hour14Millis,
-                        "La tua assicurazione auto sta per scadere.",
-                        "Il Genio ti ricorda che la polizza scadrà il $insend. Evita sanzioni pagando in tempo.",
-                        "insurance"
-                    )
-
-                    notificationManager.scheduleNotification(
-                        (insTimestamp - oneWeekMillis) + hour14Millis,
-                        "La tua assicurazione auto è in scadenza.",
-                        "Il Genio ti ricorda che la polizza scadrà fra una settimana esatta. Evita sanzioni pagando in tempo.",
-                        "insurance"
-                    )
-
-                    notificationManager.scheduleNotification(
-                        (insTimestamp - oneDayMillis) + hour8Millis,
-                        "La tua assicurazione auto è in scadenza.",
-                        "Il Genio ti ricorda che la polizza scadrà domani. Evita sanzioni pagando oggi stesso.",
-                        "insurance"
-                    )
-
-                    notificationManager.scheduleNotification(
-                        insTimestamp + hour8Millis,
-                        "Rinnova adesso la tua assicurazione auto.",
-                        "Il Genio ti ricorda che la polizza è scaduta oggi. Contatta subito l'ente assicuratore per evitare sanzioni.",
-                        "insurance"
-                    )
-                } else {
-                    notificationManager.disableNotifications("insurance")
-                }
-
-                //Log.d(tag, "Stato di taxnot: $taxnot")
-                if (taxnot) {
-
                     notificationManager.disableNotifications("tax")
-
-                    //Log.d(tag, "taxdate: $taxdate")
-                    val taxTimestamp = formatDateToLong(taxdate)
-
-                    notificationManager.scheduleNotification(
-                        (taxTimestamp - oneMonthMillis) + hour14Millis,
-                        "La tassa automobilistica sta per scadere.",
-                        "Il Genio ti ricorda che la tassa automobilistica scadrà il $taxdate. Evita sanzioni pagando in tempo.",
-                        "tax"
-                    )
-
-                    notificationManager.scheduleNotification(
-                        (taxTimestamp - oneWeekMillis) + hour14Millis,
-                        "La tassa automobilistica è in scadenza.",
-                        "Il Genio ti ricorda che la tassa automobilistica scadrà fra una settimana esatta. Evita sanzioni pagando in tempo.",
-                        "tax"
-                    )
-
-                    notificationManager.scheduleNotification(
-                        (taxTimestamp - oneDayMillis) + hour8Millis,
-                        "La tassa automobilistica è in scadenza.",
-                        "Il Genio ti ricorda che la tassa automobilistica scadrà domani. Evita sanzioni pagando oggi stesso.",
-                        "tax"
-                    )
-
-                    notificationManager.scheduleNotification(
-                        taxTimestamp + hour8Millis,
-                        "Paga adesso la tassa automobilistica.",
-                        "Il Genio ti ricorda che la tassa automobilistica è scaduta oggi.",
-                        "tax"
-                    )
-                } else {
-                    notificationManager.disableNotifications("tax")
-                }
-
-                //Log.d(tag, "Stato di revnot: $revnot")
-                if (revnot) {
-
                     notificationManager.disableNotifications("rev")
 
-                    //Log.d(tag, "revnext: $revnext")
-                    val revTimestamp = formatDateToLong(revnext)
-
-                    notificationManager.scheduleNotification(
-                        (revTimestamp - oneMonthMillis) + hour14Millis,
-                        "La tua revisione auto sta per scadere.",
-                        "Il Genio ti ricorda che la revisione scadrà il $revnext. Evita sanzioni effettuandola in tempo.",
-                        "rev"
-                    )
-
-                    notificationManager.scheduleNotification(
-                        (revTimestamp - oneWeekMillis) + hour14Millis,
-                        "La tua revisione auto è in scadenza.",
-                        "Il Genio ti ricorda che la revisione scadrà fra una settimana esatta. Evita sanzioni effettuandola in tempo.",
-                        "rev"
-                    )
-
-                    notificationManager.scheduleNotification(
-                        (revTimestamp - oneDayMillis) + hour8Millis,
-                        "La tua revisione auto è in scadenza.",
-                        "Il Genio ti ricorda che la revisione scadrà domani. Evita sanzioni effettuandola oggi stesso.",
-                        "rev"
-                    )
-
-                    notificationManager.scheduleNotification(
-                        revTimestamp + hour8Millis,
-                        "Effettua adesso la revisione della tua auto.",
-                        "Il Genio ti ricorda che la revisione è scaduta oggi. Contatta subito un'officina autorizzata per evitare sanzioni.",
-                        "rev"
-                    )
-                } else {
-                    notificationManager.disableNotifications("rev")
+                    navController.navigate("ExpirationsScreen")
                 }
-
-                navController.navigate("ExpirationsScreen")
-            },
-                enabled = isButtonEnabled.value,
+                             },
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
