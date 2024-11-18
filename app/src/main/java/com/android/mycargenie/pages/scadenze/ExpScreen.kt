@@ -108,7 +108,7 @@ fun ExpScreen(
                 )
 
                 if (expirations.taxdate.isNotEmpty()) {
-                    Text(text = "${stringResource(R.string.next)} ${stringResource(R.string.payment)}: ${expirations.taxdate}", fontSize = 20.sp)
+                    Text(text = "${stringResource(R.string.next_m)} ${stringResource(R.string.payment)}: ${expirations.taxdate}", fontSize = 20.sp)
                 }
                 if (expirations.taxprice != 0.0f) {
                     Text(text = "${stringResource(R.string.amount)}: ${expirations.taxprice}€", fontSize = 20.sp)
@@ -134,7 +134,7 @@ fun ExpScreen(
                     Text(text = "${stringResource(R.string.last)} ${stringResource(R.string.revision)}: ${expirations.revlast}", fontSize = 20.sp)
                 }
                 if (expirations.revnext.isNotEmpty()) {
-                    Text(text = "${stringResource(R.string.next)} ${stringResource(R.string.revision)}: ${expirations.revnext}", fontSize = 20.sp)
+                    Text(text = "${stringResource(R.string.next_m)} ${stringResource(R.string.revision)}: ${expirations.revnext}", fontSize = 20.sp)
                 }
                 if (expirations.revplace.isNotEmpty()) {
                     Text(text = "${stringResource(R.string.revplace)}: ${expirations.revplace}", fontSize = 20.sp)

@@ -94,7 +94,7 @@
     <string name="total_e">totale</string>
     <string name="automotive">Automobilistica</string>
     <string name="tax">Tassa</string>
-    <string name="next">Prossimo</string>
+    <string name="next_m">Prossimo</string>
     <string name="payment">saldo</string>
     <string name="revision">Revisione</string>
     <string name="revision_low">revisione</string>
@@ -102,7 +102,7 @@
     <string name="revplace">Revisore</string>
     <string name="configure_exp_message">Configura le tue scadenze per visualizzarne un resoconto.</string>
     <string name="select_field_message">Seleziona un campo per abilitarlo e gestirne le impostazioni.</string>
-    <string name="reminders">Ricevi promemoria.</string>
+    <string name="reminders">Promemoria</string>
     <string name="reset_fields">Resetta tutti i campi.</string>
     <string name="expirations">Scadenze</string>
     <string name="back">Indietro</string>
@@ -113,4 +113,5 @@
     <string name="edit">Modifica</string>
     <string name="home">Home</string>
     <string name="profile">Libretto</string>
+    <string name="next_f">Prossima</string>
 </resources>

@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -153,7 +153,7 @@ fun ExpSettingsScreen(
                 isChecked = inscheck,
                 onValueChange = { inscheck = it },
                 modifier = Modifier
-                    .padding(12.dp)
+                    .padding(10.dp)
             )
 
             /*
@@ -183,7 +183,7 @@ fun ExpSettingsScreen(
 
 
                 Text(
-                    text = "${stringResource(R.string.start)} ${stringResource(R.string.coverage)}:",
+                    text = "${stringResource(R.string.start)} ${stringResource(R.string.coverage)}",
                     fontSize = 18.sp,
                     modifier = Modifier
                         .weight(1f)
@@ -191,9 +191,9 @@ fun ExpSettingsScreen(
 
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth(0.6f)
+                        .fillMaxWidth(0.5f)
                         .clickable { showInsStartDatePicker = true }
-                        .clip(RoundedCornerShape(4.dp))
+                        .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.secondaryContainer)
                         .padding(16.dp)
                 ) {
@@ -230,7 +230,7 @@ fun ExpSettingsScreen(
 
 
                 Text(
-                    text = "${stringResource(R.string.end)} ${stringResource(R.string.coverage)}:",
+                    text = "${stringResource(R.string.end)} ${stringResource(R.string.coverage)}",
                     fontSize = 18.sp,
                     modifier = Modifier
                         .weight(1f)
@@ -238,9 +238,9 @@ fun ExpSettingsScreen(
 
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth(0.6f)
+                        .fillMaxWidth(0.5f)
                         .clickable { showInsEndDatePicker = true }
-                        .clip(RoundedCornerShape(4.dp))
+                        .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.secondaryContainer)
                         .padding(16.dp)
                 ) {
@@ -275,10 +275,10 @@ fun ExpSettingsScreen(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "${stringResource(R.string.dues)}:",
+                    text = stringResource(R.string.dues),
                     fontSize = 18.sp,
                     modifier = Modifier
-                        .weight(2f)
+                        .weight(3f)
                         .wrapContentWidth(Alignment.Start)
                 )
 
@@ -291,7 +291,7 @@ fun ExpSettingsScreen(
                             .clickable {
                                 insdues = due
                             }
-                            .clip(RoundedCornerShape(4.dp))
+                            .clip(CircleShape)
                             .background(
                                 if (insdues == due) {
                                     MaterialTheme.colorScheme.primary
@@ -304,6 +304,7 @@ fun ExpSettingsScreen(
                         Text(
                             text = due.toString(),
                             textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                             modifier = Modifier
                                 .fillMaxWidth()
                         )
@@ -311,20 +312,35 @@ fun ExpSettingsScreen(
                 }
             }
 
-
+/*
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .padding(top = 4.dp)
             ) {
 
-                Column(
+ */
+            Spacer(modifier = Modifier.height(8.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth(0.5f)
+                        .fillMaxWidth()
                 ) {
 
+
+                    Text(
+                        text = stringResource(R.string.insurer),
+                        fontSize = 18.sp,
+                        modifier = Modifier
+                            .weight(1f)
+                    )
+
                     OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f),
+                        shape = CircleShape,
                         value = insplace,
                         onValueChange = { newValue ->
                             if (newValue.length <= 23) {
@@ -334,7 +350,6 @@ fun ExpSettingsScreen(
                         textStyle = TextStyle(
                             fontSize = 16.sp
                         ),
-                        label = { Text(stringResource(R.string.insurer)) },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             imeAction = ImeAction.Next,
                             capitalization = KeyboardCapitalization.Sentences
@@ -342,7 +357,58 @@ fun ExpSettingsScreen(
                     )
                 }
 
+            Spacer(modifier = Modifier.height(8.dp))
 
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+
+
+                Text(
+                    text = "${stringResource(R.string.amount)} ${stringResource(R.string.total_e)}",
+                    fontSize = 18.sp,
+                    modifier = Modifier
+                        .weight(1f)
+                )
+
+                var insPriceString by remember {
+                    mutableStateOf(if (insprice == 0.0f) "" else insprice.toString())
+                }
+
+                OutlinedTextField(
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f),
+                    shape = CircleShape,
+                    value = insPriceString,
+                    onValueChange = { newValue ->
+                        val formattedValue = newValue.replace(',', '.')
+                        val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?\$")
+                        if (newValue.isEmpty()) {
+                            insPriceString = ""
+                            insprice = 0.0f
+                        } else if (regex.matches(newValue)) {
+                            insPriceString = newValue
+                            formattedValue.toFloatOrNull()?.let { floatValue ->
+                                if (floatValue <= 9999.99f) {
+                                    insprice = floatValue
+                                }
+                            }
+                        }
+                    },
+                    textStyle = TextStyle(
+                        fontSize = 20.sp
+                    ),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Decimal,
+                        imeAction = ImeAction.Next
+                    )
+                )
+            }
+
+                /*
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Column(
@@ -383,12 +449,15 @@ fun ExpSettingsScreen(
                 }
             }
 
+                 */
+
+            Spacer(modifier = Modifier.height(8.dp))
+
             if (insend.isNotEmpty()) {
                     Column(
                         horizontalAlignment = Alignment.End,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 4.dp)
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically
@@ -410,19 +479,9 @@ fun ExpSettingsScreen(
                     }
             }
 
-            /*
-            Checkbox(
-            checked = insnot,
-            onCheckedChange = { checked ->
-            insnot = checked
-            permissionHandler.initialize()
-            }
-            )
-            */
-
             HorizontalDivider(
                 modifier = Modifier
-                    .padding(top = 4.dp, bottom = 8.dp),
+                    .padding(top = 4.dp, bottom = 4.dp),
                 thickness = 2.dp
             )
 
@@ -439,7 +498,7 @@ fun ExpSettingsScreen(
                 isChecked = taxcheck,
                 onValueChange = { taxcheck = it },
                 modifier = Modifier
-                    .padding(12.dp)
+                    .padding(10.dp)
             )
 
             /*
@@ -469,7 +528,7 @@ fun ExpSettingsScreen(
 
 
                 Text(
-                    text = "${stringResource(R.string.next)} ${stringResource(R.string.payment)}:",
+                    text = "${stringResource(R.string.next_m)} ${stringResource(R.string.payment)}",
                     fontSize = 18.sp,
                     modifier = Modifier
                         .weight(1f)
@@ -477,9 +536,9 @@ fun ExpSettingsScreen(
 
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth(0.6f)
+                        .fillMaxWidth(0.5f)
                         .clickable { showTaxDatePicker = true }
-                        .clip(RoundedCornerShape(4.dp))
+                        .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.secondaryContainer)
                         .padding(16.dp)
                 ) {
@@ -505,16 +564,21 @@ fun ExpSettingsScreen(
                 }
             }
 
+            Spacer(modifier = Modifier.height(8.dp))
+
             Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                Column(
-                    horizontalAlignment = Alignment.End,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
 
+                    Text(
+                        text = stringResource(R.string.amount),
+                        fontSize = 18.sp,
+                        modifier = Modifier
+                            .weight(1f)
+                    )
 
                     var taxPriceString by remember {
                         mutableStateOf(if (taxprice == 0.0f) "" else taxprice.toString())
@@ -522,8 +586,8 @@ fun ExpSettingsScreen(
 
                     OutlinedTextField(
                         modifier = Modifier
-                            .fillMaxWidth(0.6f)
-                            .padding(top = 4.dp),
+                            .fillMaxWidth(0.5f),
+                        shape = CircleShape,
                         value = taxPriceString,
                         onValueChange = { newValue ->
                             val formattedValue = newValue.replace(',', '.')
@@ -543,21 +607,20 @@ fun ExpSettingsScreen(
                         textStyle = TextStyle(
                             fontSize = 20.sp
                         ),
-                        label = { Text(stringResource(R.string.amount)) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Decimal,
                             imeAction = ImeAction.Next
                         )
                     )
-                }
             }
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             if (taxdate.isNotEmpty()) {
                 Column(
                     horizontalAlignment = Alignment.End,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 4.dp)
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
@@ -581,7 +644,7 @@ fun ExpSettingsScreen(
 
             HorizontalDivider(
                 modifier = Modifier
-                    .padding(top = 4.dp, bottom = 8.dp),
+                    .padding(top = 4.dp, bottom = 4.dp),
                 thickness = 2.dp
             )
 
@@ -598,7 +661,7 @@ fun ExpSettingsScreen(
                 isChecked = revcheck,
                 onValueChange = { revcheck = it },
                 modifier = Modifier
-                    .padding(12.dp)
+                    .padding(10.dp)
             )
 
             /*
@@ -626,7 +689,7 @@ fun ExpSettingsScreen(
             ) {
 
                 Text(
-                    text = "${stringResource(R.string.last)} ${stringResource(R.string.revision_low)}:",
+                    text = "${stringResource(R.string.last)} ${stringResource(R.string.revision_low)}",
                     fontSize = 18.sp,
                     modifier = Modifier
                         .weight(1f)
@@ -634,9 +697,9 @@ fun ExpSettingsScreen(
 
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth(0.6f)
+                        .fillMaxWidth(0.5f)
                         .clickable { showRevLastDatePicker = true }
-                        .clip(RoundedCornerShape(4.dp))
+                        .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.secondaryContainer)
                         .padding(16.dp)
                 ) {
@@ -673,7 +736,7 @@ fun ExpSettingsScreen(
 
 
                 Text(
-                    text = "${stringResource(R.string.next)} ${stringResource(R.string.revision_low)}:",
+                    text = "${stringResource(R.string.next_f)} ${stringResource(R.string.revision_low)}",
                     fontSize = 18.sp,
                     modifier = Modifier
                         .weight(1f)
@@ -681,9 +744,9 @@ fun ExpSettingsScreen(
 
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth(0.6f)
+                        .fillMaxWidth(0.5f)
                         .clickable { showRevNextDatePicker = true }
-                        .clip(RoundedCornerShape(4.dp))
+                        .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.secondaryContainer)
                         .padding(16.dp)
                 ) {
@@ -708,21 +771,25 @@ fun ExpSettingsScreen(
                 }
             }
 
+            Spacer(modifier = Modifier.height(8.dp))
 
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
             ) {
-
-                Column(
-                    horizontalAlignment = Alignment.End,
+                Text(
+                    text = stringResource(R.string.revplace),
+                    fontSize = 18.sp,
                     modifier = Modifier
-                        .fillMaxWidth()
-                ) {
+                        .weight(1f)
+                )
 
                     OutlinedTextField(
                         modifier = Modifier
-                            .fillMaxWidth(0.6f)
-                            .padding(top = 4.dp),
+                            .fillMaxWidth(0.5f),
+                        shape = CircleShape,
                         value = revplace,
                         onValueChange = { newValue ->
                             if (newValue.length <= 20) {
@@ -732,21 +799,20 @@ fun ExpSettingsScreen(
                         textStyle = TextStyle(
                             fontSize = 15.sp
                         ),
-                        label = { Text(stringResource(R.string.revplace)) },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             imeAction = ImeAction.Next,
                             capitalization = KeyboardCapitalization.Sentences
                         )
                     )
-                }
             }
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             if (revnext.isNotEmpty()) {
                 Column(
                     horizontalAlignment = Alignment.End,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 4.dp)
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically
@@ -770,7 +836,7 @@ fun ExpSettingsScreen(
 
             HorizontalDivider(
                 modifier = Modifier
-                    .padding(top = 4.dp, bottom = 8.dp),
+                    .padding(top = 4.dp, bottom = 4.dp),
                 thickness = 2.dp
             )
 
@@ -778,7 +844,7 @@ fun ExpSettingsScreen(
 
         Row(
             modifier = Modifier
-                .padding(top = 16.dp)
+                .padding(top = 8.dp)
         ) {
 
             Button(onClick = {
@@ -982,7 +1048,7 @@ fun ExpSettingsScreen(
 
  */
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         Text(
             text = stringResource(R.string.select_field_message),
