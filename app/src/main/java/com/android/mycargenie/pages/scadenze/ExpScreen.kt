@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -56,7 +57,9 @@ fun ExpScreen(
         }
     ) { padding ->
 
-        Spacer(modifier = Modifier.height(16.dp).padding(padding))
+        Spacer(modifier = Modifier
+            .height(16.dp)
+            .padding(padding))
 
         Column(
             modifier = Modifier
@@ -67,21 +70,43 @@ fun ExpScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(start = 8.dp, end = 8.dp)
                         .clip(RoundedCornerShape(10.dp))
                         .background(MaterialTheme.colorScheme.primaryContainer)
                         .padding(12.dp)
                 ) {
                     if (expirations.insstart.isNotEmpty() || expirations.insend.isNotEmpty() || expirations.insdues != 0 || expirations.insplace.isNotEmpty() || expirations.insprice != 0.0f) {
                         isInsActive = true
-                        Text(
-                            text = stringResource(R.string.insurance),
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            modifier = Modifier
-                                .padding(bottom = 4.dp)
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = stringResource(R.string.insurance),
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                modifier = Modifier
+                                    .padding(bottom = 4.dp)
+                            )
+                            if (expirations.insnot) {
+                                Column(
+                                    horizontalAlignment = Alignment.End,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                ) {
+                                    Icon(
+                                        imageVector = ImageVector.vectorResource(R.drawable.notifications),
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                                        modifier = Modifier
+                                            .size(22.dp)
+                                            .alpha(0.5f)
+                                    )
+                                }
+                            }
+                        }
 
+/*
                         if (expirations.insstart.isNotEmpty()) {
                             Text(
                                 text = "${stringResource(R.string.start)} ${stringResource(R.string.coverage)}: ${expirations.insstart}",
@@ -89,13 +114,31 @@ fun ExpScreen(
                                 color = MaterialTheme.colorScheme.onPrimaryContainer
                                 )
                         }
+
+ */
                         if (expirations.insend.isNotEmpty()) {
-                            Text(
-                                text = "${stringResource(R.string.end)} ${stringResource(R.string.coverage)}: ${expirations.insend}",
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(R.drawable.watch),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                        .alpha(0.5f)
                                 )
+                                Text(
+                                    text = expirations.insend,
+                                    fontSize = 18.sp,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    modifier = Modifier
+                                        .alpha(0.5f)
+                                )
+                            }
+
                         }
+                        /*
                         if (expirations.insdues != 0) {
                             Text(
                                 text = "${stringResource(R.string.dues)}: ${expirations.insdues}",
@@ -104,10 +147,13 @@ fun ExpScreen(
                             )
                         }
 
+                         */
+
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .padding(top = 10.dp)
                         ) {
                             if (expirations.insplace.isNotEmpty()) {
                                 Column(
@@ -157,27 +203,63 @@ fun ExpScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(start = 8.dp, end = 8.dp)
                         .clip(RoundedCornerShape(10.dp))
                         .background(MaterialTheme.colorScheme.primaryContainer)
                         .padding(12.dp)
                 ) {
                     if (expirations.taxdate.isNotEmpty() || expirations.taxprice != 0.0f) {
                         isTaxActive = true
-                        Text(
-                            text = "${stringResource(R.string.tax)} ${stringResource(R.string.automotive)}",
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            modifier = Modifier
-                                .padding(bottom = 4.dp)
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "${stringResource(R.string.tax)} ${stringResource(R.string.automotive)}",
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                modifier = Modifier
+                                    .padding(bottom = 4.dp)
+                            )
+                            if (expirations.taxnot) {
+                                Column(
+                                    horizontalAlignment = Alignment.End,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 10.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = ImageVector.vectorResource(R.drawable.notifications),
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                                        modifier = Modifier
+                                            .size(22.dp)
+                                            .alpha(0.5f)
+                                    )
+                                }
+                            }
+                        }
 
                         if (expirations.taxdate.isNotEmpty()) {
-                            Text(
-                                text = "${stringResource(R.string.next_m)} ${stringResource(R.string.payment)}: ${expirations.taxdate}",
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(R.drawable.watch),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                        .alpha(0.5f)
+                                )
+                                Text(
+                                    text = expirations.taxdate,
+                                    fontSize = 18.sp,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    modifier = Modifier
+                                        .alpha(0.5f)
+                                )
+                            }
                         }
                         if (expirations.taxprice != 0.0f) {
                             Column(
@@ -191,9 +273,7 @@ fun ExpScreen(
                                     color = MaterialTheme.colorScheme.onPrimaryContainer
                                 )
                             }
-
                         }
-
                     }
                 }
                 Spacer(modifier = Modifier.height(28.dp))
@@ -203,21 +283,42 @@ fun ExpScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(start = 8.dp, end = 8.dp)
                         .clip(RoundedCornerShape(10.dp))
                         .background(MaterialTheme.colorScheme.primaryContainer)
                         .padding(12.dp)
                 ) {
                     if (expirations.revlast.isNotEmpty() || expirations.revnext.isNotEmpty() || expirations.revplace.isNotEmpty()) {
                         isRevActive = true
-                        Text(
-                            text = stringResource(R.string.revision),
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            modifier = Modifier
-                                .padding(bottom = 4.dp)
-                        )
-
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = stringResource(R.string.revision),
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                modifier = Modifier
+                                    .padding(bottom = 4.dp)
+                            )
+                            if (expirations.revnot) {
+                                Column(
+                                    horizontalAlignment = Alignment.End,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                ) {
+                                    Icon(
+                                        imageVector = ImageVector.vectorResource(R.drawable.notifications),
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                                        modifier = Modifier
+                                            .size(22.dp)
+                                            .alpha(0.5f)
+                                    )
+                                }
+                            }
+                        }
+                        /*
                         if (expirations.revlast.isNotEmpty()) {
                             Text(
                                 text = "${stringResource(R.string.last)} ${stringResource(R.string.revision)}: ${expirations.revlast}",
@@ -225,29 +326,53 @@ fun ExpScreen(
                                 color = MaterialTheme.colorScheme.onPrimaryContainer
                             )
                         }
+                         */
+
                         if (expirations.revnext.isNotEmpty()) {
-                            Text(
-                                text = "${stringResource(R.string.next_m)} ${stringResource(R.string.revision)}: ${expirations.revnext}",
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-                        }
-                        if (expirations.revplace.isNotEmpty()) {
-                            Row {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
                                 Icon(
-                                    imageVector = ImageVector.vectorResource(R.drawable.store),
+                                    imageVector = ImageVector.vectorResource(R.drawable.watch),
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.onPrimaryContainer,
                                     modifier = Modifier
-                                        .size(26.dp)
+                                        .size(20.dp)
+                                        .alpha(0.5f)
                                 )
                                 Text(
-                                    text = expirations.revplace,
-                                    fontSize = 20.sp,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                    text = expirations.revnext,
+                                    fontSize = 18.sp,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    modifier = Modifier
+                                        .alpha(0.5f)
                                 )
                             }
-
+                        }
+                        if (expirations.revplace.isNotEmpty()) {
+                            Column(
+                                horizontalAlignment = Alignment.End,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 10.dp)
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = ImageVector.vectorResource(R.drawable.store),
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                                        modifier = Modifier
+                                            .size(26.dp)
+                                    )
+                                    Text(
+                                        text = expirations.revplace,
+                                        fontSize = 20.sp,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                                    )
+                                }
+                            }
                         }
 
                     }

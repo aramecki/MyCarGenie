@@ -1,5 +1,10 @@
 package com.android.mycargenie.pages.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,9 +19,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.KeyboardArrowDown
+import androidx.compose.material.icons.outlined.KeyboardArrowUp
 import androidx.compose.material3.Button
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -77,416 +87,329 @@ fun HomeScreen(
 
      */
 
-    Column {
+    var isExpanded by remember { mutableStateOf(false) }
 
-        Spacer(modifier = Modifier.height(40.dp))
-
-        if (carProfile.brand.isNotEmpty()) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
+    Scaffold(
+        floatingActionButton = {
+            Column(
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-
-                if (carProfile.savedImagePath.isNotEmpty()) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth(0.5f)
-                            .padding(start = 18.dp)
-                    ) {
-                        val imagePainter =
-                            rememberAsyncImagePainter(model = carProfile.savedImagePath)
-
-                        Image(
-                            painter = imagePainter,
-                            contentDescription = stringResource(R.string.car),
-                            modifier = Modifier
-                                .clip(CircleShape)
-                                .size(160.dp),
-                            contentScale = ContentScale.Crop
+                AnimatedVisibility(
+                    visible = isExpanded,
+                    enter = fadeIn() + slideInVertically(initialOffsetY = { it }),
+                    exit = fadeOut() + slideOutVertically(targetOffsetY = { it })
+                ) {
+                    FloatingActionButton(onClick = {
+                        navController.navigate("AddManScreen")
+                    }) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.time_to_leave),
+                            contentDescription = stringResource(R.string.maintenance)
                         )
                     }
                 }
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp)
+                AnimatedVisibility(
+                    visible = isExpanded,
+                    enter = fadeIn() + slideInVertically(initialOffsetY = { it }),
+                    exit = fadeOut() + slideOutVertically(targetOffsetY = { it })
+                ) {
+                    FloatingActionButton(onClick = {
+                        navController.navigate("AddRifScreen")
+                    }) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.gas_station),
+                            contentDescription = stringResource(R.string.refueling)
+                        )
+                    }
+                }
+
+                FloatingActionButton(onClick = {
+                    isExpanded = !isExpanded
+                }) {
+                    Icon(
+                        imageVector =if (isExpanded) Icons.Outlined.KeyboardArrowDown else Icons.Outlined.KeyboardArrowUp,
+                        contentDescription = stringResource(R.string.settings)
+                    )
+                }
+            }
+        }
+    ) { padding ->
+
+        Spacer(
+            modifier = Modifier
+                .height(16.dp)
+                .padding(padding)
+        )
+
+        Column {
+
+            Spacer(modifier = Modifier.height(40.dp))
+
+            if (carProfile.brand.isNotEmpty()) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    val brandFontSize = when {
-                        carProfile.brand.length < 10 -> 22.sp
-                        carProfile.brand.length < 12 -> 20.sp
-                        else -> 19.sp
-                    }
-
-                    Row {
-                        Text(
-                            text = carProfile.brand,
-                            fontSize = brandFontSize,
-                            fontWeight = FontWeight.SemiBold,
+                    if (carProfile.savedImagePath.isNotEmpty()) {
+                        Column(
                             modifier = Modifier
-                                .padding(top = 16.dp)
-                        )
+                                .fillMaxWidth(0.5f)
+                                .padding(start = 18.dp)
+                        ) {
+                            val imagePainter =
+                                rememberAsyncImagePainter(model = carProfile.savedImagePath)
+
+                            Image(
+                                painter = imagePainter,
+                                contentDescription = stringResource(R.string.car),
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .size(160.dp),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
                     }
 
-                    val modelFontSize = when {
-                        carProfile.model.length < 6 -> 34.sp
-                        carProfile.model.length < 8 -> 32.sp
-                        carProfile.model.length < 10 -> 24.sp
-                        carProfile.model.length < 12 -> 17.sp
-                        carProfile.model.length < 14 -> 15.sp
-                        carProfile.model.length < 18 -> 13.sp
-                        carProfile.model.length < 20 -> 11.sp
-                        else -> 10.sp
-                    }
-
-                    Row(
-                        horizontalArrangement = Arrangement.Start
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp)
                     ) {
-                        Text(
-                            text = carProfile.model,
-                            fontSize = modelFontSize,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
 
-                    Row {
+                        val brandFontSize = when {
+                            carProfile.brand.length < 10 -> 22.sp
+                            carProfile.brand.length < 12 -> 20.sp
+                            else -> 19.sp
+                        }
 
-                        if (carProfile.displacement != 0) {
-                            val displacement = formatDisplacement(carProfile.displacement)
-
+                        Row {
                             Text(
-                                text = displacement,
-                                fontSize = 16.sp,
+                                text = carProfile.brand,
+                                fontSize = brandFontSize,
+                                fontWeight = FontWeight.SemiBold,
                                 modifier = Modifier
-                                    .padding(end = 4.dp)
+                                    .padding(top = 16.dp)
                             )
                         }
 
-                        if (carProfile.power != 0.0f) {
+                        val modelFontSize = when {
+                            carProfile.model.length < 6 -> 34.sp
+                            carProfile.model.length < 8 -> 32.sp
+                            carProfile.model.length < 10 -> 24.sp
+                            carProfile.model.length < 12 -> 17.sp
+                            carProfile.model.length < 14 -> 15.sp
+                            carProfile.model.length < 18 -> 13.sp
+                            carProfile.model.length < 20 -> 11.sp
+                            else -> 10.sp
+                        }
+
+                        Row(
+                            horizontalArrangement = Arrangement.Start
+                        ) {
                             Text(
-                                text = carProfile.power.toInt().toString(),
-                                fontSize = 16.sp,
-                                modifier = Modifier
-                                    .padding(end = 4.dp)
+                                text = carProfile.model,
+                                fontSize = modelFontSize,
+                                fontWeight = FontWeight.Bold
                             )
                         }
 
-                        if (carProfile.horsepower != 0.0f) {
-                            Text(
-                                text = carProfile.horsepower.toInt().toString(),
-                                fontSize = 16.sp
-                            )
+                        Row {
+
+                            if (carProfile.displacement != 0) {
+                                val displacement = formatDisplacement(carProfile.displacement)
+
+                                Text(
+                                    text = displacement,
+                                    fontSize = 16.sp,
+                                    modifier = Modifier
+                                        .padding(end = 4.dp)
+                                )
+                            }
+
+                            if (carProfile.power != 0.0f) {
+                                Text(
+                                    text = carProfile.power.toInt().toString(),
+                                    fontSize = 16.sp,
+                                    modifier = Modifier
+                                        .padding(end = 4.dp)
+                                )
+                            }
+
+                            if (carProfile.horsepower != 0.0f) {
+                                Text(
+                                    text = carProfile.horsepower.toInt().toString(),
+                                    fontSize = 16.sp
+                                )
+                            }
                         }
                     }
                 }
             }
-        }
 
-        Spacer(modifier = Modifier.height(38.dp))
+            Spacer(modifier = Modifier.height(38.dp))
 
-        Column {
-            if (lastManutenzione?.title.isNullOrEmpty() && lastRifornimento?.price?.toString()
-                    .isNullOrEmpty()
-            ) {
-                Row(
-                    modifier = Modifier
-                        .padding(top = 180.dp)
+            Column {
+                if (lastManutenzione?.title.isNullOrEmpty() && lastRifornimento?.price?.toString()
+                        .isNullOrEmpty()
                 ) {
+                    Row(
+                        modifier = Modifier
+                            .padding(top = 180.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.home_message1),
+                            fontSize = 16.sp,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+                                .alpha(0.7f)
+                        )
+                    }
+
+                }
+
+
+                if (carProfile.brand.isEmpty()) {
                     Text(
-                        text = stringResource(R.string.home_message1),
-                        fontSize = 16.sp,
+                        text = stringResource(R.string.home_message2),
+                        fontSize = 18.sp,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
+                            .fillMaxWidth()
                             .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
                             .alpha(0.7f)
                     )
-                }
 
+                    Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                        Button(onClick = {
+                            navController.navigate("ProfileSettings")
+                        }) {
+                            Text(
+                                text = stringResource(R.string.configure),
+                                fontSize = 16.sp
+                            )
+
+                        }
+                    }
+                }
             }
 
 
-            if (carProfile.brand.isEmpty()) {
-                Text(
-                    text = stringResource(R.string.home_message2),
-                    fontSize = 18.sp,
-                    textAlign = TextAlign.Center,
+            lastManutenzione?.let { manutenzione ->
+
+                val index = manState.men.indexOf(manutenzione)
+
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
-                        .alpha(0.7f)
-                )
-
-                Box(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                    Button(onClick = {
-                        navController.navigate("ProfileSettings")
-                    }) {
-                        Text(
-                            text = stringResource(R.string.configure),
-                            fontSize = 16.sp
-                        )
-
-                    }
-                }
-            }
-        }
-
-
-        lastManutenzione?.let { manutenzione ->
-
-            val index = manState.men.indexOf(manutenzione)
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(MaterialTheme.colorScheme.primaryContainer)
-                    .padding(12.dp)
-                    .clickable {
-                        navController.navigate("ViewManScreen/$index")
-                    }
-            ) {
-
-                val icon = when (manutenzione.type) {
-                    stringResource(R.string.mechanic) -> ImageVector.vectorResource(id = R.drawable.manufacturing)
-                    stringResource(R.string.electrician) -> ImageVector.vectorResource(id = R.drawable.lightbulb)
-                    stringResource(R.string.coachbuilder) -> ImageVector.vectorResource(id = R.drawable.brush)
-                    else -> ImageVector.vectorResource(id = R.drawable.repair)
-                }
-
-                Column(
-                    verticalArrangement = Arrangement.SpaceEvenly
+                        .padding(10.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        .padding(12.dp)
+                        .clickable {
+                            navController.navigate("ViewManScreen/$index")
+                        }
                 ) {
 
+                    val icon = when (manutenzione.type) {
+                        stringResource(R.string.mechanic) -> ImageVector.vectorResource(id = R.drawable.manufacturing)
+                        stringResource(R.string.electrician) -> ImageVector.vectorResource(id = R.drawable.lightbulb)
+                        stringResource(R.string.coachbuilder) -> ImageVector.vectorResource(id = R.drawable.brush)
+                        else -> ImageVector.vectorResource(id = R.drawable.repair)
+                    }
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .padding(bottom = 4.dp)
+                    Column(
+                        verticalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        Column {
-                            Icon(
-                                imageVector = icon,
-                                contentDescription = manutenzione.type,
-                                modifier = Modifier
-                                    .size(34.dp)
-                                    .padding(end = 4.dp),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }
 
 
-                        Column {
-
-                            //Titolo
-                            Text(
-                                text = manutenzione.title,
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-                        }
-                        Column(
-                            horizontalAlignment = Alignment.End,
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
-                                .fillMaxWidth()
+                                .padding(bottom = 4.dp)
                         ) {
-                            Text(
-                                text = manutenzione.date,
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    }
+                            Column {
+                                Icon(
+                                    imageVector = icon,
+                                    contentDescription = manutenzione.type,
+                                    modifier = Modifier
+                                        .size(34.dp)
+                                        .padding(end = 4.dp),
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
 
 
-                    //Luogo
+                            Column {
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .padding(bottom = 4.dp)
-                    ) {
-                        val place = manutenzione.place
-
-                        if (place.isNotEmpty()) {
-                            Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.location),
-                                contentDescription = stringResource(R.string.place),
-                                tint = MaterialTheme.colorScheme.primary,
+                                //Titolo
+                                Text(
+                                    text = manutenzione.title,
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                            }
+                            Column(
+                                horizontalAlignment = Alignment.End,
                                 modifier = Modifier
-                                    .size(34.dp)
-                                    .padding(end = 4.dp),
-                            )
-
-                            Text(
-                                text = manutenzione.place,
-                                fontSize = 18.sp,
-                                color = MaterialTheme.colorScheme.onSecondaryContainer
-                            )
-                        } else {
-                            Spacer(
-                                modifier = Modifier
-                                    .height(34.dp)
-                            )
+                                    .fillMaxWidth()
+                            ) {
+                                Text(
+                                    text = manutenzione.date,
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
                         }
-                    }
 
-                    //Kilometri
 
-                    val kmt = formatKmt(manutenzione.kmt)
+                        //Luogo
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                    ) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.time_to_leave),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
-                                .size(34.dp)
-                                .padding(end = 4.dp),
-                        )
-
-                        Text(
-                            text = stringResource(R.string.value_km, kmt),
-                            fontSize = 18.sp,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-
-                        Column(
-                            horizontalAlignment = Alignment.End,
-                            modifier = Modifier
-                                .fillMaxWidth()
+                                .padding(bottom = 4.dp)
                         ) {
-                            val price = formatPrice(manState.men[index].price)
+                            val place = manutenzione.place
 
-                            Text(
-                                text = stringResource(R.string.value_euro, price),
-                                fontSize = 18.sp,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            )
+                            if (place.isNotEmpty()) {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.location),
+                                    contentDescription = stringResource(R.string.place),
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier
+                                        .size(34.dp)
+                                        .padding(end = 4.dp),
+                                )
+
+                                Text(
+                                    text = manutenzione.place,
+                                    fontSize = 18.sp,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                                )
+                            } else {
+                                Spacer(
+                                    modifier = Modifier
+                                        .height(34.dp)
+                                )
+                            }
                         }
-                    }
-                }
-            }
 
-        }
+                        //Kilometri
 
-        Spacer(modifier = Modifier.height(16.dp))
+                        val kmt = formatKmt(manutenzione.kmt)
 
-        //RIFORNIMENTO
-        lastRifornimento?.let { rifornimento ->
-
-            val rifIndex = rifState.rifs.indexOf(rifornimento)
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(MaterialTheme.colorScheme.primaryContainer)
-                    .padding(12.dp)
-                    .clickable {
-                        navController.navigate("ViewRifScreen/$rifIndex")
-                    }
-            ) {
-
-                //Icona tipo
-                val icon = when (rifornimento.type) {
-                    stringResource(R.string.electric) -> ImageVector.vectorResource(id = R.drawable.electric)
-                    else -> ImageVector.vectorResource(id = R.drawable.oil)
-                }
-
-                Column(
-                    verticalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .padding(bottom = 4.dp)
-                    ) {
-                        Column {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                        ) {
                             Icon(
-                                imageVector = icon,
+                                imageVector = ImageVector.vectorResource(id = R.drawable.time_to_leave),
                                 contentDescription = null,
-                                modifier = Modifier
-                                    .size(34.dp)
-                                    .padding(end = 4.dp),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }
-
-
-                        Column {
-
-                            //Data
-                            Text(
-                                text = rifornimento.date,
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                        Column(
-                            horizontalAlignment = Alignment.End,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-
-                            //Prezzo
-                            val price = formatPrice(rifornimento.price)
-
-                            Text(
-                                text = stringResource(R.string.value_euro, price),
-                                fontSize = 18.sp,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            )
-                        }
-                    }
-
-                    //Prezzo per unità
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .padding(bottom = 4.dp)
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.End,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            val uvalue =
-                                formatPrice(rifornimento.uvalue)
-
-                            val unitprice = if (rifornimento.type == stringResource(R.string.electric)) {
-                                stringResource(R.string.value_eur_kWh, uvalue)
-                            } else {
-                                stringResource(R.string.value_euro_liter, uvalue)
-                            }
-
-                            Text(
-                                text = unitprice,
-                                fontSize = 18.sp,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            )
-                        }
-                    }
-
-
-                    //Luogo
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        val place = rifornimento.place
-
-                        if (place.isNotEmpty()) {
-
-                            Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.location),
-                                contentDescription = stringResource(R.string.place),
                                 tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier
                                     .size(34.dp)
@@ -494,42 +417,186 @@ fun HomeScreen(
                             )
 
                             Text(
-                                text = rifornimento.place,
+                                text = stringResource(R.string.value_km, kmt),
                                 fontSize = 18.sp,
                                 color = MaterialTheme.colorScheme.onPrimaryContainer
                             )
-                        } else {
-                            Spacer(
+
+                            Column(
+                                horizontalAlignment = Alignment.End,
                                 modifier = Modifier
-                                    .height(34.dp)
-                            )
-                        }
+                                    .fillMaxWidth()
+                            ) {
+                                val price = formatPrice(manState.men[index].price)
 
-                        //Unità totali
-                        Column(
-                            horizontalAlignment = Alignment.End,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            val totunit = formatPrice(rifornimento.totunit)
-
-                            val showunit = if (rifornimento.type == stringResource(R.string.electric)) {
-                                stringResource(R.string.value_kwh, totunit)
-                            } else {
-                                stringResource(R.string.value_l, totunit)
+                                Text(
+                                    text = stringResource(R.string.value_euro, price),
+                                    fontSize = 18.sp,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                )
                             }
-
-                            Text(
-                                text = showunit,
-                                fontSize = 18.sp,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            )
                         }
                     }
                 }
 
             }
 
+            Spacer(modifier = Modifier.height(16.dp))
+
+            //RIFORNIMENTO
+            lastRifornimento?.let { rifornimento ->
+
+                val rifIndex = rifState.rifs.indexOf(rifornimento)
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        .padding(12.dp)
+                        .clickable {
+                            navController.navigate("ViewRifScreen/$rifIndex")
+                        }
+                ) {
+
+                    //Icona tipo
+                    val icon = when (rifornimento.type) {
+                        stringResource(R.string.electric) -> ImageVector.vectorResource(id = R.drawable.electric)
+                        else -> ImageVector.vectorResource(id = R.drawable.oil)
+                    }
+
+                    Column(
+                        verticalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .padding(bottom = 4.dp)
+                        ) {
+                            Column {
+                                Icon(
+                                    imageVector = icon,
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(34.dp)
+                                        .padding(end = 4.dp),
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+
+
+                            Column {
+
+                                //Data
+                                Text(
+                                    text = rifornimento.date,
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                            Column(
+                                horizontalAlignment = Alignment.End,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+
+                                //Prezzo
+                                val price = formatPrice(rifornimento.price)
+
+                                Text(
+                                    text = stringResource(R.string.value_euro, price),
+                                    fontSize = 18.sp,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                )
+                            }
+                        }
+
+                        //Prezzo per unità
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .padding(bottom = 4.dp)
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.End,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+                                val uvalue =
+                                    formatPrice(rifornimento.uvalue)
+
+                                val unitprice =
+                                    if (rifornimento.type == stringResource(R.string.electric)) {
+                                        stringResource(R.string.value_eur_kWh, uvalue)
+                                    } else {
+                                        stringResource(R.string.value_euro_liter, uvalue)
+                                    }
+
+                                Text(
+                                    text = unitprice,
+                                    fontSize = 18.sp,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                )
+                            }
+                        }
+
+
+                        //Luogo
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            val place = rifornimento.place
+
+                            if (place.isNotEmpty()) {
+
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.location),
+                                    contentDescription = stringResource(R.string.place),
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier
+                                        .size(34.dp)
+                                        .padding(end = 4.dp),
+                                )
+
+                                Text(
+                                    text = rifornimento.place,
+                                    fontSize = 18.sp,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                            } else {
+                                Spacer(
+                                    modifier = Modifier
+                                        .height(34.dp)
+                                )
+                            }
+
+                            //Unità totali
+                            Column(
+                                horizontalAlignment = Alignment.End,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+                                val totunit = formatPrice(rifornimento.totunit)
+
+                                val showunit =
+                                    if (rifornimento.type == stringResource(R.string.electric)) {
+                                        stringResource(R.string.value_kwh, totunit)
+                                    } else {
+                                        stringResource(R.string.value_l, totunit)
+                                    }
+
+                                Text(
+                                    text = showunit,
+                                    fontSize = 18.sp,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
