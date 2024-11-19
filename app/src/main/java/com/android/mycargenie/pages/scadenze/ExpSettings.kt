@@ -1,5 +1,6 @@
 package com.android.mycargenie.pages.scadenze
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -874,133 +875,9 @@ fun ExpSettingsScreen(
                         )
                     )
 
-                    //val tag = "ReminderApp"
-
-                    val oneMonthMillis = 30L * 24 * 60 * 60 * 1000
-                    val oneWeekMillis = 7L * 24 * 60 * 60 * 1000
-                    val oneDayMillis = 1L * 24 * 60 * 60 * 1000
-
-                    val hour14Millis = 14 * 60 * 60 * 1000
-                    val hour8Millis = 8 * 60 * 60 * 1000
-
-
-                    //Log.d(tag, "Stato di insnot: $insnot")
-
-                    if (insnot) {
-
-                        notificationManager.disableNotifications("insurance")
-
-                        //Log.d(tag, "insend: $insend")
-                        val insTimestamp = formatDateToLong(insend)
-
-                        notificationManager.scheduleNotification(
-                            (insTimestamp - oneMonthMillis) + hour14Millis,
-                            "La tua assicurazione auto sta per scadere.",
-                            "Il Genio ti ricorda che la polizza scadrà il $insend. Evita sanzioni pagando in tempo.",
-                            "insurance"
-                        )
-
-                        notificationManager.scheduleNotification(
-                            (insTimestamp - oneWeekMillis) + hour14Millis,
-                            "La tua assicurazione auto è in scadenza.",
-                            "Il Genio ti ricorda che la polizza scadrà fra una settimana esatta. Evita sanzioni pagando in tempo.",
-                            "insurance"
-                        )
-
-                        notificationManager.scheduleNotification(
-                            (insTimestamp - oneDayMillis) + hour8Millis,
-                            "La tua assicurazione auto è in scadenza.",
-                            "Il Genio ti ricorda che la polizza scadrà domani. Evita sanzioni pagando oggi stesso.",
-                            "insurance"
-                        )
-
-                        notificationManager.scheduleNotification(
-                            insTimestamp + hour8Millis,
-                            "Rinnova adesso la tua assicurazione auto.",
-                            "Il Genio ti ricorda che la polizza è scaduta oggi. Contatta subito l'ente assicuratore per evitare sanzioni.",
-                            "insurance"
-                        )
-                    } else {
-                        notificationManager.disableNotifications("insurance")
-                    }
-
-                    //Log.d(tag, "Stato di taxnot: $taxnot")
-                    if (taxnot) {
-
-                        notificationManager.disableNotifications("tax")
-
-                        //Log.d(tag, "taxdate: $taxdate")
-                        val taxTimestamp = formatDateToLong(taxdate)
-
-                        notificationManager.scheduleNotification(
-                            (taxTimestamp - oneMonthMillis) + hour14Millis,
-                            "La tassa automobilistica sta per scadere.",
-                            "Il Genio ti ricorda che la tassa automobilistica scadrà il $taxdate. Evita sanzioni pagando in tempo.",
-                            "tax"
-                        )
-
-                        notificationManager.scheduleNotification(
-                            (taxTimestamp - oneWeekMillis) + hour14Millis,
-                            "La tassa automobilistica è in scadenza.",
-                            "Il Genio ti ricorda che la tassa automobilistica scadrà fra una settimana esatta. Evita sanzioni pagando in tempo.",
-                            "tax"
-                        )
-
-                        notificationManager.scheduleNotification(
-                            (taxTimestamp - oneDayMillis) + hour8Millis,
-                            "La tassa automobilistica è in scadenza.",
-                            "Il Genio ti ricorda che la tassa automobilistica scadrà domani. Evita sanzioni pagando oggi stesso.",
-                            "tax"
-                        )
-
-                        notificationManager.scheduleNotification(
-                            taxTimestamp + hour8Millis,
-                            "Paga adesso la tassa automobilistica.",
-                            "Il Genio ti ricorda che la tassa automobilistica è scaduta oggi.",
-                            "tax"
-                        )
-                    } else {
-                        notificationManager.disableNotifications("tax")
-                    }
-
-                    //Log.d(tag, "Stato di revnot: $revnot")
-                    if (revnot) {
-
-                        notificationManager.disableNotifications("rev")
-
-                        //Log.d(tag, "revnext: $revnext")
-                        val revTimestamp = formatDateToLong(revnext)
-
-                        notificationManager.scheduleNotification(
-                            (revTimestamp - oneMonthMillis) + hour14Millis,
-                            "La tua revisione auto sta per scadere.",
-                            "Il Genio ti ricorda che la revisione scadrà il $revnext. Evita sanzioni effettuandola in tempo.",
-                            "rev"
-                        )
-
-                        notificationManager.scheduleNotification(
-                            (revTimestamp - oneWeekMillis) + hour14Millis,
-                            "La tua revisione auto è in scadenza.",
-                            "Il Genio ti ricorda che la revisione scadrà fra una settimana esatta. Evita sanzioni effettuandola in tempo.",
-                            "rev"
-                        )
-
-                        notificationManager.scheduleNotification(
-                            (revTimestamp - oneDayMillis) + hour8Millis,
-                            "La tua revisione auto è in scadenza.",
-                            "Il Genio ti ricorda che la revisione scadrà domani. Evita sanzioni effettuandola oggi stesso.",
-                            "rev"
-                        )
-
-                        notificationManager.scheduleNotification(
-                            revTimestamp + hour8Millis,
-                            "Effettua adesso la revisione della tua auto.",
-                            "Il Genio ti ricorda che la revisione è scaduta oggi. Contatta subito un'officina autorizzata per evitare sanzioni.",
-                            "rev"
-                        )
-                    } else {
-                        notificationManager.disableNotifications("rev")
-                    }
+                    handleInsuranceNotifications(insnot, insend, notificationManager)
+                    handleTaxNotifications(taxnot,taxdate, notificationManager)
+                    handleRevisionNotifications(revnot, revnext, notificationManager)
 
                     navController.navigate("ExpirationsScreen")
 
@@ -1168,5 +1045,111 @@ fun CustomDatePickerDialog(
         DatePicker(state = datePickerState)
     }
 }
+
+const val oneMonthMillis = 30L * 24 * 60 * 60 * 1000
+const val oneWeekMillis = 7L * 24 * 60 * 60 * 1000
+const val oneDayMillis = 1L * 24 * 60 * 60 * 1000
+const val hour14Millis = 14L * 60 * 60 * 1000
+const val hour8Millis = 8L * 60 * 60 * 1000
+
+
+fun scheduleNotifications(
+    isEnabled: Boolean,
+    timestamp: Long,
+    type: String,
+    titles: List<String>,
+    messages: List<String>,
+    offsets: List<Long>,
+    notificationManager: CustomNotificationManager
+) {
+
+    if (isEnabled) {
+        notificationManager.disableNotifications(type)
+        offsets.forEachIndexed { index, offset ->
+            notificationManager.scheduleNotification(
+                timestamp + offset,
+                titles[index],
+                messages[index],
+                type
+            )
+        }
+    } else {
+        notificationManager.disableNotifications(type)
+    }
+}
+
+fun handleInsuranceNotifications(insnot: Boolean, insend: String, notificationManager: CustomNotificationManager) {
+    val insTimestamp = formatDateToLong(insend)
+    val titles = listOf(
+        "La tua assicurazione auto sta per scadere.",
+        "La tua assicurazione auto è in scadenza.",
+        "La tua assicurazione auto è in scadenza.",
+        "Rinnova adesso la tua assicurazione auto."
+    )
+    val messages = listOf(
+        "Il Genio ti ricorda che la polizza scadrà il $insend. Evita sanzioni pagando in tempo.",
+        "Il Genio ti ricorda che la polizza scadrà fra una settimana esatta. Evita sanzioni pagando in tempo.",
+        "Il Genio ti ricorda che la polizza scadrà domani. Evita sanzioni pagando oggi stesso.",
+        "Il Genio ti ricorda che la polizza è scaduta oggi. Contatta subito l'ente assicuratore per evitare sanzioni."
+    )
+    val offsets = listOf(
+        -oneMonthMillis + hour14Millis,
+        -oneWeekMillis + hour14Millis,
+        -oneDayMillis + hour8Millis,
+        hour8Millis
+    )
+    val tag = "ReminderApp"
+    Log.d(tag, "Stato di insnot: $insnot")
+    Log.d(tag, "insend: $insend")
+    scheduleNotifications(insnot, insTimestamp, "insurance", titles, messages, offsets, notificationManager)
+}
+
+fun handleTaxNotifications(taxnot: Boolean, taxdate: String, notificationManager: CustomNotificationManager) {
+    val taxTimestamp = formatDateToLong(taxdate)
+    val titles = listOf(
+        "La tassa automobilistica sta per scadere.",
+        "La tassa automobilistica è in scadenza.",
+        "La tassa automobilistica è in scadenza.",
+        "Paga adesso la tassa automobilistica."
+    )
+    val messages = listOf(
+        "Il Genio ti ricorda che la tassa automobilistica scadrà il $taxdate. Evita sanzioni pagando in tempo.",
+        "Il Genio ti ricorda che la tassa automobilistica scadrà fra una settimana esatta. Evita sanzioni pagando in tempo.",
+        "Il Genio ti ricorda che la tassa automobilistica scadrà domani. Evita sanzioni pagando oggi stesso.",
+        "Il Genio ti ricorda che la tassa automobilistica è scaduta oggi."
+    )
+    val offsets = listOf(
+        -oneMonthMillis + hour14Millis,
+        -oneWeekMillis + hour14Millis,
+        -oneDayMillis + hour8Millis,
+        hour8Millis
+    )
+    scheduleNotifications(taxnot, taxTimestamp, "tax", titles, messages, offsets, notificationManager)
+}
+
+fun handleRevisionNotifications(revnot: Boolean, revnext: String, notificationManager: CustomNotificationManager) {
+    val revTimestamp = formatDateToLong(revnext)
+    val titles = listOf(
+        "La tua revisione auto sta per scadere.",
+        "La tua revisione auto è in scadenza.",
+        "La tua revisione auto è in scadenza.",
+        "Effettua adesso la revisione della tua auto."
+    )
+    val messages = listOf(
+        "Il Genio ti ricorda che la revisione scadrà il $revnext. Evita sanzioni effettuandola in tempo.",
+        "Il Genio ti ricorda che la revisione scadrà fra una settimana esatta. Evita sanzioni effettuandola in tempo.",
+        "Il Genio ti ricorda che la revisione scadrà domani. Evita sanzioni effettuandola oggi stesso.",
+        "Il Genio ti ricorda che la revisione è scaduta oggi. Contatta subito un'officina autorizzata per evitare sanzioni."
+    )
+    val offsets = listOf(
+        -oneMonthMillis + hour14Millis,
+        -oneWeekMillis + hour14Millis,
+        -oneDayMillis + hour8Millis,
+        hour8Millis
+    )
+    scheduleNotifications(revnot, revTimestamp, "rev", titles, messages, offsets, notificationManager)
+}
+
+
 
 
