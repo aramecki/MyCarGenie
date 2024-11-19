@@ -1,6 +1,11 @@
 package com.android.mycargenie.pages.scadenze
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -158,164 +163,164 @@ fun ExpSettingsScreen(
                 modifier = Modifier
                     .padding(10.dp)
             )
-
-            /*
-            Checkbox(
-                checked = inscheck,
-                onCheckedChange = { inscheck = it }
-            )
-            Text(
-                text = stringResource(R.string.insurance),
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier
-                    .clickable { inscheck = !inscheck }
-            )
-
-             */
-
         }
 
-        if (inscheck) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
+        AnimatedVisibility(
+            visible = inscheck,
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically()
+        ) {
+            Column(
+                verticalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier.fillMaxWidth()
             ) {
-
-
-                Text(
-                    text = "${stringResource(R.string.start)} ${stringResource(R.string.coverage)}",
-                    fontSize = 18.sp,
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier
-                        .weight(1f)
-                )
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                        .clickable { showInsStartDatePicker = true }
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.secondaryContainer)
-                        .padding(16.dp)
+                        .fillMaxWidth()
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
 
 
-                        Icon(
-                            imageVector = Icons.Rounded.DateRange,
-                            contentDescription = null
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = insstart.ifEmpty { formatDateToString(Instant.now().toEpochMilli()) },
-                            fontSize = 17.sp,
-                            modifier = Modifier
-                        )
-                    }
-                }
-
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-
-
-                Text(
-                    text = "${stringResource(R.string.end)} ${stringResource(R.string.coverage)}",
-                    fontSize = 18.sp,
-                    modifier = Modifier
-                        .weight(1f)
-                )
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                        .clickable { showInsEndDatePicker = true }
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.secondaryContainer)
-                        .padding(16.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-
-                        Icon(
-                            imageVector = Icons.Rounded.DateRange,
-                            contentDescription = null
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        Text(
-                            text = insend.ifEmpty { formatDateToString(Instant.now().toEpochMilli()) },
-                            fontSize = 17.sp,
-                            modifier = Modifier
-                        )
-                    }
-                }
-
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Text(
-                    text = stringResource(R.string.dues),
-                    fontSize = 18.sp,
-                    modifier = Modifier
-                        .weight(3f)
-                        .wrapContentWidth(Alignment.Start)
-                )
-
-                val dues = listOf(0, 2, 3)
-
-                dues.forEach { due ->
-                    Box(
+                    Text(
+                        text = "${stringResource(R.string.start)} ${stringResource(R.string.coverage)}",
+                        fontSize = 18.sp,
                         modifier = Modifier
                             .weight(1f)
-                            .clickable {
-                                insdues = due
-                            }
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f)
+                            .clickable { showInsStartDatePicker = true }
                             .clip(CircleShape)
-                            .background(
-                                if (insdues == due) {
-                                    MaterialTheme.colorScheme.primary
-                                } else {
-                                    MaterialTheme.colorScheme.secondaryContainer
-                                }
-                            )
+                            .background(MaterialTheme.colorScheme.secondaryContainer)
                             .padding(16.dp)
                     ) {
-                        Text(
-                            text = due.toString(),
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
                                 .fillMaxWidth()
-                        )
+                        ) {
+
+
+                            Icon(
+                                imageVector = Icons.Rounded.DateRange,
+                                contentDescription = null
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = insstart.ifEmpty {
+                                    formatDateToString(
+                                        Instant.now().toEpochMilli()
+                                    )
+                                },
+                                fontSize = 17.sp,
+                                modifier = Modifier
+                            )
+                        }
+                    }
+
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+
+
+                    Text(
+                        text = "${stringResource(R.string.end)} ${stringResource(R.string.coverage)}",
+                        fontSize = 18.sp,
+                        modifier = Modifier
+                            .weight(1f)
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f)
+                            .clickable { showInsEndDatePicker = true }
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                            .padding(16.dp)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+
+                            Icon(
+                                imageVector = Icons.Rounded.DateRange,
+                                contentDescription = null
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+
+                            Text(
+                                text = insend.ifEmpty {
+                                    formatDateToString(
+                                        Instant.now().toEpochMilli()
+                                    )
+                                },
+                                fontSize = 17.sp,
+                                modifier = Modifier
+                            )
+                        }
+                    }
+
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = stringResource(R.string.dues),
+                        fontSize = 18.sp,
+                        modifier = Modifier
+                            .weight(3f)
+                            .wrapContentWidth(Alignment.Start)
+                    )
+
+                    val dues = listOf(0, 2, 3)
+
+                    dues.forEach { due ->
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .clickable {
+                                    insdues = due
+                                }
+                                .clip(CircleShape)
+                                .background(
+                                    if (insdues == due) {
+                                        MaterialTheme.colorScheme.primary
+                                    } else {
+                                        MaterialTheme.colorScheme.secondaryContainer
+                                    }
+                                )
+                                .padding(16.dp)
+                        ) {
+                            Text(
+                                text = due.toString(),
+                                textAlign = TextAlign.Center,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            )
+                        }
                     }
                 }
-            }
 
-/*
+                /*
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -323,7 +328,7 @@ fun ExpSettingsScreen(
             ) {
 
  */
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -360,56 +365,56 @@ fun ExpSettingsScreen(
                     )
                 }
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-
-
-                Text(
-                    text = "${stringResource(R.string.amount)} ${stringResource(R.string.total_e)}",
-                    fontSize = 18.sp,
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier
-                        .weight(1f)
-                )
+                        .fillMaxWidth()
+                ) {
 
-                var insPriceString by remember {
-                    mutableStateOf(if (insprice == 0.0f) "" else insprice.toString())
-                }
 
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f),
-                    shape = CircleShape,
-                    value = insPriceString,
-                    onValueChange = { newValue ->
-                        val formattedValue = newValue.replace(',', '.')
-                        val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?\$")
-                        if (newValue.isEmpty()) {
-                            insPriceString = ""
-                            insprice = 0.0f
-                        } else if (regex.matches(newValue)) {
-                            insPriceString = newValue
-                            formattedValue.toFloatOrNull()?.let { floatValue ->
-                                if (floatValue <= 9999.99f) {
-                                    insprice = floatValue
+                    Text(
+                        text = "${stringResource(R.string.amount)} ${stringResource(R.string.total_e)}",
+                        fontSize = 18.sp,
+                        modifier = Modifier
+                            .weight(1f)
+                    )
+
+                    var insPriceString by remember {
+                        mutableStateOf(if (insprice == 0.0f) "" else insprice.toString())
+                    }
+
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f),
+                        shape = CircleShape,
+                        value = insPriceString,
+                        onValueChange = { newValue ->
+                            val formattedValue = newValue.replace(',', '.')
+                            val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?\$")
+                            if (newValue.isEmpty()) {
+                                insPriceString = ""
+                                insprice = 0.0f
+                            } else if (regex.matches(newValue)) {
+                                insPriceString = newValue
+                                formattedValue.toFloatOrNull()?.let { floatValue ->
+                                    if (floatValue <= 9999.99f) {
+                                        insprice = floatValue
+                                    }
                                 }
                             }
-                        }
-                    },
-                    textStyle = TextStyle(
-                        fontSize = 20.sp
-                    ),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Decimal,
-                        imeAction = ImeAction.Next
+                        },
+                        textStyle = TextStyle(
+                            fontSize = 20.sp
+                        ),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Decimal,
+                            imeAction = ImeAction.Next
+                        )
                     )
-                )
-            }
+                }
 
                 /*
                 Spacer(modifier = Modifier.width(8.dp))
@@ -454,9 +459,9 @@ fun ExpSettingsScreen(
 
                  */
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            if (insend.isNotEmpty()) {
+                if (insend.isNotEmpty()) {
                     Column(
                         horizontalAlignment = Alignment.End,
                         modifier = Modifier
@@ -480,14 +485,15 @@ fun ExpSettingsScreen(
                             )
                         }
                     }
+                }
+
+                HorizontalDivider(
+                    modifier = Modifier
+                        .padding(top = 4.dp, bottom = 4.dp),
+                    thickness = 2.dp
+                )
+
             }
-
-            HorizontalDivider(
-                modifier = Modifier
-                    .padding(top = 4.dp, bottom = 4.dp),
-                thickness = 2.dp
-            )
-
         }
 
         // Tax
@@ -503,78 +509,73 @@ fun ExpSettingsScreen(
                 modifier = Modifier
                     .padding(10.dp)
             )
-
-            /*
-            Checkbox(
-                checked = taxcheck,
-                onCheckedChange = { taxcheck = it }
-            )
-            Text(
-                text = "${stringResource(R.string.tax)} ${stringResource(R.string.automotive)}",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier
-                    .clickable { taxcheck = !taxcheck }
-            )
-
-             */
-
         }
 
-        if (taxcheck) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
+        AnimatedVisibility(
+            visible = taxcheck,
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically()
+        ) {
+            Column(
+                verticalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier.fillMaxWidth()
             ) {
-
-
-                Text(
-                    text = "${stringResource(R.string.next_m)} ${stringResource(R.string.payment)}",
-                    fontSize = 18.sp,
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier
-                        .weight(1f)
-                )
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                        .clickable { showTaxDatePicker = true }
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.secondaryContainer)
-                        .padding(16.dp)
+                        .fillMaxWidth()
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
+
+                    Text(
+                        text = "${stringResource(R.string.next_m)} ${stringResource(R.string.payment)}",
+                        fontSize = 18.sp,
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .weight(1f)
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f)
+                            .clickable { showTaxDatePicker = true }
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                            .padding(16.dp)
                     ) {
-
-
-                        Icon(
-                            imageVector = Icons.Rounded.DateRange,
-                            contentDescription = null
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        Text(
-                            text = taxdate.ifEmpty { formatDateToString(Instant.now().toEpochMilli()) },
-                            fontSize = 17.sp,
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
-                        )
+                                .fillMaxWidth()
+                        ) {
+
+
+                            Icon(
+                                imageVector = Icons.Rounded.DateRange,
+                                contentDescription = null
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+
+                            Text(
+                                text = taxdate.ifEmpty {
+                                    formatDateToString(
+                                        Instant.now().toEpochMilli()
+                                    )
+                                },
+                                fontSize = 17.sp,
+                                modifier = Modifier
+                            )
+                        }
                     }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
 
                     Text(
                         text = stringResource(R.string.amount),
@@ -615,42 +616,43 @@ fun ExpSettingsScreen(
                             imeAction = ImeAction.Next
                         )
                     )
-            }
+                }
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            if (taxdate.isNotEmpty()) {
-                Column(
-                    horizontalAlignment = Alignment.End,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
+                if (taxdate.isNotEmpty()) {
+                    Column(
+                        horizontalAlignment = Alignment.End,
+                        modifier = Modifier
+                            .fillMaxWidth()
                     ) {
-                        Text(
-                            stringResource(R.string.reminders),
-                            modifier = Modifier
-                                .padding(end = 8.dp)
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                stringResource(R.string.reminders),
+                                modifier = Modifier
+                                    .padding(end = 8.dp)
+                            )
 
-                        Switch(
-                            checked = taxnot,
-                            onCheckedChange = { checked ->
-                                taxnot = checked
-                                permissionHandler.initialize()
-                            }
-                        )
+                            Switch(
+                                checked = taxnot,
+                                onCheckedChange = { checked ->
+                                    taxnot = checked
+                                    permissionHandler.initialize()
+                                }
+                            )
+                        }
                     }
                 }
+
+                HorizontalDivider(
+                    modifier = Modifier
+                        .padding(top = 4.dp, bottom = 4.dp),
+                    thickness = 2.dp
+                )
+
             }
-
-            HorizontalDivider(
-                modifier = Modifier
-                    .padding(top = 4.dp, bottom = 4.dp),
-                thickness = 2.dp
-            )
-
         }
 
         // Revision
@@ -666,186 +668,184 @@ fun ExpSettingsScreen(
                 modifier = Modifier
                     .padding(10.dp)
             )
-
-            /*
-            Checkbox(
-                checked = revcheck,
-                onCheckedChange = { revcheck = it }
-            )
-            Text(
-                text = stringResource(R.string.revision),
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier
-                    .clickable { revcheck = !revcheck }
-            )
-             */
-
         }
 
-        if (revcheck) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
+            AnimatedVisibility(
+                visible = revcheck,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
             ) {
 
-                Text(
-                    text = "${stringResource(R.string.last)} ${stringResource(R.string.revision_low)}",
-                    fontSize = 18.sp,
-                    modifier = Modifier
-                        .weight(1f)
-                )
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                        .clickable { showRevLastDatePicker = true }
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.secondaryContainer)
-                        .padding(16.dp)
+                Column(
+                    verticalArrangement = Arrangement.SpaceEvenly,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
+
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
 
-
-                        Icon(
-                            imageVector = Icons.Rounded.DateRange,
-                            contentDescription = null
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = revlast.ifEmpty { formatDateToString(Instant.now().toEpochMilli()) },
-                            fontSize = 17.sp,
+                            text = "${stringResource(R.string.last)} ${stringResource(R.string.revision_low)}",
+                            fontSize = 18.sp,
                             modifier = Modifier
+                                .weight(1f)
                         )
-                    }
-                }
 
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-
-
-                Text(
-                    text = "${stringResource(R.string.next_f)} ${stringResource(R.string.revision_low)}",
-                    fontSize = 18.sp,
-                    modifier = Modifier
-                        .weight(1f)
-                )
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                        .clickable { showRevNextDatePicker = true }
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.secondaryContainer)
-                        .padding(16.dp)
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-
-                        Icon(
-                            imageVector = Icons.Rounded.DateRange,
-                            contentDescription = null
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        Text(
-                            text = revnext.ifEmpty { formatDateToString(Instant.now().toEpochMilli()) },
-                            fontSize = 17.sp,
+                        Box(
                             modifier = Modifier
-                        )
-                    }
-                }
-            }
+                                .fillMaxWidth(0.5f)
+                                .clickable { showRevLastDatePicker = true }
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.secondaryContainer)
+                                .padding(16.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
 
-            Spacer(modifier = Modifier.height(8.dp))
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Text(
-                    text = stringResource(R.string.revplace),
-                    fontSize = 18.sp,
-                    modifier = Modifier
-                        .weight(1f)
-                )
-
-                    OutlinedTextField(
-                        modifier = Modifier
-                            .fillMaxWidth(0.5f),
-                        shape = CircleShape,
-                        value = revplace,
-                        onValueChange = { newValue ->
-                            if (newValue.length <= 20) {
-                                revplace = newValue
+                                Icon(
+                                    imageVector = Icons.Rounded.DateRange,
+                                    contentDescription = null
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = revlast.ifEmpty { formatDateToString(Instant.now().toEpochMilli()) },
+                                    fontSize = 17.sp,
+                                    modifier = Modifier
+                                )
                             }
-                        },
-                        textStyle = TextStyle(
-                            fontSize = 15.sp
-                        ),
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            imeAction = ImeAction.Next,
-                            capitalization = KeyboardCapitalization.Sentences
+                        }
+
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+
+
+                        Text(
+                            text = "${stringResource(R.string.next_f)} ${stringResource(R.string.revision_low)}",
+                            fontSize = 18.sp,
+                            modifier = Modifier
+                                .weight(1f)
                         )
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(0.5f)
+                                .clickable { showRevNextDatePicker = true }
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.secondaryContainer)
+                                .padding(16.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+
+                                Icon(
+                                    imageVector = Icons.Rounded.DateRange,
+                                    contentDescription = null
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+
+                                Text(
+                                    text = revnext.ifEmpty { formatDateToString(Instant.now().toEpochMilli()) },
+                                    fontSize = 17.sp,
+                                    modifier = Modifier
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Text(
+                            text = stringResource(R.string.revplace),
+                            fontSize = 18.sp,
+                            modifier = Modifier
+                                .weight(1f)
+                        )
+
+                            OutlinedTextField(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.5f),
+                                shape = CircleShape,
+                                value = revplace,
+                                onValueChange = { newValue ->
+                                    if (newValue.length <= 20) {
+                                        revplace = newValue
+                                    }
+                                },
+                                textStyle = TextStyle(
+                                    fontSize = 15.sp
+                                ),
+                                keyboardOptions = KeyboardOptions.Default.copy(
+                                    imeAction = ImeAction.Next,
+                                    capitalization = KeyboardCapitalization.Sentences
+                                )
+                            )
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    if (revnext.isNotEmpty()) {
+                        Column(
+                            horizontalAlignment = Alignment.End,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    stringResource(R.string.reminders),
+                                    modifier = Modifier
+                                        .padding(end = 8.dp)
+                                )
+
+                                Switch(
+                                    checked = revnot,
+                                    onCheckedChange = { checked ->
+                                        revnot = checked
+                                        permissionHandler.initialize()
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .padding(top = 4.dp, bottom = 4.dp),
+                        thickness = 2.dp
                     )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
 
-            if (revnext.isNotEmpty()) {
-                Column(
-                    horizontalAlignment = Alignment.End,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            stringResource(R.string.reminders),
-                            modifier = Modifier
-                                .padding(end = 8.dp)
-                        )
-
-                        Switch(
-                            checked = revnot,
-                            onCheckedChange = { checked ->
-                                revnot = checked
-                                permissionHandler.initialize()
-                            }
-                        )
-                    }
-                }
-            }
-
-            HorizontalDivider(
-                modifier = Modifier
-                    .padding(top = 4.dp, bottom = 4.dp),
-                thickness = 2.dp
-            )
 
         }
 
         Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .padding(top = 8.dp)
         ) {
