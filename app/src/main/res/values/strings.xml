@@ -104,7 +104,7 @@
     <string name="select_field_message">Seleziona un campo per abilitarlo e gestirne le impostazioni.</string>
     <string name="reminders">Promemoria</string>
     <string name="reset_fields">Resetta tutti i campi.</string>
-    <string name="expirations">Scadenze</string>
+    <string name="deadlines">Scadenze</string>
     <string name="back">Indietro</string>
     <string name="order">Ordina</string>
     <string name="confirm_question">Confermi?</string>

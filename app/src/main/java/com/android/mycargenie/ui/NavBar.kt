@@ -149,7 +149,7 @@ fun MainApp(
                                 text = when (currentDestination) {
                                     "ManutenzioneScreen" -> stringResource(R.string.maintenance)
                                     "RifornimentoScreen" -> stringResource(R.string.refueling)
-                                    "ExpirationsScreen" -> stringResource(R.string.expirations)
+                                    "ExpirationsScreen" -> stringResource(R.string.deadlines)
                                     else -> ""
                                 },
                                 modifier = Modifier
@@ -351,7 +351,7 @@ fun MainApp(
                                 navController.navigate("RifornimentoScreen")
                             },
                             BottomNavItem(
-                                stringResource(R.string.expirations),
+                                stringResource(R.string.deadlines),
                                 ImageVector.vectorResource(id = R.drawable.calendar)
                             ) {
                                 selectedTabIndex = 3
