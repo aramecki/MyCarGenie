@@ -22,9 +22,11 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,7 +37,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -52,14 +56,20 @@ import com.android.mycargenie.shared.formatPrice
 @Composable
 fun ManutenzioneScreen(
     state: ManState,
+    onManEvent: (ManEvent) -> Unit,
     navController: NavController,
     viewModel: ManViewModel
 ) {
 
-    // The optimization of the element loading has been obtained with the use of AI
-
     val lazyListState = rememberLazyListState()
     var isLoading by remember { mutableStateOf(false) }
+
+    val titleOpacity by remember {
+        derivedStateOf {
+            val offset = lazyListState.firstVisibleItemScrollOffset
+            (1f - (offset / 30f).coerceIn(0f, 1f)) // Riduce l'opacità più rapidamente
+        }
+    }
 
     val isAtEndOfList = remember {
         derivedStateOf {
@@ -73,7 +83,6 @@ fun ManutenzioneScreen(
         }
     }
 
-
     LaunchedEffect(isAtEndOfList.value, state.men) {
         if (isAtEndOfList.value && !isLoading) {
             //println("Caricamento nuovi dati...")
@@ -85,34 +94,22 @@ fun ManutenzioneScreen(
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                state.title.value = ""
-                state.type.value = ""
-                state.place.value = ""
-                state.date.value = ""
-                state.kmt.value = 0
-                state.description.value = ""
-                state.price.value = 0.0
-                navController.navigate("AddManScreen")
-            }) {
-                Icon(imageVector = Icons.Rounded.Add, contentDescription = "${stringResource(R.string.add)} ${stringResource(R.string.maintenance)}")
-            }
-        }
-    ) { paddingValues ->
-
-        if (state.men.isEmpty()) {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Text(
-                    text = stringResource(R.string.add_main_message),
-                    fontSize = 18.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(start = 32.dp, top = 82.dp, bottom = 15.dp, end = 32.dp)
-                )
+                SmallFloatingActionButton(onClick = {
+                   onManEvent(ManEvent.SortMan)
+                },
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    ) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.sort),
+                        contentDescription = "${stringResource(R.string.sort)} ${stringResource(R.string.maintenance)}"
+                    )
+                }
 
-                Button(onClick = {
+                FloatingActionButton(onClick = {
                     state.title.value = ""
                     state.type.value = ""
                     state.place.value = ""
@@ -121,30 +118,88 @@ fun ManutenzioneScreen(
                     state.description.value = ""
                     state.price.value = 0.0
                     navController.navigate("AddManScreen")
-                }) {
+                },
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Add,
+                        contentDescription = "${stringResource(R.string.add)} ${stringResource(R.string.maintenance)}",
+                    )
+                }
+            }
+        }
+    ) { paddingValues ->
+
+        LazyColumn(
+            state = lazyListState,
+            contentPadding = PaddingValues(
+                start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
+                end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+                bottom = paddingValues.calculateBottomPadding()
+            ),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .graphicsLayer { alpha = titleOpacity }
+                ) {
                     Text(
-                        text = stringResource(R.string.insert),
-                        fontSize = 16.sp
+                        text = stringResource(R.string.maintenance),
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.SemiBold,
                     )
                 }
 
+                HorizontalDivider(
+                    thickness = 0.5.dp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier
+                        .alpha(0.2f)
+                        .graphicsLayer { alpha = titleOpacity }
+                )
             }
-        } else {
 
-            LazyColumn(
-                state = lazyListState,
-                contentPadding = PaddingValues(
-                    top = 8.dp,
-                    start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
-                    end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
-                    bottom = paddingValues.calculateBottomPadding()
-                ),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
+            if (state.men.isEmpty()) {
+                item {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.add_event_message),
+                            fontSize = 18.sp,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .padding(horizontal = 32.dp, vertical = 16.dp)
+                        )
 
+                        Button(onClick = {
+                            state.title.value = ""
+                            state.type.value = ""
+                            state.place.value = ""
+                            state.date.value = ""
+                            state.kmt.value = 0
+                            state.description.value = ""
+                            state.price.value = 0.0
+                            navController.navigate("AddManScreen")
+                        }) {
+                            Text(
+                                text = stringResource(R.string.insert),
+                                fontSize = 16.sp
+                            )
+                        }
+                    }
+                }
+            } else {
                 items(state.men.size) { index ->
                     ManItem(
                         state = state,
@@ -162,13 +217,9 @@ fun ManutenzioneScreen(
                         )
                     }
                 }
-
             }
-
         }
-
     }
-
 }
 
 @Composable

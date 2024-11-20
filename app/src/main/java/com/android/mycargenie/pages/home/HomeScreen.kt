@@ -102,7 +102,9 @@ fun HomeScreen(
                 ) {
                     FloatingActionButton(onClick = {
                         navController.navigate("AddManScreen")
-                    }) {
+                    },
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        ) {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.time_to_leave),
                             contentDescription = stringResource(R.string.maintenance)
@@ -117,7 +119,9 @@ fun HomeScreen(
                 ) {
                     FloatingActionButton(onClick = {
                         navController.navigate("AddRifScreen")
-                    }) {
+                    },
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        ) {
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.gas_station),
                             contentDescription = stringResource(R.string.refueling)
@@ -127,7 +131,9 @@ fun HomeScreen(
 
                 FloatingActionButton(onClick = {
                     isExpanded = !isExpanded
-                }) {
+                },
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    ) {
                     Icon(
                         imageVector =if (isExpanded) Icons.Outlined.KeyboardArrowDown else Icons.Outlined.KeyboardArrowUp,
                         contentDescription = stringResource(R.string.settings)

@@ -135,8 +135,6 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 
-                    val state by manViewModel.state.collectAsState()
-                    val rifState by rifViewModel.state.collectAsState()
                     val carProfile by librettoViewModel.carProfile.collectAsState()
                     val expirations by expViewModel.expSettings.collectAsState()
 
@@ -146,10 +144,6 @@ class MainActivity : ComponentActivity() {
                         rifViewModel = rifViewModel,
                         librettoViewModel = librettoViewModel,
                         expirationsViewModel = expViewModel,
-                        onManEvent = manViewModel::onEvent,
-                        onRifEvent = rifViewModel::onEvent,
-                        state = state,
-                        rifState = rifState,
                         carProfile = carProfile,
                         expirations = expirations,
                         permissionHandler = permissionHandler
@@ -174,6 +168,7 @@ class MainActivity : ComponentActivity() {
 
     }
 
+    @Suppress("unused")
     private fun deleteExistingDatabase() {
 
         val databaseName = "man.db"

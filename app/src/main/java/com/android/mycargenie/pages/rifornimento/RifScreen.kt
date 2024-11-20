@@ -22,9 +22,11 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,7 +37,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -51,14 +55,20 @@ import com.android.mycargenie.shared.formatPrice
 @Composable
 fun RifornimentoScreen(
     state: RifState,
+    onRifEvent: (RifEvent) -> Unit,
     navController: NavController,
     viewModel: RifViewModel
 ) {
 
-    // The optimization of the element loading has been obtained with the use of AI
-
     val lazyListState = rememberLazyListState()
     var isLoading by remember { mutableStateOf(false) }
+
+    val titleOpacity by remember {
+        derivedStateOf {
+            val offset = lazyListState.firstVisibleItemScrollOffset
+            (1f - (offset / 30f).coerceIn(0f, 1f)) // Riduce l'opacità più rapidamente
+        }
+    }
 
     val isAtEndOfList = remember {
         derivedStateOf {
@@ -72,7 +82,6 @@ fun RifornimentoScreen(
         }
     }
 
-
     LaunchedEffect(isAtEndOfList.value, state.rifs) {
         if (isAtEndOfList.value && !isLoading) {
             //println("Caricamento nuovi dati...")
@@ -84,35 +93,22 @@ fun RifornimentoScreen(
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                state.type.value = ""
-                state.place.value = ""
-                state.price.value = 0.0
-                state.uvalue.value = 0.0
-                state.totunit.value = 0.0
-                state.date.value = ""
-                state.note.value = ""
-                state.kmt.value = 0
-                navController.navigate("AddRifScreen")
-            }) {
-                Icon(imageVector = Icons.Rounded.Add, contentDescription = "${R.string.add} ${R.string.refueling}")
-            }
-        }
-    ) { paddingValues ->
-
-        if (state.rifs.isEmpty()) {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Text(
-                    text = stringResource(R.string.add_ref_message),
-                    fontSize = 18.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .padding(start = 32.dp, top = 82.dp, bottom = 15.dp, end = 32.dp)
-                )
+                SmallFloatingActionButton(onClick = {
+                    onRifEvent(RifEvent.SortRif)
+                },
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    ) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.sort),
+                        contentDescription = "${stringResource(R.string.sort)} ${stringResource(R.string.refueling)}"
+                    )
+                }
 
-                Button(onClick = {
+                FloatingActionButton(onClick = {
                     state.type.value = ""
                     state.place.value = ""
                     state.price.value = 0.0
@@ -122,50 +118,106 @@ fun RifornimentoScreen(
                     state.note.value = ""
                     state.kmt.value = 0
                     navController.navigate("AddRifScreen")
-                }) {
-                    Text(
-                        text = stringResource(R.string.insert),
-                        fontSize = 16.sp
+                },
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Add,
+                        contentDescription = "${R.string.add} ${R.string.refueling}"
                     )
+                }
+            }
+        }
+    ) { paddingValues ->
+
+        LazyColumn(
+            state = lazyListState,
+            contentPadding = PaddingValues(
+                start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
+                end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+                bottom = paddingValues.calculateBottomPadding()
+            ),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .graphicsLayer { alpha = titleOpacity }
+                ) {
+                    Text(
+                        text = stringResource(R.string.refueling),
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                }
+
+                HorizontalDivider(
+                    thickness = 0.5.dp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier
+                        .alpha(0.2f)
+                        .graphicsLayer { alpha = titleOpacity }
+                )
+            }
+
+        if (state.rifs.isEmpty()) {
+            item {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = stringResource(R.string.add_event_message),
+                        fontSize = 18.sp,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .padding(start = 32.dp, top = 82.dp, bottom = 15.dp, end = 32.dp)
+                    )
+
+                    Button(onClick = {
+                        state.type.value = ""
+                        state.place.value = ""
+                        state.price.value = 0.0
+                        state.uvalue.value = 0.0
+                        state.totunit.value = 0.0
+                        state.date.value = ""
+                        state.note.value = ""
+                        state.kmt.value = 0
+                        navController.navigate("AddRifScreen")
+                    }) {
+                        Text(
+                            text = stringResource(R.string.insert),
+                            fontSize = 16.sp
+                        )
+                    }
                 }
             }
         } else {
+            items(state.rifs.size) { index ->
+                RifItem(
+                    state = state,
+                    index = index,
+                    navController = navController
+                )
+            }
 
-            LazyColumn(
-                state = lazyListState,
-                contentPadding = PaddingValues(
-                    top = 8.dp,
-                    start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
-                    end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
-                    bottom = paddingValues.calculateBottomPadding()
-                ),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                // Display list items
-                items(state.rifs.size) { index ->
-                    RifItem(
-                        state = state,
-                        index = index,
-                        navController = navController
+
+            if (state.isLoading) {
+                item {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
                     )
                 }
 
-                // Show the loading indicator if isLoading is true
-                if (state.isLoading) {
-                    item {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                        )
-                    }
-
-                }
             }
-            }
+        }
+        }
 
     }
 

@@ -67,7 +67,7 @@
     <string name="amount">Importo</string>
     <string name="element_not_found_err">Errore: Elemento non trovato.</string>
     <string name="add">Aggiungi</string>
-    <string name="add_main_message">Aggiungi la tua prima manutenzione per visualizzare una card.</string>
+    <string name="add_event_message">Aggiungi il tuo primo evento per visualizzare una card.</string>
     <string name="insert">Inserisci</string>
     <string name="refueling">Rifornimento</string>
     <string name="unit_cost">Costo unità</string>
@@ -79,7 +79,6 @@
     <string name="total">Totali</string>
     <string name="liters">Litri</string>
     <string name="notes">Note</string>
-    <string name="add_ref_message">Aggiungi il tuo primo rifornimento per visualizzare una card.</string>
     <string name="charged">ricaricati</string>
     <string name="refueled_s">riforniti</string>
     <string name="vehicle">veicolo</string>
@@ -114,4 +113,5 @@
     <string name="home">Home</string>
     <string name="profile">Libretto</string>
     <string name="next_f">Prossima</string>
+    <string name="sort">Ordina</string>
 </resources>

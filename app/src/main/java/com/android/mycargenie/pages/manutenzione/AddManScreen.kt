@@ -128,7 +128,9 @@ fun AddManScreen(
                 } else {
                     showError = true
                 }
-            }) {
+            },
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                ) {
                 Icon(
                     imageVector = Icons.Rounded.Check,
                     contentDescription = "${stringResource(R.string.save)} ${stringResource(R.string.maintenance)}"
