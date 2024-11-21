@@ -144,7 +144,9 @@ fun EditManScreen(
                 } else {
                     showError = true
                 }
-            }) {
+            },
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                ) {
                 Icon(
                     imageVector = Icons.Rounded.Check,
                     contentDescription = "${stringResource(R.string.save)} ${stringResource(R.string.changes)} ${stringResource(R.string.maintenance)}"
@@ -431,14 +433,15 @@ fun EditManScreen(
                         .padding(16.dp)
                 ) {
                     Text(
-                        text = stringResource(R.string.req_fields),
-                        fontSize = 14.sp,
+                        text = if (showError) stringResource(R.string.compile_req_fields) else stringResource(R.string.req_fields),
+                        fontSize = if (showError) 16.sp else 14.sp,
+                        color = if (showError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+                        fontWeight = if (showError) FontWeight.SemiBold else null,
+                        textAlign = TextAlign.Center,
                         modifier = Modifier
-                            .fillMaxWidth(),
-                        textAlign = TextAlign.Center
+                            .fillMaxWidth()
                     )
                 }
-
             }
         } else {
             Column(
@@ -453,15 +456,5 @@ fun EditManScreen(
                 )
             }
         }
-
-
-        if (showError) {
-            Text(
-                text = stringResource(R.string.compile_req_fields),
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(16.dp)
-            )
-        }
     }
-
 }

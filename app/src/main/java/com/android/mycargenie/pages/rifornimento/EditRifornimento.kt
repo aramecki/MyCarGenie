@@ -46,6 +46,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -73,7 +74,6 @@ fun EditRifScreen(
 
     //Log.d("rifIndex", "rifIndex: $rifIndex")
     //Log.d("rifItem", "rifItem: $rifItem")
-
 
 
     if (rifItem != null) {
@@ -151,7 +151,9 @@ fun EditRifScreen(
                 } else {
                     showError = true
                 }
-            }) {
+            },
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                ) {
                 Icon(
                     imageVector = Icons.Rounded.Check,
                     contentDescription = "${stringResource(R.string.save)} ${stringResource(R.string.changes)} ${stringResource(R.string.refueling)}"
@@ -563,36 +565,34 @@ fun EditRifScreen(
                     }
                 }
 
-
-                    Row(
+                Row(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        text = if (showError) stringResource(R.string.compile_req_fields) else stringResource(R.string.req_fields),
+                        fontSize = if (showError) 16.sp else 14.sp,
+                        color = if (showError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+                        fontWeight = if (showError) FontWeight.SemiBold else null,
+                        textAlign = TextAlign.Center,
                         modifier = Modifier
-                            .weight(1f)
-                            .padding(16.dp)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.req_fields),
-                            fontSize = 14.sp,
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-
+                            .fillMaxWidth()
+                    )
                 }
             }
-
-        if (showError) {
-
-            Text(
-                text = stringResource(R.string.compile_req_fields),
-                color = MaterialTheme.colorScheme.error,
+        } else {
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp),
-                textAlign = TextAlign.Center
-
-            )
-
+                    .padding(paddingValues)
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.element_not_found_err),
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
         }
     }
 }

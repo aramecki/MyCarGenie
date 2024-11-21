@@ -882,6 +882,10 @@ fun ExpSettingsScreen(
                     navController.navigate("ExpirationsScreen")
 
                 } else {
+                    notificationManager.disableNotifications("insurance")
+                    notificationManager.disableNotifications("tax")
+                    notificationManager.disableNotifications("rev")
+
                     expirationsViewModel.updateExpSettings(
                         Expirations(
                             inscheck = false,
@@ -903,10 +907,6 @@ fun ExpSettingsScreen(
                         )
                     )
 
-                    notificationManager.disableNotifications("insurance")
-                    notificationManager.disableNotifications("tax")
-                    notificationManager.disableNotifications("rev")
-
                     navController.navigate("ExpirationsScreen")
                 }
                              },
@@ -916,46 +916,6 @@ fun ExpSettingsScreen(
                 Text(stringResource(R.string.save))
             }
         }
-/*
-            Text(
-                stringResource(R.string.reset_fields),
-                textAlign = TextAlign.Center,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        expirationsViewModel.updateExpSettings(
-                            Expirations(
-                                inscheck = false,
-                                insstart = "",
-                                insend = "",
-                                insdues = 0,
-                                insprice = 0.0f,
-                                insplace = "",
-                                insnot = false,
-                                taxcheck = false,
-                                taxdate = "",
-                                taxprice = 0.0f,
-                                taxnot = false,
-                                revcheck = false,
-                                revlast = "",
-                                revnext = "",
-                                revplace = "",
-                                revnot = false
-                            )
-                        )
-
-                        notificationManager.disableNotifications("insurance")
-                        notificationManager.disableNotifications("tax")
-                        notificationManager.disableNotifications("rev")
-
-                        navController.navigate("ExpirationsScreen")
-                    }
-            )
-
- */
 
         Spacer(modifier = Modifier.height(4.dp))
 

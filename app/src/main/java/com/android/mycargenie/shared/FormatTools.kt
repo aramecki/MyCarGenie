@@ -2,6 +2,7 @@ package com.android.mycargenie.shared
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -47,7 +48,16 @@ fun formatDateToString(timestamp: Long): String {
     return formatter.format(Date(timestamp))
 }
 
+//Funzione per formattare la data in Long
 fun formatDateToLong(dateString: String): Long {
+    Log.d("DebugDate", "Stringa ricevuta: $dateString")
+
+    // Se la stringa è vuota, restituisce -1
+    if (dateString.isEmpty()) {
+        Log.w("DebugDate", "Stringa vuota ricevuta, restituisco -1")
+        return -1
+    }
+
     val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
     return try {
@@ -55,9 +65,22 @@ fun formatDateToLong(dateString: String): Long {
         date.time
     } catch (e: Exception) {
         e.printStackTrace()
-        -1
+        -1 // Fallback in caso di errore di parsing
     }
+}
 
+// Funzione per formattare la data
+fun formatDateToShow(dateString: String): String {
+    val inputFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
+    val outputFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+
+    return try {
+        val date = inputFormat.parse(dateString)
+        outputFormat.format(date!!).lowercase(Locale.getDefault())
+    } catch (e: Exception) {
+        dateString
+    }
 }
 
 // Funzione per formattare l'ora

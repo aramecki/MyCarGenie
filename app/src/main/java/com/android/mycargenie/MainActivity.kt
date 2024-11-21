@@ -173,7 +173,6 @@ class MainActivity : ComponentActivity() {
 
         val databaseName = "man.db"
 
-
         val deleted = this.deleteDatabase(databaseName)
 
         if (deleted) {

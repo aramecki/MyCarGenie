@@ -1,6 +1,12 @@
 package com.android.mycargenie.pages.scadenze
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +15,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -25,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -34,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.mycargenie.R
+import com.android.mycargenie.shared.formatDateToShow
 
 @Composable
 fun ExpScreen(
@@ -44,6 +54,9 @@ fun ExpScreen(
     var isInsActive by remember { mutableStateOf(false) }
     var isTaxActive by remember { mutableStateOf(false) }
     var isRevActive by remember { mutableStateOf(false) }
+
+    var insDrop by remember { mutableStateOf(false) }
+    var revDrop by remember { mutableStateOf(false) }
 
     Scaffold(
         floatingActionButton = {
@@ -90,15 +103,15 @@ fun ExpScreen(
             ) {
                 if (expirations.inscheck) {
 
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 8.dp, end = 8.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(MaterialTheme.colorScheme.primaryContainer)
-                            .padding(12.dp)
-                    ) {
-                        if (expirations.insstart.isNotEmpty() || expirations.insend.isNotEmpty() || expirations.insdues != 0 || expirations.insplace.isNotEmpty() || expirations.insprice != 0.0f) {
+                    if (expirations.insstart.isNotEmpty() || expirations.insend.isNotEmpty() || expirations.insdues != 0 || expirations.insplace.isNotEmpty() || expirations.insprice != 0.0f) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 8.dp, end = 8.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(MaterialTheme.colorScheme.primaryContainer)
+                                .padding(12.dp)
+                         ) {
                             isInsActive = true
                             Row(
                                 verticalAlignment = Alignment.CenterVertically
@@ -107,10 +120,23 @@ fun ExpScreen(
                                     text = stringResource(R.string.insurance),
                                     fontSize = 24.sp,
                                     fontWeight = FontWeight.SemiBold,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    modifier = Modifier
-                                        .padding(bottom = 4.dp)
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer
                                 )
+                                if (expirations.insstart.isNotEmpty() || expirations.insdues != 0) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.ArrowDropDown,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                                        modifier = Modifier
+                                            .size(34.dp)
+                                            .alpha(0.5f)
+                                            .clickable { insDrop = !insDrop }
+                                            .graphicsLayer {
+                                                rotationZ = if (insDrop) 180f else 0f
+                                            }
+                                    )
+                                }
+
                                 if (expirations.insnot) {
                                     Column(
                                         horizontalAlignment = Alignment.End,
@@ -129,16 +155,61 @@ fun ExpScreen(
                                 }
                             }
 
-                            /*
-                        if (expirations.insstart.isNotEmpty()) {
-                            Text(
-                                text = "${stringResource(R.string.start)} ${stringResource(R.string.coverage)}: ${expirations.insstart}",
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                                )
-                        }
+                            AnimatedVisibility(
+                                visible = insDrop,
+                                enter = fadeIn() + expandVertically(),
+                                exit = fadeOut() + shrinkVertically()
+                            ) {
+                                if (expirations.insstart.isNotEmpty()) {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier
+                                            .padding(top = 2.dp, bottom = 2.dp)
+                                    ) {
+                                        Text(
+                                            text = stringResource(R.string.start),
+                                            fontSize = 18.sp,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                            modifier = Modifier
+                                                .alpha(0.5f)
+                                                .padding(end = 4.dp)
+                                        )
+                                        Text(
+                                            text = formatDateToShow(expirations.insstart),
+                                            fontSize = 18.sp,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                            modifier = Modifier
+                                                .alpha(0.5f)
+                                        )
+                                        if (expirations.insdues != 0) {
+                                            Column(
+                                                horizontalAlignment = Alignment.End,
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                            ) {
+                                                Row {
+                                                    Text(
+                                                        expirations.insdues.toString(),
+                                                        fontSize = 18.sp,
+                                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                                        modifier = Modifier
+                                                            .alpha(0.5f)
+                                                            .padding(end = 4.dp)
+                                                    )
+                                                    Text(
+                                                        stringResource(R.string.dues),
+                                                        fontSize = 18.sp,
+                                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                                        modifier = Modifier
+                                                            .alpha(0.5f)
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
 
- */
                             if (expirations.insend.isNotEmpty()) {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically
@@ -149,28 +220,18 @@ fun ExpScreen(
                                         tint = MaterialTheme.colorScheme.onPrimaryContainer,
                                         modifier = Modifier
                                             .size(20.dp)
+                                            .padding(end = 4.dp)
                                             .alpha(0.5f)
                                     )
                                     Text(
-                                        text = expirations.insend,
+                                        text = formatDateToShow(expirations.insend),
                                         fontSize = 18.sp,
                                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                                         modifier = Modifier
                                             .alpha(0.5f)
                                     )
                                 }
-
                             }
-                            /*
-                        if (expirations.insdues != 0) {
-                            Text(
-                                text = "${stringResource(R.string.dues)}: ${expirations.insdues}",
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-                        }
-
-                         */
 
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
@@ -223,6 +284,7 @@ fun ExpScreen(
                 }
 
                 if (expirations.taxcheck) {
+                    if (expirations.taxdate.isNotEmpty() || expirations.taxprice != 0.0f) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -231,7 +293,6 @@ fun ExpScreen(
                             .background(MaterialTheme.colorScheme.primaryContainer)
                             .padding(12.dp)
                     ) {
-                        if (expirations.taxdate.isNotEmpty() || expirations.taxprice != 0.0f) {
                             isTaxActive = true
                             Row(
                                 verticalAlignment = Alignment.CenterVertically
@@ -240,9 +301,7 @@ fun ExpScreen(
                                     text = "${stringResource(R.string.tax)} ${stringResource(R.string.automotive)}",
                                     fontSize = 24.sp,
                                     fontWeight = FontWeight.SemiBold,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    modifier = Modifier
-                                        .padding(bottom = 4.dp)
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer
                                 )
                                 if (expirations.taxnot) {
                                     Column(
@@ -273,10 +332,11 @@ fun ExpScreen(
                                         tint = MaterialTheme.colorScheme.onPrimaryContainer,
                                         modifier = Modifier
                                             .size(20.dp)
+                                            .padding(end = 4.dp)
                                             .alpha(0.5f)
                                     )
                                     Text(
-                                        text = expirations.taxdate,
+                                        text = formatDateToShow(expirations.taxdate),
                                         fontSize = 18.sp,
                                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                                         modifier = Modifier
@@ -303,101 +363,136 @@ fun ExpScreen(
                 }
 
                 if (expirations.revcheck) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 8.dp, end = 8.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(MaterialTheme.colorScheme.primaryContainer)
-                            .padding(12.dp)
-                    ) {
-                        if (expirations.revlast.isNotEmpty() || expirations.revnext.isNotEmpty() || expirations.revplace.isNotEmpty()) {
-                            isRevActive = true
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.revision),
-                                    fontSize = 24.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    modifier = Modifier
-                                        .padding(bottom = 4.dp)
-                                )
-                                if (expirations.revnot) {
-                                    Column(
-                                        horizontalAlignment = Alignment.End,
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                    ) {
-                                        Icon(
-                                            imageVector = ImageVector.vectorResource(R.drawable.notifications),
-                                            contentDescription = null,
-                                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                                            modifier = Modifier
-                                                .size(22.dp)
-                                                .alpha(0.5f)
-                                        )
-                                    }
-                                }
-                            }
-                            /*
-                        if (expirations.revlast.isNotEmpty()) {
-                            Text(
-                                text = "${stringResource(R.string.last)} ${stringResource(R.string.revision)}: ${expirations.revlast}",
-                                fontSize = 20.sp,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-                        }
-                         */
-
-                            if (expirations.revnext.isNotEmpty()) {
+                    if (expirations.revlast.isNotEmpty() || expirations.revnext.isNotEmpty() || expirations.revplace.isNotEmpty()) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 8.dp, end = 8.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(MaterialTheme.colorScheme.primaryContainer)
+                                .padding(12.dp)
+                        ) {
+                                isRevActive = true
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Icon(
-                                        imageVector = ImageVector.vectorResource(R.drawable.watch),
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                                        modifier = Modifier
-                                            .size(20.dp)
-                                            .alpha(0.5f)
-                                    )
                                     Text(
-                                        text = expirations.revnext,
-                                        fontSize = 18.sp,
-                                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                        modifier = Modifier
-                                            .alpha(0.5f)
+                                        text = stringResource(R.string.revision),
+                                        fontSize = 24.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer
                                     )
+                                    if (expirations.revlast.isNotEmpty()) {
+                                        Icon(
+                                            imageVector = Icons.Outlined.ArrowDropDown,
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                                            modifier = Modifier
+                                                .size(34.dp)
+                                                .alpha(0.5f)
+                                                .clickable { revDrop = !revDrop }
+                                                .graphicsLayer {
+                                                    rotationZ = if (revDrop) 180f else 0f
+                                                }
+                                        )
+                                    }
+
+                                    if (expirations.revnot) {
+                                        Column(
+                                            horizontalAlignment = Alignment.End,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                        ) {
+                                            Icon(
+                                                imageVector = ImageVector.vectorResource(R.drawable.notifications),
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                                                modifier = Modifier
+                                                    .size(22.dp)
+                                                    .alpha(0.5f)
+                                            )
+                                        }
+                                    }
                                 }
-                            }
-                            if (expirations.revplace.isNotEmpty()) {
-                                Column(
-                                    horizontalAlignment = Alignment.End,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(top = 10.dp)
+
+                                AnimatedVisibility(
+                                    visible = revDrop,
+                                    enter = fadeIn() + expandVertically(),
+                                    exit = fadeOut() + shrinkVertically()
                                 ) {
+                                    if (expirations.revlast.isNotEmpty()) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            modifier = Modifier
+                                                .padding(top = 2.dp, bottom = 2.dp)
+                                        ) {
+                                            Text(
+                                                text = stringResource(R.string.last),
+                                                fontSize = 18.sp,
+                                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                                modifier = Modifier
+                                                    .alpha(0.5f)
+                                                    .padding(end = 4.dp)
+                                            )
+                                            Text(
+                                                text = formatDateToShow(expirations.revlast),
+                                                fontSize = 18.sp,
+                                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                                modifier = Modifier
+                                                    .alpha(0.5f)
+                                            )
+                                        }
+                                    }
+                                }
+
+
+                                if (expirations.revnext.isNotEmpty()) {
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Icon(
-                                            imageVector = ImageVector.vectorResource(R.drawable.store),
+                                            imageVector = ImageVector.vectorResource(R.drawable.watch),
                                             contentDescription = null,
                                             tint = MaterialTheme.colorScheme.onPrimaryContainer,
                                             modifier = Modifier
-                                                .size(26.dp)
+                                                .size(20.dp)
+                                                .padding(end = 4.dp)
+                                                .alpha(0.5f)
                                         )
                                         Text(
-                                            text = expirations.revplace,
-                                            fontSize = 20.sp,
-                                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                                            text = formatDateToShow(expirations.revnext),
+                                            fontSize = 18.sp,
+                                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                            modifier = Modifier
+                                                .alpha(0.5f)
                                         )
                                     }
                                 }
-                            }
-
+                                if (expirations.revplace.isNotEmpty()) {
+                                    Column(
+                                        horizontalAlignment = Alignment.End,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(top = 10.dp)
+                                    ) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Icon(
+                                                imageVector = ImageVector.vectorResource(R.drawable.store),
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                                                modifier = Modifier
+                                                    .size(26.dp)
+                                            )
+                                            Text(
+                                                text = expirations.revplace,
+                                                fontSize = 20.sp,
+                                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                                            )
+                                        }
+                                    }
+                                }
                         }
                     }
                     Spacer(modifier = Modifier.height(16.dp))
