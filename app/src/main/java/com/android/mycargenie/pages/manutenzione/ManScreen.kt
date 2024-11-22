@@ -327,20 +327,26 @@ fun ManItem(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.time_to_leave),
-                    contentDescription = stringResource(R.string.date),
-                    tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier
-                        .size(34.dp)
-                        .padding(end = 4.dp),
-                )
+                if (kmt != "0") {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.time_to_leave),
+                        contentDescription = stringResource(R.string.date),
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier
+                            .size(34.dp)
+                            .padding(end = 4.dp),
+                    )
 
-                Text(
-                    text = stringResource(R.string.value_km, kmt),
-                    fontSize = 16.sp,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
+                    Text(
+                        text = stringResource(R.string.value_km, kmt),
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                } else {
+                    Spacer(modifier = Modifier
+                        .height(34.dp)
+                    )
+                }
 
 
                 //Prezzo
@@ -351,11 +357,17 @@ fun ManItem(
                 ) {
                     val price = formatPrice(state.men[index].price)
 
-                    Text(
-                        text = stringResource(R.string.value_euro, price),
-                        fontSize = 18.sp,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    )
+                    if (price != "0.00") {
+                        Text(
+                            text = stringResource(R.string.value_euro, price),
+                            fontSize = 18.sp,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        )
+                    } else {
+                        Spacer(modifier = Modifier
+                            .height(34.dp)
+                        )
+                    }
                 }
             }
         }
