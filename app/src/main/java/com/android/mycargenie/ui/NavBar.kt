@@ -271,10 +271,34 @@ fun MainApp(
 
                 composable("ViewManScreen/{index}",
                     arguments = listOf(navArgument("index") { type = NavType.IntType }),
-                    enterTransition = { slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
-                    exitTransition = { slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
-                    popEnterTransition = { slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) },
-                    popExitTransition = { slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) }
+                    enterTransition = {
+                        val previousScreen = navController.previousBackStackEntry?.destination?.route
+                        when (previousScreen) {
+                            "EditManScreen/{manIndex}" -> slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            else -> slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                        }
+                    },
+                    exitTransition = {
+                        val nextScreen = navController.currentBackStackEntry?.destination?.route
+                        when (nextScreen) {
+                            "EditManScreen/{manIndex}" -> slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            else -> slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                        }
+                    },
+                    popEnterTransition = {
+                        val previousScreen = navController.previousBackStackEntry?.destination?.route
+                        when (previousScreen) {
+                            "EditManScreen/{manIndex}" -> slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            else -> slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                        }
+                    },
+                    popExitTransition = {
+                        val nextScreen = navController.currentBackStackEntry?.destination?.route
+                        when (nextScreen) {
+                            "EditManScreen/{manIndex}" -> slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            else -> slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                        }
+                    }
                 ) {
                     ViewManScreen(
                         state = manViewModel.state.collectAsState().value,
@@ -352,10 +376,34 @@ fun MainApp(
                 }
                 composable("ViewRifScreen/{index}",
                     arguments = listOf(navArgument("index") { type = NavType.IntType }),
-                    enterTransition = { slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
-                    exitTransition = { slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
-                    popEnterTransition = { slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) },
-                    popExitTransition = { slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) }
+                    enterTransition = {
+                        val previousScreen = navController.previousBackStackEntry?.destination?.route
+                        when (previousScreen) {
+                            "EditRifScreen/{rifIndex}" -> slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            else -> slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                        }
+                    },
+                    exitTransition = {
+                        val nextScreen = navController.currentBackStackEntry?.destination?.route
+                        when (nextScreen) {
+                            "EditRifScreen/{rifIndex}" -> slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            else -> slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                        }
+                    },
+                    popEnterTransition = {
+                        val previousScreen = navController.previousBackStackEntry?.destination?.route
+                        when (previousScreen) {
+                            "EditRifScreen/{rifIndex}" -> slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            else -> slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                        }
+                    },
+                    popExitTransition = {
+                        val nextScreen = navController.currentBackStackEntry?.destination?.route
+                        when (nextScreen) {
+                            "EditRifScreen/{rifIndex}" -> slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            else -> slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                        }
+                    }
                 ) {
                     ViewRifScreen(
                         state = rifViewModel.state.collectAsState().value,

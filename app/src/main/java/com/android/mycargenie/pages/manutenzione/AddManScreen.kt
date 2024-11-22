@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -44,6 +44,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -158,17 +159,21 @@ fun AddManScreen(
         ) {
 
             //Titolo
-            Row {
+            Row(
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
+            ) {
                 OutlinedTextField(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
+                        .padding(start = 16.dp, end = 16.dp),
                     value = state.title.value,
                     onValueChange = { newValue ->
                         if (newValue.length <= 50) {
                             state.title.value = newValue
                         }
                     },
+                    shape = CircleShape,
                     textStyle = TextStyle(
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 17.sp
@@ -187,7 +192,10 @@ fun AddManScreen(
 
             val types = listOf(stringResource(R.string.mechanic), stringResource(R.string.electrician), stringResource(R.string.coachbuilder), stringResource(R.string.different))
 
-            Row {
+            Row(
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
+            ) {
                 Column {
                     Row(
                         modifier = Modifier
@@ -218,6 +226,7 @@ fun AddManScreen(
                                         state.place.value = newValue
                                     }
                                 },
+                                shape = CircleShape,
                                 textStyle = TextStyle(
                                     fontSize = 17.sp
                                 ),
@@ -238,7 +247,9 @@ fun AddManScreen(
 
             //Data
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
             ) {
                 Column(
                     modifier = Modifier
@@ -247,7 +258,7 @@ fun AddManScreen(
                         .clickable {
                             showDatePicker = true
                         }
-                        .clip(RoundedCornerShape(4.dp))
+                        .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.secondaryContainer)
                         .padding(16.dp)
                 ) {
@@ -285,6 +296,7 @@ fun AddManScreen(
                                 }
                             }
                         },
+                        shape = CircleShape,
                         placeholder = { Text(text = stringResource(R.string.kilometers)) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
@@ -300,17 +312,17 @@ fun AddManScreen(
             //Descrizione
             Row {
                 Column {
-                    // OutlinedTextField
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                            .padding(top = 8.dp, start = 16.dp, end = 16.dp),
                         value = state.description.value,
                         onValueChange = { newValue ->
                             if (newValue.length <= 500) {
                                 state.description.value = newValue
                             }
                         },
+                        shape = CircleShape,
                         placeholder = { Text(text = "${stringResource(R.string.description)}*") },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             capitalization = KeyboardCapitalization.Sentences
@@ -327,9 +339,11 @@ fun AddManScreen(
                         Text(
                             text = "${state.description.value.length} / 500",
                             style = TextStyle(
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                                fontSize = 12.sp
-                            )
+                                color = MaterialTheme.colorScheme.primary,
+                                fontSize = 12.sp,
+                            ),
+                            modifier = Modifier
+                                .alpha(0.7f)
                         )
                     }
                 }
@@ -339,7 +353,7 @@ fun AddManScreen(
             //Prezzo
             Row(
                 modifier = Modifier
-                    .padding(top = 8.dp)
+                    .padding(top = 16.dp)
             ) {
                 Column(
                     horizontalAlignment = Alignment.End,
@@ -367,6 +381,7 @@ fun AddManScreen(
                                 }
                             }
                         },
+                        shape = CircleShape,
                         placeholder = { Text(text = stringResource(R.string.price)) },
                         leadingIcon = {
                             Icon(
@@ -439,7 +454,7 @@ fun TypeDropdownMenu(types: List<String>, selectedType: MutableState<String>, pl
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .clip(RoundedCornerShape(4.dp))
+                .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.secondaryContainer)
                 .padding(16.dp)
                 .fillMaxWidth()

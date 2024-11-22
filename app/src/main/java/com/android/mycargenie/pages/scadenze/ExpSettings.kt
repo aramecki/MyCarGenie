@@ -202,7 +202,6 @@ fun ExpSettingsScreen(
                                 .fillMaxWidth()
                         ) {
 
-
                             Icon(
                                 imageVector = Icons.Rounded.DateRange,
                                 contentDescription = null
@@ -319,14 +318,6 @@ fun ExpSettingsScreen(
                     }
                 }
 
-                /*
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(top = 4.dp)
-            ) {
-
- */
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Row(
@@ -335,7 +326,6 @@ fun ExpSettingsScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-
 
                     Text(
                         text = stringResource(R.string.insurer),

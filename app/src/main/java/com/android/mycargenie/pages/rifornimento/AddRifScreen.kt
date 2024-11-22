@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -44,6 +44,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -153,18 +154,19 @@ fun AddRifScreen(
                 .padding(
                     top = 16.dp,
                     start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
-
                     end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
                     bottom = paddingValues.calculateBottomPadding()
                 )
                 .fillMaxSize()
                 .verticalScroll(scrollState)
         ) {
-
             val types = listOf(stringResource(R.string.gasoline), stringResource(R.string.diesel), stringResource(R.string.lpg),
                 stringResource(R.string.cng), stringResource(R.string.electric), stringResource(R.string.different))
 
-            Row {
+            Row(
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
+            ) {
                 Column {
                     Row(
                         modifier = Modifier
@@ -195,6 +197,7 @@ fun AddRifScreen(
                                         state.place.value = newValue
                                     }
                                 },
+                                shape = CircleShape,
                                 textStyle = TextStyle(
                                     fontSize = 17.sp
                                 ),
@@ -212,11 +215,10 @@ fun AddRifScreen(
                 }
             }
 
-
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .padding(top = 16.dp)
+                    .padding(top = 8.dp, bottom = 16.dp)
             ) {
                 //Prezzo
                 var userPriceInput by remember { mutableStateOf("") }
@@ -246,6 +248,7 @@ fun AddRifScreen(
                                 }
                             }
                         },
+                        shape = CircleShape,
                         placeholder = { Text(text = "${stringResource(R.string.amount)}*") },
                         leadingIcon = {
                             Icon(
@@ -304,6 +307,7 @@ fun AddRifScreen(
                                 }
                             }
                         },
+                        shape = CircleShape,
                         placeholder = {
                             if (state.type.value == stringResource(R.string.electric)) Text(text = stringResource(R.string.eur_kwh))
                             else if (state.type.value.isEmpty() || state.type.value == stringResource(R.string.different)) Text(text = "${stringResource(R.string.eur_l)} ${stringResource(R.string.or)} ${stringResource(R.string.eur_kwh)}")
@@ -335,7 +339,7 @@ fun AddRifScreen(
 
             Row(
                 modifier = Modifier
-                    .padding(top = 16.dp)
+                    .padding(top = 8.dp, bottom = 16.dp)
             ) {
 
                 Column(
@@ -379,6 +383,7 @@ fun AddRifScreen(
                                 }
                             }
                         },
+                        shape = CircleShape,
                         textStyle = TextStyle(
                             fontSize = 17.sp
                         ),
@@ -409,7 +414,7 @@ fun AddRifScreen(
                         .clickable {
                             showDatePicker = true
                         }
-                        .clip(RoundedCornerShape(4.dp))
+                        .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.secondaryContainer)
                         .padding(16.dp)
                 ) {
@@ -432,20 +437,20 @@ fun AddRifScreen(
             }
 
 
-            // 3. Note
+            //Note
             Row {
                 Column {
-                    // OutlinedTextField
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                            .padding(top = 8.dp, start = 16.dp, end = 16.dp),
                         value = state.note.value,
                         onValueChange = { newValue ->
                             if (newValue.length <= 500) {
                                 state.note.value = newValue
                             }
                         },
+                        shape = CircleShape,
                         placeholder = { Text(text = stringResource(R.string.notes)) },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             capitalization = KeyboardCapitalization.Sentences
@@ -462,9 +467,11 @@ fun AddRifScreen(
                         Text(
                             text = "${state.note.value.length} / 500",
                             style = TextStyle(
-                                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                color = MaterialTheme.colorScheme.primary,
                                 fontSize = 12.sp
-                            )
+                            ),
+                            modifier = Modifier
+                                .alpha(0.7f)
                         )
                     }
                 }
@@ -473,7 +480,7 @@ fun AddRifScreen(
             //Kilometri
             Row(
                 modifier = Modifier
-                    .padding(top = 8.dp)
+                    .padding(top = 16.dp)
             ) {
                 Column(
                     horizontalAlignment = Alignment.End,
@@ -496,6 +503,7 @@ fun AddRifScreen(
                                 }
                             }
                         },
+                        shape = CircleShape,
                         placeholder = { Text(text = stringResource(R.string.kilometers)) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
@@ -561,7 +569,7 @@ fun TypeDropdownMenu(types: List<String>, selectedType: MutableState<String>) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .clip(RoundedCornerShape(4.dp))
+                .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.secondaryContainer)
                 .padding(16.dp)
                 .fillMaxWidth()
