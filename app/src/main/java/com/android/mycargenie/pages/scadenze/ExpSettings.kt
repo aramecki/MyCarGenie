@@ -405,49 +405,6 @@ fun ExpSettingsScreen(
                     )
                 }
 
-                /*
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                ) {
-                    var insPriceString by remember {
-                        mutableStateOf(if (insprice == 0.0f) "" else insprice.toString())
-                    }
-
-                    OutlinedTextField(
-                        value = insPriceString,
-                        onValueChange = { newValue ->
-                            val formattedValue = newValue.replace(',', '.')
-                            val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?\$")
-                            if (newValue.isEmpty()) {
-                                insPriceString = ""
-                                insprice = 0.0f
-                            } else if (regex.matches(newValue)) {
-                                insPriceString = newValue
-                                formattedValue.toFloatOrNull()?.let { floatValue ->
-                                    if (floatValue <= 9999.99f) {
-                                        insprice = floatValue
-                                    }
-                                }
-                            }
-                        },
-                        textStyle = TextStyle(
-                            fontSize = 20.sp
-                        ),
-                        label = { Text("${stringResource(R.string.amount)} ${stringResource(R.string.total)}") },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Decimal,
-                            imeAction = ImeAction.Next
-                        )
-                    )
-
-                }
-            }
-
-                 */
-
                 Spacer(modifier = Modifier.height(8.dp))
 
                 if (insend.isNotEmpty()) {
@@ -1011,7 +968,6 @@ fun scheduleNotifications(
     offsets: List<Long>,
     notificationManager: CustomNotificationManager
 ) {
-
     if (isEnabled) {
         notificationManager.disableNotifications(type)
         offsets.forEachIndexed { index, offset ->
@@ -1033,7 +989,7 @@ fun handleInsuranceNotifications(insnot: Boolean, insend: String, notificationMa
         "La tua assicurazione auto sta per scadere.",
         "La tua assicurazione auto è in scadenza.",
         "La tua assicurazione auto è in scadenza.",
-        "Rinnova adesso la tua assicurazione auto."
+        "Rinnova adesso la tua assicurazione auto.",
     )
     val messages = listOf(
         "Il Genio ti ricorda che la polizza scadrà il $insend. Evita sanzioni pagando in tempo.",
