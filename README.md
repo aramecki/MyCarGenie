@@ -1,6 +1,4 @@
-# MY CAR GENIE
-#### Video Demo:  https://youtu.be/5w-8JlKEGEM?si=hNnuRVQLgBeVqwHz
-#### Description:
+# MyCarGenie
 MyCarGenie is an Android app coded in Kotlin and designed with Jetpack Compose. The aim of this app is to provide the generic automotive user or enthusiast a portal to track and manage their car through maintenance, refueling and expiration dates.
 My car is always broken; she's 13 years old, so, as an usual old lady would, she's always at the mechanics doctor.
 Every time there is the same question: "When did we change ${partName}?"
@@ -9,16 +7,10 @@ I was always thinking about drawing a schema or a sort of agenda, but notebooks 
 So I decided to design and code an app to fill a void in private car management: an app as a tool, always in my pocket, ready to be updated or checked.
 I brainstormed like a typical movie crazy guy, and the possibilities of creation were enormous.
 The only thing I couldn't accept was designing my tool to be used via web or PC. Nobody waits to go home, turn on their computer, or put his private data on the web.
-Through CS50 course I learned lots of things, and my brain adopted a "computer scientist" mindset, so I decided to dedicate a lot of time and effort to creating a mobile app.
-After some research, I opened Google Developers website and started learning about Kotlin and Jetpack compose thanks to the study methods and programming concepts taught in CS50.
-Then I installed Android Studio and the first impact was so bad, it is so different from any programming app I used with CS50.
-But somehow I managed to learn the basics and, day by day, sculpt the app I'm presenting to you today.
 The app needed to be usable by me, my dad, and anyone with a phone, so MyCarGenie had to be light, simple, and compatible with most Android phones.
 Therefore, I decided to design it to be compatible with Android 9 or newer, up to Android 15, which is now rolling out on the latest phones. The app uses only Material Design to stay light, integrates Room to manage SQL databases, and leverages native system functions to be as efficient as possible and occupy minimal storage.
 After some more refinements mostly on graphics, my goal is to share this app through Google PlayStore on Android, now only for Italy, but in the future expanding to more countries with specific adaptations for local systems, values, and laws.
-There is still a lot in my brain that I want to turn into code, but time is key, and moving too fast can be risky.
-So update after update, I hope to be able to improve this tool and help lots of people with it.
-**This is happening thanks to you, CS50!**
+Update after update, I hope to be able to improve this tool.
 
 In the project, in addiction to the Kotlin language, I decided to use:
 - Room: To manage SQL databases,
@@ -49,9 +41,6 @@ The main structure is composed by 5 pages:
 
 ---
 
-> [!WARNING]
-> The app was initially designed in Italian for its first public release in Italy. For the purpose of this course’s final project, it was then translated into English. 
-
   ### Home
   The Home page is the main screen, where the user lands upon opening the app.
   This screen includes design elements to provide the user with quick, summarized information about the vehicle.
@@ -68,7 +57,6 @@ The main structure is composed by 5 pages:
   Some fonts dynamically adjust their size based on the lenght of the variable text to prevent truncation on longer words or on screens with lower pixel density.
   Font sizes were selected through direct testing on various devices to find the most suitable values for a typical smartphone display.
   The UI shows or hides different elements based on certain checks during loading, so it updates automatically whenever the user edits their profile or adds an event.
-  A "Demo Version for CS50" message appears on the bottom of the page for this release. Clicking on the text navigates to the DemoScreen page, where some information about me, the author, are displayed.
   
   - HomeViewModel.kt :
   This support file for the HomeScreen page stores data about the last maintenance and refueling events in the app cache.
@@ -262,7 +250,7 @@ This file initializes the app's navigation and navigation bar. From top to botto
 The bottomBar is designed to display the five main navigation routes at the bottom of the screen in the most accessible way possible. Each main route is defined by a name, an icon, and an index. When the user navigates between pages, the index is collected to perform specific actions, such as triggering a distinct animation for designated route changes. To ensure the routes names in the navigation bar are displays correctly on any device, the screen width in dp is calculated and used to determine the appropriate font size.
 
 - build.gradle.kts (:app) :<br>
-This file sets up many aspects of the app's configuration. A notable feature is the inclusion of the Dependency Analysis Gradle Plugin, which is commented out in the code to avoid its inclusion in the app memory and build. This plugin was instrumental in identifying unused imports, allowing me to optimize and reduce the app size.
+This file sets up many aspects of the app's configuration. 
 Additionally, here are specified the SDK version to compile the code as SDK 35 (Android 15), and the minimum one, as SDK 28(Android 9). The version of the app and the application id are also declared in this file.
 
 - AndroidManifest.xml :<br>
@@ -276,19 +264,7 @@ I have to mention this file because here are coded the permission the app needs:
 
 ---
 
-## AI and external help
-Help from online resources was essential in developing this app. While studying Kotlin through Android Developers, everything went smoothly until I reached topics on ViewModel and State, which proved me challenging. I never became fully comfortable setting app these two aspects independently, so I turned to YouTube, DuckDuckGo, and ChatGPT to help design those parts of the app. Initially, I designed the Mantenance screen using a YouTube tutorial on building a notes app. This tutorial was crucial for building the first part of the code due the various techinal aspects involved. After studying and adapting this code to meet my requirements, I gained the understanding needed to create the refueling screen and related functions. Without first understanding the notes app example, I wouldn't have been able to adapt it for my needs. The navigation bar (navbar) code also came from a web search, but, again, "understanding the code to make it my own" was vital. The code I initially found so overly simplistic, lacking animations and displaying the navbar incorrectly on certain screens.
-As for AI, I used ChatGPT free to understand and code some app sections, but I encountered several limitations. AI is not ideal for Kotlin. Often, it doesn’t know the current Android version or the use of Jetpack Compose instead of XML for UI design. Many suggestions involved deprecated Kotlin functions. Frequently, when I asked for guidance on creating a specific function or identifying the correct import, it was more time-consuming than helpful.
-One example involved setting up notifications. Initially, ChatGPT suggested using WorkManager. After several days of trying to implement it correctly, I discovered that it wasn’t suitable for exact reminders, as notifications were often delayed for long-term events. I was about to remove the notification feature when I found a website explaining that AlarmManager, and the exact alarms permission, were the main way to implement these. I ended up re-coding the entire feature with AlarmManager.
-
-AI was also really helpful at times. For instance, it helped me in optimizing the database loading and implementing the profile picture in the profile screen. Managing permissions and image importing/replacing was initially challenging, as this was my first experience handling permissions.
-
-Overall, I found AI lacked logical coherence in many instances. Logics is my favorite aspect of coding; the mental feeling of burning almost producing smoke is the best. So, very often, AI just made my logics into code or confirmed my logics.
-I'm sure the way I used AI was very constructive. I never been a mere copy-paster. It wasn't my goal. My goal was to develope an app with my forces, a free app, ad-free and respecting user privacy, as many free apps don't. I learned a lot through external sources. I wasn't even able to import something into gradle autonomously after the mini-course on Android Developers; but now I feel much more confident and competent in every aspect of programming.
-
----
-
 ## A reflection
-The realization of this app and the completion of the course mark a significant step in my life, one that was only possible thanks to the nature and approach of the CS50 course. Every topic was presented in a critical, analytic way, encouraging students to develop a logical and autonomous mindset. The instructors were so friendly, making the hours spent watching lessons and completing assignments enjoyable.
+The realization of this app as the completion of the CS50 course final project marks a significant step in my life, one that was only possible thanks to the nature and approach of the CS50 course.
 
 A special thank you goes to the person who believed in me the most and who supports me through every challenge, giving me the strength to keep going even when I feel at my lowest. My girlfriend and life supporter: Thank you, Mara, without you, none of this would be real.
