@@ -13,7 +13,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.android.mycargenie"
+        applicationId = "com.app.mycargenie"
         minSdk = 28
         targetSdk = 35
         versionCode = 1

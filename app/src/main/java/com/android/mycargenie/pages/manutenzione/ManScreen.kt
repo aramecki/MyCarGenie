@@ -1,5 +1,8 @@
 package com.android.mycargenie.pages.manutenzione
 
+import android.app.Activity
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -41,6 +44,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -61,13 +65,33 @@ fun ManutenzioneScreen(
     viewModel: ManViewModel
 ) {
 
+    var backPressedOnce by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    if (backPressedOnce) {
+        LaunchedEffect(Unit) {
+            kotlinx.coroutines.delay(4000)
+            backPressedOnce = false
+        }
+    }
+
+    BackHandler {
+        if (backPressedOnce) {
+            (context as? Activity)?.finish()
+        } else {
+            backPressedOnce = true
+            Toast.makeText(context, "Premi di nuovo per uscire", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
     val lazyListState = rememberLazyListState()
     var isLoading by remember { mutableStateOf(false) }
 
     val titleOpacity by remember {
         derivedStateOf {
             val offset = lazyListState.firstVisibleItemScrollOffset
-            (1f - (offset / 30f).coerceIn(0f, 1f)) // Riduce l'opacità più rapidamente
+            (1f - (offset / 30f).coerceIn(0f, 1f))
         }
     }
 

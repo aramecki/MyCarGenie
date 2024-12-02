@@ -128,7 +128,7 @@ fun AddRifScreen(
 
                         )
                     )
-                    navController.popBackStack()
+                    navController.navigate("RifornimentoScreen")
                 } else {
                     showError = true
                 }
@@ -525,7 +525,7 @@ fun AddRifScreen(
                                             kmt = state.kmt.value,
                                         )
                                     )
-                                    navController.popBackStack()
+                                    navController.navigate("RifornimentoScreen")
                                 } else {
                                     showError = true
                                 }

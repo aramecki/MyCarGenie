@@ -140,7 +140,7 @@ fun EditManScreen(
                             price = state.price.value,
                             )
                     )
-                    navController.popBackStack()
+                    navController.navigate("ManutenzioneScreen")
                 } else {
                     showError = true
                 }
@@ -429,7 +429,7 @@ fun EditManScreen(
                                                 price = state.price.value
                                             )
                                         )
-                                        navController.popBackStack()
+                                        navController.navigate("ManutenzioneScreen")
                                     } else {
                                         showError = true
                                     }

@@ -177,12 +177,24 @@ fun MainApp(
                         onTabSelected = { index ->
                             selectedTabIndex = index
 
+                            val currentScreen = navController.currentBackStackEntry?.destination?.route
+
                             when (index) {
-                                0 -> navController.navigate("HomeScreen")
-                                1 -> navController.navigate("ManutenzioneScreen")
-                                2 -> navController.navigate("RifornimentoScreen")
-                                3 -> navController.navigate("ExpirationsScreen")
-                                4 -> navController.navigate("ProfileScreen")
+                                0 -> if (currentScreen != "HomeScreen") {
+                                    navController.navigate("HomeScreen")
+                                }
+                                1 -> if (currentScreen != "ManutenzioneScreen") {
+                                    navController.navigate("ManutenzioneScreen")
+                                }
+                                2 -> if (currentScreen != "RifornimentoScreen") {
+                                    navController.navigate("RifornimentoScreen")
+                                }
+                                3 -> if (currentScreen != "ExpirationsScreen") {
+                                    navController.navigate("ExpirationsScreen")
+                                }
+                                4 -> if (currentScreen != "ProfileScreen") {
+                                    navController.navigate("ProfileScreen")
+                                }
                             }
                         }
                     )
@@ -196,11 +208,10 @@ fun MainApp(
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
-
             NavHost(navController = navController, startDestination = "HomeScreen") {
 
                 composable("HomeScreen",
-                    enterTransition = { slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    enterTransition = { slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))},
                     exitTransition = { slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
                     popEnterTransition = { slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
                     popExitTransition = { slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) }
@@ -258,9 +269,9 @@ fun MainApp(
 
                 composable("AddManScreen",
                     enterTransition = { slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
-                    exitTransition = { slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    exitTransition = { slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
                     popEnterTransition = { slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) },
-                    popExitTransition = { slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) }
+                    popExitTransition = { slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) }
                 ) {
                     AddManScreen(
                         state = manViewModel.state.collectAsState().value,
@@ -364,9 +375,9 @@ fun MainApp(
                 }
                 composable("AddRifScreen",
                     enterTransition = { slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
-                    exitTransition = { slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    exitTransition = { slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
                     popEnterTransition = { slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) },
-                    popExitTransition = { slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) }
+                    popExitTransition = { slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) }
                 ) {
                     AddRifScreen(
                         state = rifViewModel.state.collectAsState().value,
