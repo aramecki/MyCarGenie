@@ -14,11 +14,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-/*
-The viewmodel code base has been created with the use of AI and then customized and optimized.
-The performance optimization to load elements in RifScreen when required has been made through the use of AI.
-*/
-
 class RifViewModel(
     private val dao: RifDao
 ) : ViewModel() {

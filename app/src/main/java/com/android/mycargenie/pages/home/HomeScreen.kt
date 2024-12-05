@@ -1,5 +1,8 @@
 package com.android.mycargenie.pages.home
 
+import android.app.Activity
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -41,6 +44,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -65,6 +69,25 @@ fun HomeScreen(
     carProfile: CarProfile,
     navController: NavController
 ) {
+
+    var backPressedOnce by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    if (backPressedOnce) {
+        LaunchedEffect(Unit) {
+            kotlinx.coroutines.delay(4000)
+            backPressedOnce = false
+        }
+    }
+
+    BackHandler {
+        if (backPressedOnce) {
+            (context as? Activity)?.finish()
+        } else {
+            backPressedOnce = true
+            Toast.makeText(context, "Premi di nuovo per chiudere.", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     val lastManutenzione by homeViewModel.lastManutenzione.collectAsState()
     val lastRifornimento by homeViewModel.lastRifornimento.collectAsState()

@@ -14,11 +14,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-/*
-The viewmodel code bas has been created with the use of AI and then customized and optimized.
-The performance optimization to load elements in ManScreen when required has ben made through the use of AI.
- */
-
 
 class ManViewModel(
     private val dao: ManDao

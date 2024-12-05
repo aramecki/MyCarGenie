@@ -80,7 +80,7 @@ fun ManutenzioneScreen(
             (context as? Activity)?.finish()
         } else {
             backPressedOnce = true
-            Toast.makeText(context, "Premi di nuovo per uscire", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Premi di nuovo per chiudere.", Toast.LENGTH_SHORT).show()
         }
     }
 
