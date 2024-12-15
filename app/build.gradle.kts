@@ -5,7 +5,6 @@ plugins {
     id("kotlin-parcelize")
     id("com.google.devtools.ksp")
     alias(libs.plugins.compose.compiler)
-    id("com.autonomousapps.dependency-analysis")
 }
 
 android {
@@ -16,8 +15,8 @@ android {
         applicationId = "com.app.mycargenie"
         minSdk = 28
         targetSdk = 35
-        versionCode = 4
-        versionName = "1.0.2"
+        versionCode = 5
+        versionName = "1.0.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

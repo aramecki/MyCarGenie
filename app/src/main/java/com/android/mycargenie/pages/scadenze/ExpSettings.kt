@@ -50,6 +50,8 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -113,36 +115,13 @@ fun ExpSettingsScreen(
     var showRevNextDatePicker by remember { mutableStateOf(false) }
     val revNextDatePickerState = rememberDatePickerState()
 
-    // Stato del pulsante abilitato o disabilitato
-    /*
-    val isButtonEnabled = remember {
-        derivedStateOf {
-            val isAnyCheckActive = inscheck || taxcheck || revcheck
-
-            val isInsValid = if (inscheck) {
-                insstart.isNotEmpty() || insend.isNotEmpty() ||
-                        insdues != 0 || insprice != 0.0f || insplace.isNotEmpty()
-            } else {
-                true
-            }
-
-            val isTaxValid = if (taxcheck) {
-                taxdate.isNotEmpty() || taxprice != 0.0f
-            } else {
-                true
-            }
-
-            val isRevValid = if (revcheck) {
-                revlast.isNotEmpty() || revnext.isNotEmpty() || revplace.isNotEmpty()
-            } else {
-                true
-            }
-
-            isAnyCheckActive && isInsValid && isTaxValid && isRevValid
-        }
-    }
-
-     */
+    val field = stringResource(R.string.field)
+    val insurer = stringResource(R.string.insurer)
+    val amount = stringResource(R.string.amount)
+    val total = stringResource(R.string.total_e)
+    val insurance = stringResource(R.string.insurance)
+    val tax = stringResource(R.string.tax)
+    val revPlace = stringResource(R.string.revplace)
 
     Column(
         modifier = Modifier
@@ -264,8 +243,7 @@ fun ExpSettingsScreen(
                                         Instant.now().toEpochMilli()
                                     )
                                 },
-                                fontSize = 17.sp,
-                                modifier = Modifier
+                                fontSize = 17.sp
                             )
                         }
                     }
@@ -334,9 +312,16 @@ fun ExpSettingsScreen(
                             .weight(1f)
                     )
 
+
+
                     OutlinedTextField(
                         modifier = Modifier
-                            .fillMaxWidth(0.5f),
+                            .fillMaxWidth(0.5f)
+                            .semantics {
+                                if (insplace.isEmpty()) {
+                                    contentDescription = "$field $insurer"
+                                }
+                            },
                         shape = CircleShape,
                         value = insplace,
                         onValueChange = { newValue ->
@@ -350,7 +335,7 @@ fun ExpSettingsScreen(
                         keyboardOptions = KeyboardOptions.Default.copy(
                             imeAction = ImeAction.Next,
                             capitalization = KeyboardCapitalization.Sentences
-                        )
+                        ),
                     )
                 }
 
@@ -377,7 +362,12 @@ fun ExpSettingsScreen(
 
                     OutlinedTextField(
                         modifier = Modifier
-                            .fillMaxWidth(0.5f),
+                            .fillMaxWidth(0.5f)
+                            .semantics {
+                                if (insplace.isEmpty()) {
+                                    contentDescription = "$field $amount $total $insurance"
+                                }
+                            },
                         shape = CircleShape,
                         value = insPriceString,
                         onValueChange = { newValue ->
@@ -536,7 +526,12 @@ fun ExpSettingsScreen(
 
                     OutlinedTextField(
                         modifier = Modifier
-                            .fillMaxWidth(0.5f),
+                            .fillMaxWidth(0.5f)
+                            .semantics {
+                                if (taxPriceString.isEmpty()) {
+                                    contentDescription = "$field $amount $total $tax"
+                                }
+                            },
                         shape = CircleShape,
                         value = taxPriceString,
                         onValueChange = { newValue ->
@@ -734,7 +729,12 @@ fun ExpSettingsScreen(
 
                             OutlinedTextField(
                                 modifier = Modifier
-                                    .fillMaxWidth(0.5f),
+                                    .fillMaxWidth(0.5f)
+                                    .semantics {
+                                         if (revplace.isEmpty()) {
+                                            contentDescription = "$field $revPlace"
+                                        }
+                                    },
                                 shape = CircleShape,
                                 value = revplace,
                                 onValueChange = { newValue ->

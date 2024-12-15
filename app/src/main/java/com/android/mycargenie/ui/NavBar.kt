@@ -270,8 +270,8 @@ fun MainApp(
                 composable("AddManScreen",
                     enterTransition = { slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
                     exitTransition = { slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
-                    popEnterTransition = { slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) },
-                    popExitTransition = { slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) }
+                    popEnterTransition = { slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) },
+                    popExitTransition = { slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) }
                 ) {
                     AddManScreen(
                         state = manViewModel.state.collectAsState().value,
@@ -376,8 +376,8 @@ fun MainApp(
                 composable("AddRifScreen",
                     enterTransition = { slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
                     exitTransition = { slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
-                    popEnterTransition = { slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) },
-                    popExitTransition = { slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) }
+                    popEnterTransition = { slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) },
+                    popExitTransition = { slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) }
                 ) {
                     AddRifScreen(
                         state = rifViewModel.state.collectAsState().value,

@@ -34,8 +34,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -52,6 +54,10 @@ fun LibrettoScreen(
     carProfile: CarProfile,
     navController: NavController
 ) {
+
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp
+    println(screenWidth)
 
     var backPressedOnce by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -85,6 +91,8 @@ fun LibrettoScreen(
                     navController.navigate("ProfileSettings")
                 },
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                modifier = Modifier
+                    .padding(bottom = 0.dp)
             ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(id = R.drawable.settings),
@@ -97,19 +105,16 @@ fun LibrettoScreen(
         Column(
             modifier = Modifier
                 .padding(padding)
-                //.imePadding()
                 .verticalScroll(rememberScrollState())
-
         ) {
 
             if (carProfile.brand.isEmpty()) {
-
-                Spacer(modifier = Modifier.height(100.dp))
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(bottom = 100.dp)
                 ) {
                     Text(
                         text = stringResource(R.string.configure_profile_message),
@@ -126,10 +131,7 @@ fun LibrettoScreen(
                         Text(stringResource(R.string.configure))
                     }
                 }
-            }
-
-
-            if (carProfile.brand.isNotEmpty()) {
+            } else {
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -145,7 +147,13 @@ fun LibrettoScreen(
                             contentDescription = null,
                             modifier = Modifier
                                 .clip(CircleShape)
-                                .size(250.dp),
+                                .size(
+                                    when {
+                                        screenWidth <= 360 -> 180.dp
+                                        screenWidth <= 430 -> 220.dp
+                                        else -> 250.dp
+                                    }
+                                ),
                             contentScale = ContentScale.Crop
                         )
                     }
@@ -205,6 +213,21 @@ fun LibrettoScreen(
                             .padding(start = 16.dp, end = 16.dp)
                     ) {
 
+                        val powerHorseFontSize = when {
+                            carProfile.power.toString().length < 6 -> 24.sp
+                            else -> 15.sp
+                        }
+
+                        val powerHorseFontScale = when {
+                            screenWidth <= 360 -> 0.8f
+                            else -> 1f
+                        }
+
+                        val tagPadding = when {
+                            screenWidth <= 360 -> 0.dp
+                            else -> 3.dp
+                        }
+
                         //Cilindrata
                         if (carProfile.displacement != 0) {
 
@@ -214,8 +237,7 @@ fun LibrettoScreen(
                             ) {
                                 Text(
                                     text = stringResource(R.string.displacement),
-                                    fontSize = 14.sp,
-
+                                    fontSize = 14.sp
                                     )
                                 Row(
                                     modifier = Modifier
@@ -223,32 +245,25 @@ fun LibrettoScreen(
                                             border = ButtonDefaults.outlinedButtonBorder(),
                                             shape = RoundedCornerShape(6.dp)
                                         )
-                                        .padding(12.dp)
+                                        .padding(10.dp)
                                         .fillMaxWidth()
                                 ) {
 
                                     Text(
                                         text = "${carProfile.displacement}",
-                                        fontSize = 23.sp,
+                                        fontSize = powerHorseFontSize,
+                                        modifier = Modifier
+                                            .scale(powerHorseFontScale)
                                     )
                                     Text(
                                         text = stringResource(R.string.cc),
-                                        fontSize = 10.sp
+                                        fontSize = 10.sp,
+                                        modifier = Modifier
+                                            .padding(tagPadding, bottom = 2.dp)
                                     )
                                 }
                             }
                             Spacer(modifier = Modifier.width(8.dp))
-                        }
-
-
-                        val powerHorseFontSize = when {
-                            carProfile.power.toString().length < 6 -> 24.sp
-                            else -> 15.sp
-                        }
-
-                        val powerHorseInnerPadding = when {
-                            carProfile.type.length < 6 -> 12.dp
-                            else -> 14.dp
                         }
 
                         //Potenza
@@ -267,16 +282,20 @@ fun LibrettoScreen(
                                             border = ButtonDefaults.outlinedButtonBorder(),
                                             shape = RoundedCornerShape(6.dp)
                                         )
-                                        .padding(powerHorseInnerPadding)
+                                        .padding(10.dp)
                                         .fillMaxWidth()
                                 ) {
                                     Text(
                                         text = "${carProfile.power}",
                                         fontSize = powerHorseFontSize,
+                                        modifier = Modifier
+                                            .scale(powerHorseFontScale)
                                     )
                                     Text(
                                         text = stringResource(R.string.kW),
-                                        fontSize = 10.sp
+                                        fontSize = 10.sp,
+                                        modifier = Modifier
+                                            .padding(tagPadding, bottom = 2.dp)
                                     )
                                 }
                             }
@@ -300,23 +319,33 @@ fun LibrettoScreen(
                                             border = ButtonDefaults.outlinedButtonBorder(),
                                             shape = RoundedCornerShape(6.dp)
                                         )
-                                        .padding(powerHorseInnerPadding)
+                                        .padding(10.dp)
                                         .fillMaxWidth()
                                 ) {
                                     Text(
                                         text = "${carProfile.horsepower}",
-                                        fontSize = powerHorseFontSize
+                                        fontSize = powerHorseFontSize,
+                                        modifier = Modifier
+                                            .scale(powerHorseFontScale)
                                     )
                                     Text(
                                         text = stringResource(R.string.CV),
-                                        fontSize = 10.sp
+                                        fontSize = 10.sp,
+                                        modifier = Modifier
+                                            .padding(tagPadding, bottom = 2.dp)
                                     )
                                 }
                             }
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(35.dp))
+                    Spacer(modifier = Modifier
+                        .height(when {
+                            screenWidth <= 360 -> 20.dp
+                            screenWidth <= 430 -> 30.dp
+                            screenWidth <= 450 -> 35.dp
+                            else -> 40.dp
+                        }))
 
 
                     Row(
@@ -470,7 +499,6 @@ fun LibrettoScreen(
                             }
                         }
                     }
-
                 }
             }
         }

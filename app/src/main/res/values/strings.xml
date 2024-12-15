@@ -114,4 +114,5 @@
     <string name="profile">Libretto</string>
     <string name="next_f">Prossima</string>
     <string name="sort">Ordina</string>
+    <string name="field">Campo</string>
 </resources>
