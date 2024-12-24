@@ -1,4 +1,7 @@
 # MyCarGenie
+
+<a href='https://play.google.com/store/apps/details?id=com.app.mycargenie&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' style="width: 250px; height: auto;"/></a>
+
 MyCarGenie is an Android app coded in Kotlin and designed with Jetpack Compose. The aim of this app is to provide the generic automotive user or enthusiast a portal to track and manage their car through maintenance, refueling and expiration dates.
 My car is always broken; she's 13 years old, so, as an usual old lady would, she's always at the mechanics doctor.
 Every time there is the same question: "When did we change ${partName}?"
