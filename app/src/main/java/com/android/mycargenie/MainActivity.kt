@@ -22,8 +22,9 @@ import com.android.mycargenie.data.ManDatabase
 import com.android.mycargenie.data.RifDao
 import com.android.mycargenie.data.RifDatabase
 import com.android.mycargenie.pages.home.HomeViewModel
-import com.android.mycargenie.pages.libretto.LibrettoViewModel
 import com.android.mycargenie.pages.manutenzione.ManViewModel
+import com.android.mycargenie.pages.profile.BackupPermissionHandler
+import com.android.mycargenie.pages.profile.LibrettoViewModel
 import com.android.mycargenie.pages.rifornimento.RifViewModel
 import com.android.mycargenie.pages.scadenze.CustomNotificationManager
 import com.android.mycargenie.pages.scadenze.ExpirationsViewModel
@@ -36,6 +37,7 @@ import com.android.mycargenie.ui.theme.MyCarGenieTheme
 class MainActivity : ComponentActivity() {
 
     private lateinit var permissionHandler: PermissionHandler
+    private lateinit var backupPermissionHandler: BackupPermissionHandler
 
     private lateinit var notificationManager: CustomNotificationManager
 
@@ -123,6 +125,7 @@ class MainActivity : ComponentActivity() {
             }
 
         permissionHandler = PermissionHandler(this)
+        backupPermissionHandler = BackupPermissionHandler(this)
 
         setContent {
 
@@ -145,7 +148,8 @@ class MainActivity : ComponentActivity() {
                         expirationsViewModel = expViewModel,
                         carProfile = carProfile,
                         expirations = expirations,
-                        permissionHandler = permissionHandler
+                        permissionHandler = permissionHandler,
+                        backupPermissionHandler = backupPermissionHandler
                     )
                 }
             }

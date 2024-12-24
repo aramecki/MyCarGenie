@@ -1,4 +1,4 @@
-package com.android.mycargenie.pages.libretto
+package com.android.mycargenie.pages.profile
 
 import android.content.Context
 import android.net.Uri
@@ -84,8 +84,6 @@ fun LibrettoSettingsScreen(
             Log.d(tag, "L'uri è stato traformato in: $newImagePath")
         }
     )
-
-
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -438,7 +436,6 @@ fun LibrettoSettingsScreen(
                     .fillMaxWidth()
             ) {
 
-
                 Button(onClick = {
 
                     if (brand.isNotBlank() && model.isNotBlank()) {
@@ -480,6 +477,13 @@ fun LibrettoSettingsScreen(
                     Text(stringResource(R.string.save))
                 }
 
+                Button(
+                    onClick = {
+                        navController.navigate("BackupScreen")
+                    }
+                ) {
+                    Text(text = "Backup")
+                }
 
             }
         }

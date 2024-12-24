@@ -1,4 +1,4 @@
-package com.android.mycargenie.pages.libretto
+package com.android.mycargenie.pages.profile
 
 import android.app.Application
 import androidx.lifecycle.ViewModel

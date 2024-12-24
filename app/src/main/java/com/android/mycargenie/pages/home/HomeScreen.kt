@@ -44,6 +44,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -54,8 +55,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.android.mycargenie.R
-import com.android.mycargenie.pages.libretto.CarProfile
 import com.android.mycargenie.pages.manutenzione.ManState
+import com.android.mycargenie.pages.profile.CarProfile
 import com.android.mycargenie.pages.rifornimento.RifState
 import com.android.mycargenie.shared.formatDisplacement
 import com.android.mycargenie.shared.formatKmt
@@ -69,6 +70,9 @@ fun HomeScreen(
     carProfile: CarProfile,
     navController: NavController
 ) {
+
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp
 
     var backPressedOnce by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -285,7 +289,10 @@ fun HomeScreen(
                 ) {
                     Row(
                         modifier = Modifier
-                            .padding(top = 180.dp)
+                            .padding(top = when {
+                                screenWidth <= 360 -> 100.dp
+                                else -> 180.dp
+                            })
                     ) {
                         Text(
                             text = stringResource(R.string.home_message1),

@@ -48,15 +48,17 @@ import androidx.navigation.navArgument
 import com.android.mycargenie.R
 import com.android.mycargenie.pages.home.HomeScreen
 import com.android.mycargenie.pages.home.HomeViewModel
-import com.android.mycargenie.pages.libretto.CarProfile
-import com.android.mycargenie.pages.libretto.LibrettoScreen
-import com.android.mycargenie.pages.libretto.LibrettoSettingsScreen
-import com.android.mycargenie.pages.libretto.LibrettoViewModel
 import com.android.mycargenie.pages.manutenzione.AddManScreen
 import com.android.mycargenie.pages.manutenzione.EditManScreen
 import com.android.mycargenie.pages.manutenzione.ManViewModel
 import com.android.mycargenie.pages.manutenzione.ManutenzioneScreen
 import com.android.mycargenie.pages.manutenzione.ViewManScreen
+import com.android.mycargenie.pages.profile.BackupPermissionHandler
+import com.android.mycargenie.pages.profile.BackupScreen
+import com.android.mycargenie.pages.profile.CarProfile
+import com.android.mycargenie.pages.profile.LibrettoScreen
+import com.android.mycargenie.pages.profile.LibrettoSettingsScreen
+import com.android.mycargenie.pages.profile.LibrettoViewModel
 import com.android.mycargenie.pages.rifornimento.AddRifScreen
 import com.android.mycargenie.pages.rifornimento.EditRifScreen
 import com.android.mycargenie.pages.rifornimento.RifViewModel
@@ -83,7 +85,8 @@ fun MainApp(
     expirationsViewModel: ExpirationsViewModel,
     carProfile: CarProfile,
     expirations: Expirations,
-    permissionHandler: PermissionHandler
+    permissionHandler: PermissionHandler,
+    backupPermissionHandler: BackupPermissionHandler
 ) {
 
     val navController = rememberNavController()
@@ -96,7 +99,7 @@ fun MainApp(
     val currentBackStackEntry = navController.currentBackStackEntryAsState().value
     val currentDestination = currentBackStackEntry?.destination?.route
 
-    val shouldShowBottomBar = currentDestination !in listOf("ViewManScreen/{index}", "AddManScreen", "EditManScreen/{manIndex}", "ViewRifScreen/{index}", "AddRifScreen", "EditRifScreen/{rifIndex}", "ProfileSettings", "ExpirationsSettings")
+    val shouldShowBottomBar = currentDestination !in listOf("ViewManScreen/{index}", "AddManScreen", "EditManScreen/{manIndex}", "ViewRifScreen/{index}", "AddRifScreen", "EditRifScreen/{rifIndex}", "ProfileSettings", "ExpirationsSettings", "BackupScreen")
 
     currentDestination !in listOf("HomeScreen", "ManutenzioneScreen", "ProfileScreen", "ExpirationsScreen")
 
@@ -202,10 +205,12 @@ fun MainApp(
         }
     ) { innerPadding ->
 
+        val bottPad = innerPadding.calculateBottomPadding() * 0.8f
+        val topPad = innerPadding.calculateTopPadding()
 
         Column(
             modifier = Modifier
-                .padding(innerPadding)
+                .padding(top = topPad, bottom = bottPad)
                 .fillMaxSize()
         ) {
             NavHost(navController = navController, startDestination = "HomeScreen") {
@@ -528,6 +533,18 @@ fun MainApp(
                         librettoViewModel = librettoViewModel,
                         navController = navController,
                         context = LocalContext.current
+                    )
+                }
+
+                composable("BackupScreen",
+                    enterTransition = { slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    exitTransition = { slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    popEnterTransition = { slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) },
+                    popExitTransition = { slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) }
+                    ) {
+                    BackupScreen(
+                        navController = navController,
+                        backupPermissionHandler = backupPermissionHandler
                     )
                 }
 

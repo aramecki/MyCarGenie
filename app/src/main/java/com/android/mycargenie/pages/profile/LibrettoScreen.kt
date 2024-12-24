@@ -1,4 +1,4 @@
-package com.android.mycargenie.pages.libretto
+package com.android.mycargenie.pages.profile
 
 import android.app.Activity
 import android.widget.Toast
@@ -57,10 +57,10 @@ fun LibrettoScreen(
 
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
-    println(screenWidth)
 
     var backPressedOnce by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    println(context.getDatabasePath("man.db"))
 
     if (backPressedOnce) {
         LaunchedEffect(Unit) {
@@ -91,9 +91,7 @@ fun LibrettoScreen(
                     navController.navigate("ProfileSettings")
                 },
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                modifier = Modifier
-                    .padding(bottom = 0.dp)
-            ) {
+                ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(id = R.drawable.settings),
                     contentDescription = "${stringResource(R.string.settings)} ${stringResource(R.string.profile)}"
@@ -101,6 +99,11 @@ fun LibrettoScreen(
             }
         }
     ) { padding ->
+
+        val fontScale = when {
+            screenWidth <= 360 -> 0.8f
+            else -> 1f
+        }
 
         Column(
             modifier = Modifier
@@ -169,7 +172,9 @@ fun LibrettoScreen(
                         Text(
                             text = carProfile.brand,
                             fontSize = 37.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .scale(fontScale)
                         )
 
                         val modelFontSize = when {
@@ -183,7 +188,9 @@ fun LibrettoScreen(
                         Text(
                             text = carProfile.model,
                             fontSize = modelFontSize,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier
+                                .scale(fontScale)
                         )
 
                         if (carProfile.conf.isNotEmpty()) {
@@ -197,13 +204,18 @@ fun LibrettoScreen(
                             Text(
                                 text = carProfile.conf,
                                 fontSize = confFontSize,
+                                modifier = Modifier
+                                    .scale(fontScale)
                             )
                         }
 
                     }
 
 
-                    Spacer(modifier = Modifier.height(15.dp))
+                    Spacer(modifier = Modifier.height( when {
+                        screenWidth <= 360 -> 0.dp
+                        else -> 15.dp
+                    }))
 
 
                     Row(
@@ -216,11 +228,6 @@ fun LibrettoScreen(
                         val powerHorseFontSize = when {
                             carProfile.power.toString().length < 6 -> 24.sp
                             else -> 15.sp
-                        }
-
-                        val powerHorseFontScale = when {
-                            screenWidth <= 360 -> 0.8f
-                            else -> 1f
                         }
 
                         val tagPadding = when {
@@ -237,7 +244,9 @@ fun LibrettoScreen(
                             ) {
                                 Text(
                                     text = stringResource(R.string.displacement),
-                                    fontSize = 14.sp
+                                    fontSize = 14.sp,
+                                    modifier = Modifier
+                                        .scale(fontScale)
                                     )
                                 Row(
                                     modifier = Modifier
@@ -253,7 +262,7 @@ fun LibrettoScreen(
                                         text = "${carProfile.displacement}",
                                         fontSize = powerHorseFontSize,
                                         modifier = Modifier
-                                            .scale(powerHorseFontScale)
+                                            .scale(fontScale)
                                     )
                                     Text(
                                         text = stringResource(R.string.cc),
@@ -274,7 +283,9 @@ fun LibrettoScreen(
                             ) {
                                 Text(
                                     text = stringResource(R.string.power),
-                                    fontSize = 14.sp
+                                    fontSize = 14.sp,
+                                    modifier = Modifier
+                                        .scale(fontScale)
                                 )
                                 Row(
                                     modifier = Modifier
@@ -289,7 +300,7 @@ fun LibrettoScreen(
                                         text = "${carProfile.power}",
                                         fontSize = powerHorseFontSize,
                                         modifier = Modifier
-                                            .scale(powerHorseFontScale)
+                                            .scale(fontScale)
                                     )
                                     Text(
                                         text = stringResource(R.string.kW),
@@ -311,7 +322,9 @@ fun LibrettoScreen(
                             ) {
                                 Text(
                                     text = stringResource(R.string.horses),
-                                    fontSize = 14.sp
+                                    fontSize = 14.sp,
+                                    modifier = Modifier
+                                        .scale(fontScale)
                                 )
                                 Row(
                                     modifier = Modifier
@@ -326,7 +339,7 @@ fun LibrettoScreen(
                                         text = "${carProfile.horsepower}",
                                         fontSize = powerHorseFontSize,
                                         modifier = Modifier
-                                            .scale(powerHorseFontScale)
+                                            .scale(fontScale)
                                     )
                                     Text(
                                         text = stringResource(R.string.CV),
@@ -370,7 +383,6 @@ fun LibrettoScreen(
 
                             val typeInnerPadding = when {
                                 carProfile.type.length < 10 -> 12.dp
-                                carProfile.type.length < 13 -> 14.dp
                                 else -> 14.dp
                             }
 
@@ -379,7 +391,9 @@ fun LibrettoScreen(
                                     Column {
                                         Text(
                                             text = stringResource(R.string.type),
-                                            fontSize = 14.sp
+                                            fontSize = 14.sp,
+                                            modifier = Modifier
+                                                .scale(fontScale)
                                         )
                                         Row(
                                             modifier = Modifier
@@ -395,6 +409,7 @@ fun LibrettoScreen(
                                                 fontSize = typeFontSize,
                                                 modifier = Modifier
                                                     .fillMaxWidth()
+                                                    .scale(fontScale)
                                             )
                                         }
                                         Spacer(modifier = Modifier.height(16.dp))
@@ -408,7 +423,9 @@ fun LibrettoScreen(
                                     Column {
                                         Text(
                                             text = stringResource(R.string.fuel),
-                                            fontSize = 14.sp
+                                            fontSize = 14.sp,
+                                            modifier = Modifier
+                                                .scale(fontScale)
                                         )
                                         Row(
                                             modifier = Modifier
@@ -424,6 +441,7 @@ fun LibrettoScreen(
                                                 fontSize = 24.sp,
                                                 modifier = Modifier
                                                     .fillMaxWidth()
+                                                    .scale(fontScale)
                                             )
                                         }
                                     }
@@ -447,7 +465,9 @@ fun LibrettoScreen(
                                     Column {
                                         Text(
                                             text = stringResource(R.string.year),
-                                            fontSize = 14.sp
+                                            fontSize = 14.sp,
+                                            modifier = Modifier
+                                                .scale(fontScale)
                                         )
                                         Row(
                                             modifier = Modifier
@@ -463,6 +483,7 @@ fun LibrettoScreen(
                                                 fontSize = 24.sp,
                                                 modifier = Modifier
                                                     .fillMaxWidth()
+                                                    .scale(fontScale)
                                             )
                                         }
                                         Spacer(modifier = Modifier.height(16.dp))
@@ -476,7 +497,9 @@ fun LibrettoScreen(
                                     Column {
                                         Text(
                                             text = stringResource(R.string.eco),
-                                            fontSize = 14.sp
+                                            fontSize = 14.sp,
+                                            modifier = Modifier
+                                                .scale(fontScale)
                                         )
                                         Row(
                                             modifier = Modifier
@@ -492,6 +515,7 @@ fun LibrettoScreen(
                                                 fontSize = 24.sp,
                                                 modifier = Modifier
                                                     .fillMaxWidth()
+                                                    .scale(fontScale)
                                             )
                                         }
                                     }
