@@ -115,4 +115,10 @@
     <string name="next_f">Prossima</string>
     <string name="sort">Ordina</string>
     <string name="field">Campo</string>
+    <string name="press_again_to_close">Premi di nuovo per chiudere.</string>
+    <string name="backup">Backup</string>
+    <string name="restore">Ripristino</string>
+    <string name="error_in_restoring">Errore nel ripristino</string>
+    <string name="verify_backup_file">Verifica il file di backup, dopodiché riprova.</string>
+    <string name="proceed_restore_alert">ATTENZIONE! Procedendo con il ripristino, tutti i dati esistenti nella categoria selezionata saranno eliminati e sovrascritti con quelli del backup.</string>
 </resources>

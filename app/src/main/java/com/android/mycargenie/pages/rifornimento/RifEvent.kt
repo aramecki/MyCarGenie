@@ -32,4 +32,5 @@ sealed interface RifEvent {
         val kmt: Int,
     ): RifEvent
 
+    data object DeleteAllRif : RifEvent
 }

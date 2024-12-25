@@ -29,4 +29,5 @@ sealed interface ManEvent {
         val price: Double,
     ): ManEvent
 
+    data object DeleteAllMan : ManEvent
 }

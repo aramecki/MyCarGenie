@@ -19,6 +19,9 @@ interface RifDao {
     @Delete
     suspend fun deleteRif(rif: Rif)
 
+    @Query("DELETE FROM rif")
+    suspend fun deleteAllRif()
+
     @Query("SELECT MAX(id) FROM rif")
     fun getLastInsertedId(): Flow<Int?>
 

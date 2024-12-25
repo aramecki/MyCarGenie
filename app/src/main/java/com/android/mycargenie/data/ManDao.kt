@@ -19,6 +19,9 @@ interface ManDao {
     @Delete
     suspend fun deleteMan(man: Man)
 
+    @Query("DELETE FROM man")
+    suspend fun deleteAllMan()
+
     @Query("SELECT MAX(id) FROM man")
     fun getLastInsertedId(): Flow<Int?>
 

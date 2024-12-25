@@ -168,6 +168,12 @@ class ManViewModel(
                 _mans.value = emptyList()
                 loadMoreMen()
             }
+
+            is ManEvent.DeleteAllMan -> {
+                viewModelScope.launch {
+                    dao.deleteAllMan()
+                }
+            }
         }
     }
 }

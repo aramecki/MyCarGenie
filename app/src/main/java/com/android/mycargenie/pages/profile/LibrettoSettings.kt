@@ -476,15 +476,6 @@ fun LibrettoSettingsScreen(
                     ) {
                     Text(stringResource(R.string.save))
                 }
-
-                Button(
-                    onClick = {
-                        navController.navigate("BackupScreen")
-                    }
-                ) {
-                    Text(text = "Backup")
-                }
-
             }
         }
     }

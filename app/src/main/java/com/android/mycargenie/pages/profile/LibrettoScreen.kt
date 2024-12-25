@@ -3,6 +3,11 @@ package com.android.mycargenie.pages.profile
 import android.app.Activity
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +23,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.KeyboardArrowDown
+import androidx.compose.material.icons.outlined.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FloatingActionButton
@@ -60,7 +68,6 @@ fun LibrettoScreen(
 
     var backPressedOnce by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    println(context.getDatabasePath("man.db"))
 
     if (backPressedOnce) {
         LaunchedEffect(Unit) {
@@ -74,7 +81,7 @@ fun LibrettoScreen(
             (context as? Activity)?.finish()
         } else {
             backPressedOnce = true
-            Toast.makeText(context, "Premi di nuovo per chiudere.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.press_again_to_close, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -84,18 +91,58 @@ fun LibrettoScreen(
         localCarProfile = carProfile
     }
 
+    var isExpanded by remember { mutableStateOf(false) }
+
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    navController.navigate("ProfileSettings")
-                },
-                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            Column(
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                AnimatedVisibility(
+                    visible = isExpanded,
+                    enter = fadeIn() + slideInVertically(initialOffsetY = { it }),
+                    exit = fadeOut() + slideOutVertically(targetOffsetY = { it })
                 ) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.settings),
-                    contentDescription = "${stringResource(R.string.settings)} ${stringResource(R.string.profile)}"
-                )
+                    FloatingActionButton(onClick = {
+                        navController.navigate("ProfileSettings")
+                    },
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.settings),
+                            contentDescription = "${stringResource(R.string.settings)} ${stringResource(R.string.profile)}"
+                        )
+                    }
+                }
+
+                AnimatedVisibility(
+                    visible = isExpanded,
+                    enter = fadeIn() + slideInVertically(initialOffsetY = { it }),
+                    exit = fadeOut() + slideOutVertically(targetOffsetY = { it })
+                ) {
+                    FloatingActionButton(onClick = {
+                        navController.navigate("BackupScreen")
+                    },
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.backup),
+                            contentDescription = "${stringResource(R.string.settings)} ${stringResource(R.string.backup)}"
+                        )
+                    }
+                }
+
+                FloatingActionButton(onClick = {
+                    isExpanded = !isExpanded
+                },
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                ) {
+                    Icon(
+                        imageVector =if (isExpanded) Icons.Outlined.KeyboardArrowDown else Icons.Outlined.KeyboardArrowUp,
+                        contentDescription = stringResource(R.string.settings)
+                    )
+                }
             }
         }
     ) { padding ->

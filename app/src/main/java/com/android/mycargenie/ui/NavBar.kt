@@ -502,18 +502,18 @@ fun MainApp(
                     enterTransition = {
                         val previousScreen = navController.previousBackStackEntry?.destination?.route
                         when (previousScreen) {
-                            "ProfileSettings" -> slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            "ProfileSettings", "BackupScreen" -> slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
                             else -> slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
                         }
                                       },
                     exitTransition = {
                         val nextScreen = navController.currentBackStackEntry?.destination?.route
                         when (nextScreen) {
-                            "ProfileSettings" -> slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
+                            "ProfileSettings", "BackupScreen" -> slideOutHorizontally(targetOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
                             else -> slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow))
                         }
                     },
-                    popEnterTransition = { slideInHorizontally(initialOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
+                    popEnterTransition = { slideInHorizontally(initialOffsetX = { -1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) },
                     popExitTransition = { slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessLow)) }
                 ) {
                     LibrettoScreen(
@@ -543,8 +543,9 @@ fun MainApp(
                     popExitTransition = { slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) }
                     ) {
                     BackupScreen(
-                        navController = navController,
-                        backupPermissionHandler = backupPermissionHandler
+                        backupPermissionHandler = backupPermissionHandler,
+                        onManEvent = manViewModel::onEvent,
+                        onRifEvent = rifViewModel::onEvent
                     )
                 }
 

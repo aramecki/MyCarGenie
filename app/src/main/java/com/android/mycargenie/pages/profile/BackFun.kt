@@ -158,9 +158,10 @@ fun exportDatabaseAsSql(context: Context, outputUri: Uri, databaseName: String):
 
 fun restoreDatabaseFromSql(context: Context, uri: Uri, isManDatabase: Boolean, databaseName: String, callback: (Boolean) -> Unit) {
     CoroutineScope(Dispatchers.IO).launch {
-       try {
+        try {
             context.contentResolver.openInputStream(uri)?.use { inputStream ->
                 val sqlStatements = inputStream.bufferedReader().use { it.readText() }
+
                 val database = if (isManDatabase) {
                     Room.databaseBuilder(
                         context,
@@ -177,7 +178,13 @@ fun restoreDatabaseFromSql(context: Context, uri: Uri, isManDatabase: Boolean, d
 
                 database.runInTransaction {
                     val db = database.openHelper.writableDatabase
-                    db.execSQL(sqlStatements)
+                    val statements = sqlStatements.split(";")
+                    for (statement in statements) {
+                        val trimmedStatement = statement.trim()
+                        if (trimmedStatement.isNotEmpty()) {
+                            db.execSQL(trimmedStatement)
+                        }
+                    }
                 }
             }
             Log.d("Restore", "Ripristino $databaseName completato con successo.")

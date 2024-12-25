@@ -171,6 +171,12 @@ class RifViewModel(
                 _rifs.value = emptyList()
                 loadMoreRifs()
             }
+
+            is RifEvent.DeleteAllRif -> {
+                viewModelScope.launch {
+                    dao.deleteAllRif()
+                }
+            }
         }
     }
 }
