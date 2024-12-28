@@ -121,4 +121,13 @@
     <string name="error_in_restoring">Errore nel ripristino</string>
     <string name="verify_backup_file">Verifica il file di backup, dopodiché riprova.</string>
     <string name="proceed_restore_alert">ATTENZIONE! Procedendo con il ripristino, tutti i dati esistenti nella categoria selezionata saranno eliminati e sovrascritti con quelli del backup.</string>
+    <string name="not_valid_file">Il file selezionato non è valido.\nVerifica che il formato sia .sql, dopidché riprova.</string>
+    <string name="reboot_required">Riavvio richiesto</string>
+    <string name="reboot_to_complete">Riavvia l\'app per completare il ripristino.</string>
+    <string name="reboot">Riavvia</string>
+    <string name="restore_more">Voglio ripristinare altro</string>
+    <string name="permission_required">Permesso richiesto</string>
+    <string name="permission_to_save">Questa applicazione ha bisogno della tua autorizzazione per salvare file.</string>
+    <string name="permission_to_read">Questa applicazione ha bisogno della tua autorizzazione per leggere file.</string>
+    <string name="permit">Concedi</string>
 </resources>

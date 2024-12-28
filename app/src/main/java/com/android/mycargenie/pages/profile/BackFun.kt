@@ -16,8 +16,10 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.room.Room
+import com.android.mycargenie.R
 import com.android.mycargenie.data.ManDatabase
 import com.android.mycargenie.data.RifDatabase
 import kotlinx.coroutines.CoroutineScope
@@ -97,24 +99,24 @@ class BackupPermissionHandler(private val activity: ComponentActivity) {
 
     private fun showOldWritePermissionRationale() {
         AlertDialog.Builder(activity)
-            .setTitle("Permesso richiesto")
-            .setMessage("Questa applicazione ha bisogno della tua autorizzazione per salvare file.")
-            .setPositiveButton("Concedi") { _, _ ->
+            .setTitle(R.string.permission_required)
+            .setMessage(R.string.permission_to_save)
+            .setPositiveButton(R.string.permit) { _, _ ->
                 requestBackupPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
-            .setNegativeButton("Annulla") { dialog, _ -> dialog.dismiss() }
+            .setNegativeButton(R.string.cancel_up_low) { dialog, _ -> dialog.dismiss() }
             .create()
             .show()
     }
 
     private fun showOldReadPermissionRationale() {
         AlertDialog.Builder(activity)
-            .setTitle("Permesso richiesto")
-            .setMessage("Questa applicazione ha bisogno della tua autorizzazione per leggere file.")
-            .setPositiveButton("Concedi") { _, _ ->
+            .setTitle(R.string.permission_required)
+            .setMessage(R.string.permission_to_read)
+            .setPositiveButton(R.string.permit) { _, _ ->
                 requestBackupPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
             }
-            .setNegativeButton("Annulla") { dialog, _ -> dialog.dismiss() }
+            .setNegativeButton(R.string.cancel_up_low) { dialog, _ -> dialog.dismiss() }
             .create()
             .show()
     }
@@ -200,16 +202,16 @@ fun restoreDatabaseFromSql(context: Context, uri: Uri, isManDatabase: Boolean, d
 fun RestartAppDialog(onDismiss: () -> Unit, onRestart: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Riavvio richiesto") },
-        text = { Text("Riavvia l'app per completare il ripristino.") },
+        title = { Text(stringResource(R.string.reboot_required)) },
+        text = { Text(stringResource(R.string.reboot_to_complete)) },
         confirmButton = {
             Button(onClick = onRestart) {
-                Text("Riavvia")
+                Text(stringResource(R.string.reboot))
             }
         },
         dismissButton = {
             Button(onClick = onDismiss) {
-                Text("Voglio Ripristinare Altro")
+                Text(stringResource(R.string.restore_more))
             }
         }
     )

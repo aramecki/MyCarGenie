@@ -15,8 +15,8 @@ android {
         applicationId = "com.app.mycargenie"
         minSdk = 28
         targetSdk = 35
-        versionCode = 6
-        versionName = "1.0.3b2"
+        versionCode = 9
+        versionName = "1.0.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

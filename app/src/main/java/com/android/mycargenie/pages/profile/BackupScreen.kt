@@ -1,9 +1,10 @@
 package com.android.mycargenie.pages.profile
 
+import android.content.Intent
+import android.provider.OpenableColumns
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -47,11 +47,12 @@ fun BackupScreen(
     backupPermissionHandler.initialize()
 
     val showDialog = remember { mutableStateOf(false) }
+    val showWrongFileDialog = remember { mutableStateOf(false) }
     val isSuccess = remember { mutableStateOf(false) }
     val restoredMan = remember { mutableStateOf(true) }
     var date: String
     var isManDatabase = true
-    var databaseName = "man.db"
+    var databaseName by remember { mutableStateOf("man.db") }
 
     var isLoading by remember { mutableStateOf(false) }
 
@@ -60,6 +61,11 @@ fun BackupScreen(
         contract = ActivityResultContracts.CreateDocument("application/sql"),
         onResult = { uri ->
             if (uri != null) {
+                context.contentResolver.takePersistableUriPermission(
+                    uri,
+                    Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                )
+                Log.e("Backup", "Esporto $databaseName.")
                 exportDatabaseAsSql(context, uri, databaseName)
                 isLoading = false
             } else {
@@ -69,24 +75,35 @@ fun BackupScreen(
         }
     )
 
+
     val openFileLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.OpenDocument(),
+        contract = ActivityResultContracts.GetContent(),
         onResult = { uri ->
             if (uri != null) {
-                isLoading = true
-                if (databaseName == "man.db") {
-                    onManEvent(ManEvent.DeleteAllMan)
-                } else {
-                    onRifEvent(RifEvent.DeleteAllRif)
+                val fileName = context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+                    val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                    cursor.moveToFirst()
+                    cursor.getString(nameIndex)
                 }
-                restoreDatabaseFromSql(context, uri, isManDatabase, databaseName) { success ->
-                    isSuccess.value = success
-                    isLoading = false
-                    showDialog.value = true
+
+                if (fileName != null && fileName.endsWith(".sql")) {
+                    isLoading = true
+                    if (databaseName == "man.db") {
+                        onManEvent(ManEvent.DeleteAllMan)
+                    } else {
+                        onRifEvent(RifEvent.DeleteAllRif)
+                    }
+                    restoreDatabaseFromSql(context, uri, isManDatabase, databaseName) { success ->
+                        isSuccess.value = success
+                        isLoading = false
+                        showDialog.value = true
+                    }
+                } else {
+                    showWrongFileDialog.value = true
+                    Log.e("Restore", "File selezionato non .sql.")
                 }
             } else {
-                isLoading = false
-                Log.e("Restore", "Nessun file selezionato per il ripristino.")
+                Log.e("Restore", "Nessun file selezionato.")
             }
         }
     )
@@ -126,7 +143,7 @@ fun BackupScreen(
                     isManDatabase = true
                     databaseName = "man.db"
                     restoredMan.value = true
-                    openFileLauncher.launch(arrayOf("application/sql"))
+                    openFileLauncher.launch("*/*")
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -150,7 +167,9 @@ fun BackupScreen(
                 onClick = {
                     date = formatDateToString(Instant.now().toEpochMilli())
                     databaseName = "rif.db"
+                    Log.e("Backup", "Hai scelto di esportare $databaseName.")
                     createFileLauncher.launch("MCG Rif $date.sql")
+                    isLoading = true
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -165,13 +184,25 @@ fun BackupScreen(
                     isManDatabase = false
                     databaseName = "rif.db"
                     restoredMan.value = false
-                    openFileLauncher.launch(arrayOf("application/sql"))
+                    openFileLauncher.launch("*/*")
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 32.dp)
             ) {
                 Text(stringResource(R.string.restore))
+            }
+
+            // Icona caricamento
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
             }
 
             Text(
@@ -189,11 +220,11 @@ fun BackupScreen(
                             if (restoredMan.value) {
                                 isManDatabase = false
                                 databaseName = "rif.db"
-                                openFileLauncher.launch(arrayOf("application/sql"))
+                                openFileLauncher.launch("*/*")
                             } else {
                                 isManDatabase = true
                                 databaseName = "man.db"
-                                openFileLauncher.launch(arrayOf("application/sql"))
+                                openFileLauncher.launch("*/*")
                             }
                             showDialog.value = false
                         },
@@ -216,16 +247,18 @@ fun BackupScreen(
                 }
             }
 
-            // Icona caricamento
-            if (isLoading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.3f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
+            // Dialog file non valido
+            if (showWrongFileDialog.value) {
+                AlertDialog(
+                    onDismissRequest = { showWrongFileDialog.value = false },
+                    title = { Text(stringResource(R.string.error_in_restoring)) },
+                    text = { Text(stringResource(R.string.not_valid_file)) },
+                    confirmButton = {
+                        Button(onClick = { showWrongFileDialog.value = false }) {
+                            Text(stringResource(R.string.ok))
+                        }
+                    }
+                )
             }
         }
     }
