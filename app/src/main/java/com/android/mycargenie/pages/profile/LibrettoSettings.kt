@@ -7,7 +7,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,7 +24,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -47,7 +45,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.android.mycargenie.R
-import com.android.mycargenie.pages.manutenzione.TypeDropdownMenu
+import com.android.mycargenie.shared.Brands
+import com.android.mycargenie.shared.CarEcoList
+import com.android.mycargenie.shared.CarFuels
+import com.android.mycargenie.shared.CarTypes
+import com.android.mycargenie.shared.ConfiguredDropdownMenu
 import com.android.mycargenie.shared.saveImageToMmry
 
 @Composable
@@ -152,24 +154,13 @@ fun LibrettoSettingsScreen(
 
         Row {
 
-            OutlinedTextField(
-                value = brand,
-                onValueChange = { newValue ->
-                    if (newValue.length <= 12) {
-                        brand = newValue
-                    }
-                },
-                textStyle = TextStyle(
-                    fontSize = 19.sp
-                ),
-                label = { Text(text = "${stringResource(id = R.string.brand)}*") },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Next,
-                    capitalization = KeyboardCapitalization.Sentences
-                ),
+            ConfiguredDropdownMenu(
+                label = stringResource(R.string.brand),
+                item = brand,
+                itemList = Brands.getBrandsList(),
+                onItemSelected = { brand = it },
                 modifier = Modifier
-                    .fillMaxWidth(0.4f)
-                    .padding(end = 8.dp)
+                    .fillMaxWidth(0.5f)
             )
 
             OutlinedTextField(
@@ -358,48 +349,24 @@ fun LibrettoSettingsScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            val selectedType = remember { mutableStateOf(type) }
+            ConfiguredDropdownMenu(
+                label = stringResource(R.string.type),
+                item = type,
+                itemList = CarTypes.getCarTypesList(),
+                onItemSelected = { type = it },
+                modifier = Modifier
+                    .fillMaxWidth(0.5f)
+                    .padding(end = 8.dp)
+            )
 
-            LaunchedEffect(selectedType.value) {
-                type = selectedType.value
-            }
-
-            val types = listOf(stringResource(R.string.sedan), stringResource(R.string.coupe),
-                stringResource(R.string.sportscar), stringResource(R.string.suv), stringResource(R.string.stationwagon),
-                stringResource(R.string.minivan), stringResource(R.string.supercar), stringResource(R.string.different))
-
-            Box(modifier = Modifier
-                .fillMaxWidth(0.5f)
-                .padding(top = 8.dp, end = 8.dp)
-            ) {
-                TypeDropdownMenu(
-                    types = types,
-                    selectedType = selectedType
-                )
-
-            }
-
-
-            val selectedFuelType = remember { mutableStateOf(fuel) }
-
-            LaunchedEffect(selectedFuelType.value) {
-                fuel = selectedFuelType.value
-            }
-
-            val fuelTypes = listOf(stringResource(R.string.gasoline), stringResource(R.string.diesel), stringResource(R.string.lpg),
-                stringResource(R.string.cng), stringResource(R.string.electric), stringResource(R.string.different))
-
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp, top = 8.dp)
-            ) {
-                TypeDropdownMenu(
-                    types = fuelTypes,
-                    selectedType = selectedFuelType,
-                    placeholder = stringResource(R.string.fuel)
-                )
-
-            }
+            ConfiguredDropdownMenu(
+                label = stringResource(R.string.fuel),
+                item = fuel,
+                itemList = CarFuels.getCarFuelsList(),
+                onItemSelected = { fuel = it },
+                modifier = Modifier
+                    .padding(start = 8.dp)
+            )
 
         }
 
@@ -409,26 +376,15 @@ fun LibrettoSettingsScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            val selectedEcoType = remember { mutableStateOf(eco) }
-
-            LaunchedEffect(selectedEcoType.value) {
-                eco = selectedEcoType.value
-            }
-
-            val ecoTypes = listOf(stringResource(R.string.e1), stringResource(R.string.e2), stringResource(R.string.e3),
-                stringResource(R.string.e4), stringResource(R.string.e5), stringResource(R.string.e6), stringResource(R.string.different))
-
-            Box(modifier = Modifier
-                .fillMaxWidth(0.5f)
-                .padding(top = 8.dp, end = 8.dp)
-            ) {
-                TypeDropdownMenu(
-                    types = ecoTypes,
-                    selectedType = selectedEcoType,
-                    placeholder = stringResource(R.string.eco)
-                )
-
-            }
+            ConfiguredDropdownMenu(
+                label = stringResource(R.string.eco),
+                item = eco,
+                itemList = CarEcoList.getCarEcoList(),
+                onItemSelected = { eco = it },
+                modifier = Modifier
+                    .fillMaxWidth(0.5f)
+                    .padding(end = 8.dp)
+            )
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
