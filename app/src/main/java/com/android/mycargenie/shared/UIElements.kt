@@ -34,9 +34,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -119,6 +121,12 @@ fun ConfiguredDropdownMenu(
     ) {
     var expanded by remember { mutableStateOf(false) }
 
+    val textSize = when {
+        item.length < 10 -> 18.sp
+        item.length < 13 -> 15.sp
+        else -> 13.sp
+    }
+
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = { expanded = !expanded }
@@ -126,8 +134,10 @@ fun ConfiguredDropdownMenu(
         OutlinedTextField(
             value = item,
             onValueChange = {},
+            textStyle = TextStyle(fontSize = textSize),
             readOnly = true,
             modifier = Modifier
+                .scale(0.5f)
                 .menuAnchor(MenuAnchorType.PrimaryNotEditable)
                 .then(modifier),
             label = { Text(label) },

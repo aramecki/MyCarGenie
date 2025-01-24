@@ -6,6 +6,11 @@ import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -135,27 +140,11 @@ fun LibrettoSettingsScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        if (showError) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Text(
-                    text = stringResource(R.string.compile_req_fields),
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier
-                        .padding(top = 16.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-        }
 
         Row {
 
             ConfiguredDropdownMenu(
-                label = stringResource(R.string.brand),
+                label = stringResource(R.string.brand) + "*",
                 item = brand,
                 itemList = Brands.getBrandsList(),
                 onItemSelected = { brand = it },
@@ -173,7 +162,7 @@ fun LibrettoSettingsScreen(
                 textStyle = TextStyle(
                     fontSize = 18.sp
                 ),
-                label = { Text("${stringResource(R.string.model)}*") },
+                label = { Text(stringResource(R.string.model) + "*") },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Next,
                     capitalization = KeyboardCapitalization.Sentences
@@ -258,7 +247,7 @@ fun LibrettoSettingsScreen(
                 textStyle = TextStyle(
                     fontSize = 20.sp
                 ),
-                label = { Text(text = "${stringResource(R.string.displacement)}(${stringResource(R.string.cc)})") },
+                label = { Text(text = stringResource(R.string.displacement) + "(" + stringResource(R.string.cc) + ")") },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Next
@@ -299,7 +288,7 @@ fun LibrettoSettingsScreen(
                 textStyle = TextStyle(
                     fontSize = 20.sp
                 ),
-                label = { Text("${stringResource(R.string.power)}(${stringResource(R.string.kW)})") },
+                label = { Text(stringResource(R.string.power)+ "(" + stringResource(R.string.kW) + ")") },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Decimal,
                     imeAction = ImeAction.Next
@@ -334,7 +323,7 @@ fun LibrettoSettingsScreen(
                 textStyle = TextStyle(
                     fontSize = 20.sp
                 ),
-                label = { Text("${stringResource(R.string.horses)}(${stringResource(R.string.CV)})") },
+                label = { Text(stringResource(R.string.horses) + "(" + stringResource(R.string.CV) + ")") },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Decimal,
                     imeAction = ImeAction.Done
@@ -428,12 +417,37 @@ fun LibrettoSettingsScreen(
                     }
                 },
                     modifier = Modifier
-                        .fillMaxWidth(0.8f)
+                        .fillMaxWidth()
+                        .padding(start = 8.dp)
                     ) {
                     Text(stringResource(R.string.save))
                 }
             }
         }
+
+
+            AnimatedVisibility(
+                visible = showError,
+                enter = scaleIn() + slideInVertically(initialOffsetY = { it }),
+                exit = scaleOut() + slideOutVertically(targetOffsetY = { it })
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = stringResource(R.string.compile_req_fields),
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier
+                            .padding(top = 14.dp)
+                    )
+                }
+
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
     }
 }
 
