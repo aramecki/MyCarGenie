@@ -3,7 +3,6 @@ package com.android.mycargenie.pages.manutenzione
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,13 +18,10 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.DateRange
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -37,7 +33,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -62,6 +57,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.mycargenie.R
+import com.android.mycargenie.shared.CarProfessionistsList
+import com.android.mycargenie.shared.ConfiguredDropdownMenu
 import com.android.mycargenie.shared.formatDateToString
 import java.time.Instant
 
@@ -189,9 +186,6 @@ fun AddManScreen(
                 )
             }
 
-
-            val types = listOf(stringResource(R.string.mechanic), stringResource(R.string.electrician), stringResource(R.string.coachbuilder), stringResource(R.string.different))
-
             Row(
                 modifier = Modifier
                     .padding(bottom = 16.dp)
@@ -202,16 +196,23 @@ fun AddManScreen(
                             .fillMaxWidth()
                             .padding(start = 8.dp, end = 8.dp)
                     ) {
-                        Column(
+
+                        ConfiguredDropdownMenu(
+                            label = stringResource(R.string.type),
+                            item = state.type.value,
+                            itemList = CarProfessionistsList.getCarProfessionistsList(),
+                            onItemSelected = {state.type.value = it},
                             modifier = Modifier
-                                .weight(1f)
-                                .padding(8.dp)
-                        ) {
+                                .fillMaxWidth(0.5f)
+                                .padding(start = 8.dp, end = 8.dp)
+                        )
+
+                            /*
                             TypeDropdownMenu(
                                 types = types,
                                 selectedType = state.type
                             )
-                        }
+                             */
 
                         Column(
                             modifier = Modifier
@@ -273,7 +274,7 @@ fun AddManScreen(
                             text = state.date.value.ifEmpty { formatDateToString(Instant.now().toEpochMilli()) },
                             fontSize = 17.sp,
                             modifier = Modifier
-                                .padding(start = 8.dp)
+                                .padding(start = 4.dp)
                         )
                     }
                 }
@@ -323,7 +324,7 @@ fun AddManScreen(
                             }
                         },
                         shape = CircleShape,
-                        placeholder = { Text(text = "${stringResource(R.string.description)}*") },
+                        placeholder = { Text(text = stringResource(R.string.description) + "*") },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             capitalization = KeyboardCapitalization.Sentences
                         ),
@@ -333,7 +334,7 @@ fun AddManScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 4.dp, end = 16.dp)
+                            .padding(top = 4.dp, end = 32.dp)
                     ) {
                         Spacer(Modifier.weight(1f))
                         Text(
@@ -433,50 +434,6 @@ fun AddManScreen(
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()
-                )
-            }
-        }
-    }
-}
-
-
-
-@Composable
-fun TypeDropdownMenu(types: List<String>, selectedType: MutableState<String>, placeholder: String = stringResource(R.string.type)) {
-    var isDropDownExpanded by remember { mutableStateOf(false) }
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { isDropDownExpanded = true }
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.secondaryContainer)
-                .padding(16.dp)
-                .fillMaxWidth()
-        ) {
-            Text(text = selectedType.value.ifEmpty { placeholder })
-            Icon(
-                imageVector = Icons.Rounded.ArrowDropDown,
-                contentDescription = null
-            )
-        }
-
-        DropdownMenu(
-            expanded = isDropDownExpanded,
-            onDismissRequest = { isDropDownExpanded = false }
-        ) {
-            types.forEachIndexed { _, type ->
-                DropdownMenuItem(
-                    text = { Text(text = type) },
-                    onClick = {
-                        selectedType.value = type
-                        isDropDownExpanded = false
-                    }
                 )
             }
         }

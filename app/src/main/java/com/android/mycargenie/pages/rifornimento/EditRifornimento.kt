@@ -57,6 +57,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.mycargenie.R
+import com.android.mycargenie.shared.CarFuels
+import com.android.mycargenie.shared.ConfiguredDropdownMenu
 import com.android.mycargenie.shared.formatDateToString
 import com.android.mycargenie.shared.formatPrice
 import java.time.Instant
@@ -72,10 +74,8 @@ fun EditRifScreen(
 
     val rifItem = rifIndex?.takeIf { it in state.rifs.indices }?.let { state.rifs[it] }
 
-
     //Log.d("rifIndex", "rifIndex: $rifIndex")
     //Log.d("rifItem", "rifItem: $rifItem")
-
 
     if (rifItem != null) {
         LaunchedEffect(rifItem) {
@@ -90,7 +90,6 @@ fun EditRifScreen(
             state.kmt.value = rifItem.kmt
         }
     }
-
 
     var showError by remember { mutableStateOf(false) }
     var showDatePicker by remember { mutableStateOf(false) }
@@ -132,7 +131,6 @@ fun EditRifScreen(
                         "SaveRif",
                         "Saving: Price: ${state.price.value}, Type: ${state.type.value} id: ${state.id.value}"
                     )
-
                      */
 
                     onEvent(
@@ -182,9 +180,6 @@ fun EditRifScreen(
                     .fillMaxSize()
                     .verticalScroll(scrollState)
             ) {
-                val types = listOf(stringResource(R.string.gasoline), stringResource(R.string.diesel), stringResource(R.string.lpg), stringResource(R.string.cng),
-                    stringResource(R.string.electric), stringResource(R.string.different))
-
                 Row(
                     modifier = Modifier
                         .padding(bottom = 16.dp)
@@ -195,24 +190,21 @@ fun EditRifScreen(
                                 .fillMaxWidth()
                                 .padding(start = 8.dp, end = 8.dp)
                         ) {
-                            Column(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(8.dp)
-                            ) {
-                                TypeDropdownMenu(
-                                    types = types,
-                                    selectedType = state.type
-                                )
-                            }
 
-                            Column(
+                            ConfiguredDropdownMenu(
+                                label = stringResource(R.string.type),
+                                item = state.type.value,
+                                itemList = CarFuels.getCarFuelsList(),
+                                onItemSelected = {state.type.value = it},
                                 modifier = Modifier
-                                    .weight(1f)
-                                    .padding(8.dp)
-                            ) {
+                                    .fillMaxWidth(0.5f)
+                                    .padding(start = 8.dp, end = 8.dp)
+                            )
+
                                 OutlinedTextField(
-                                    modifier = Modifier.fillMaxWidth(),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(start = 8.dp, top = 8.dp, end = 8.dp),
                                     value = state.place.value,
                                     onValueChange = { newValue ->
                                         if (newValue.length <= 16) {
@@ -234,14 +226,13 @@ fun EditRifScreen(
                                 )
                             }
                         }
-                    }
                 }
 
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .padding(bottom = 16.dp)
+                        .padding(top = 8.dp, bottom = 16.dp)
                 ) {
                     //Prezzo
                     var userPriceInput by remember { mutableStateOf("") }
@@ -276,7 +267,7 @@ fun EditRifScreen(
                                 }
                             },
                             shape = CircleShape,
-                            placeholder = { Text(text = "${stringResource(R.string.amount)}*") },
+                            placeholder = { Text(text = stringResource(R.string.amount) + "*") },
                             leadingIcon = {
                                 Icon(
                                     imageVector = ImageVector.vectorResource(id = R.drawable.euro_symbol),
@@ -322,10 +313,8 @@ fun EditRifScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(start = 8.dp, end = 16.dp),
-                            // Mostra il valore inserito dall'utente
                             value = userUValueInput,
                             onValueChange = { newValue ->
-                                // Regex per validare il formato del valore
                                 val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?\$")
                                 if (newValue.isEmpty()) {
                                     userUValueInput = ""
@@ -421,9 +410,14 @@ fun EditRifScreen(
                             ),
                             placeholder = {
                                 if (totUnit.isEmpty()) {
-                                    if (state.type.value == stringResource(R.string.electric)) Text(text = "${stringResource(R.string.kWh)} ${stringResource(R.string.total)}")
-                                    else if (state.type.value.isEmpty() || state.type.value == stringResource(R.string.different)) Text(text = "${stringResource(R.string.liters)} ${stringResource(R.string.or)} ${stringResource(R.string.kWh)} ${stringResource(R.string.total)}")
-                                    else Text(text = "${stringResource(R.string.liters)} ${stringResource(R.string.total)}")
+                                    Text(
+                                        text = when {
+                                            state.type.value == stringResource(R.string.electric) -> "${stringResource(R.string.kWh)} ${stringResource(R.string.total)}"
+                                            state.type.value.isEmpty() || state.type.value == stringResource(R.string.different) -> "${stringResource(R.string.liters)} ${stringResource(R.string.or)} ${stringResource(R.string.kWh)} ${stringResource(R.string.total)}"
+                                            else -> "${stringResource(R.string.liters)} ${stringResource(R.string.total)}"
+                                        },
+                                        style = TextStyle(fontSize = 16.sp)
+                                    )
                                 }
                             },
                             leadingIcon = totUnitLeadingIcon,
@@ -465,7 +459,7 @@ fun EditRifScreen(
                                 },
                                 fontSize = 17.sp,
                                 modifier = Modifier
-                                    .padding(start = 8.dp)
+                                    .padding(start = 4.dp)
                             )
                         }
                     }
@@ -500,7 +494,7 @@ fun EditRifScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 4.dp, end = 16.dp)
+                                .padding(top = 4.dp, end = 32.dp)
                         ) {
                             Spacer(Modifier.weight(1f))
                             Text(

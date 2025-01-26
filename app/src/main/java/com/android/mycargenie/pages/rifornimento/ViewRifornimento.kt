@@ -176,25 +176,18 @@ fun ViewRifScreen(
 
                 }
 
-
-
                 Spacer(modifier = Modifier.height(32.dp))
 
                 Row {
                     //Prezzo
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth(0.5f)
-                    ) {
+
                         val price = formatPrice(rifItem.price)
                         Text(
-                            text = "${stringResource(R.string.amount)}: ${stringResource(R.string.value_euro, price)}",
+                            text = "${stringResource(R.string.you_paid)}${stringResource(R.string.value_euro, price)}",
                             style = MaterialTheme.typography.bodyMedium.copy(
-                                fontSize = 18.sp
+                                fontSize = 17.sp
                             )
                         )
-
-                    }
 
                     //Prezzo per unità
                     Column(

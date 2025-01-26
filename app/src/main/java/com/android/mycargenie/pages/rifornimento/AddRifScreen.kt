@@ -3,7 +3,6 @@ package com.android.mycargenie.pages.rifornimento
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,13 +18,10 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.DateRange
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -37,7 +33,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -62,7 +57,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.mycargenie.R
-import com.android.mycargenie.pages.manutenzione.TypeDropdownMenu
+import com.android.mycargenie.shared.CarFuels
+import com.android.mycargenie.shared.ConfiguredDropdownMenu
 import com.android.mycargenie.shared.formatDateToString
 import com.android.mycargenie.shared.formatPrice
 import java.time.Instant
@@ -160,9 +156,6 @@ fun AddRifScreen(
                 .fillMaxSize()
                 .verticalScroll(scrollState)
         ) {
-            val types = listOf(stringResource(R.string.gasoline), stringResource(R.string.diesel), stringResource(R.string.lpg),
-                stringResource(R.string.cng), stringResource(R.string.electric), stringResource(R.string.different))
-
             Row(
                 modifier = Modifier
                     .padding(bottom = 16.dp)
@@ -173,24 +166,21 @@ fun AddRifScreen(
                             .fillMaxWidth()
                             .padding(start = 8.dp, end = 8.dp)
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(start = 8.dp, end = 8.dp)
-                        ) {
-                            TypeDropdownMenu(
-                                types = types,
-                                selectedType = state.type
-                            )
-                        }
 
-                        Column(
+                        ConfiguredDropdownMenu(
+                            label = stringResource(R.string.type),
+                            item = state.type.value,
+                            itemList = CarFuels.getCarFuelsList(),
+                            onItemSelected = {state.type.value = it},
                             modifier = Modifier
-                                .weight(1f)
+                                .fillMaxWidth(0.5f)
                                 .padding(start = 8.dp, end = 8.dp)
-                        ) {
+                        )
+
                             OutlinedTextField(
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 8.dp, top = 8.dp, end = 8.dp),
                                 value = state.place.value,
                                 onValueChange = { newValue ->
                                     if (newValue.length <= 16) {
@@ -210,7 +200,6 @@ fun AddRifScreen(
                                     onNext = { focusManager.moveFocus(FocusDirection.Next) }
                                 )
                             )
-                        }
                     }
                 }
             }
@@ -249,7 +238,7 @@ fun AddRifScreen(
                             }
                         },
                         shape = CircleShape,
-                        placeholder = { Text(text = "${stringResource(R.string.amount)}*") },
+                        placeholder = { Text(text = stringResource(R.string.amount) + "*") },
                         leadingIcon = {
                             Icon(
                                 imageVector = ImageVector.vectorResource(id = R.drawable.euro_symbol),
@@ -389,9 +378,14 @@ fun AddRifScreen(
                         ),
                         placeholder = {
                             if (totUnit.value.isEmpty()) {
-                                if (state.type.value == stringResource(R.string.electric)) Text(text = "${stringResource(R.string.kWh)} ${stringResource(R.string.total)}")
-                                else if (state.type.value.isEmpty() || state.type.value == stringResource(R.string.different)) Text(text = "${stringResource(R.string.liters)} ${stringResource(R.string.or)} ${stringResource(R.string.kWh)} ${stringResource(R.string.total)}")
-                                else Text(text = "${stringResource(R.string.liters)} ${stringResource(R.string.total)}")
+                                Text(
+                                    text = when {
+                                        state.type.value == stringResource(R.string.electric) -> "${stringResource(R.string.kWh)} ${stringResource(R.string.total)}"
+                                        state.type.value.isEmpty() || state.type.value == stringResource(R.string.different) -> "${stringResource(R.string.liters)} ${stringResource(R.string.or)} ${stringResource(R.string.kWh)} ${stringResource(R.string.total)}"
+                                        else -> "${stringResource(R.string.liters)} ${stringResource(R.string.total)}"
+                                    },
+                                    style = TextStyle(fontSize = 16.sp)
+                                )
                             }
                         },
                         leadingIcon = totUnitLeadingIcon,
@@ -429,7 +423,7 @@ fun AddRifScreen(
                             text = state.date.value.ifEmpty { formatDateToString(Instant.now().toEpochMilli()) },
                             fontSize = 17.sp,
                             modifier = Modifier
-                                .padding(start = 8.dp)
+                                .padding(start = 4.dp)
                         )
                     }
                 }
@@ -461,7 +455,7 @@ fun AddRifScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 4.dp, end = 16.dp)
+                            .padding(top = 4.dp, end = 32.dp)
                     ) {
                         Spacer(Modifier.weight(1f))
                         Text(
@@ -530,7 +524,6 @@ fun AddRifScreen(
                                     showError = true
                                 }
                             }
-
                         )
                     )
                 }
@@ -549,49 +542,6 @@ fun AddRifScreen(
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()
-                )
-            }
-        }
-    }
-}
-
-
-@Composable
-fun TypeDropdownMenu(types: List<String>, selectedType: MutableState<String>) {
-    var isDropDownExpanded by remember { mutableStateOf(false) }
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { isDropDownExpanded = true }
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.secondaryContainer)
-                .padding(16.dp)
-                .fillMaxWidth()
-        ) {
-            Text(text = selectedType.value.ifEmpty { stringResource(R.string.type) })
-            Icon(
-                imageVector = Icons.Rounded.ArrowDropDown,
-                contentDescription = null
-            )
-        }
-
-        DropdownMenu(
-            expanded = isDropDownExpanded,
-            onDismissRequest = { isDropDownExpanded = false }
-        ) {
-            types.forEachIndexed { _, type ->
-                DropdownMenuItem(
-                    text = { Text(text = type) },
-                    onClick = {
-                        selectedType.value = type
-                        isDropDownExpanded = false
-                    }
                 )
             }
         }

@@ -121,7 +121,7 @@ fun ConfiguredDropdownMenu(
     var expanded by remember { mutableStateOf(false) }
 
     val textSize = when {
-        item.length < 10 -> 18.sp
+        item.length < 10 -> 17.sp
         item.length < 13 -> 15.sp
         else -> 13.sp
     }
@@ -133,6 +133,7 @@ fun ConfiguredDropdownMenu(
         OutlinedTextField(
             value = item,
             onValueChange = {},
+            shape = CircleShape,
             textStyle = TextStyle(fontSize = textSize),
             readOnly = true,
             modifier = Modifier

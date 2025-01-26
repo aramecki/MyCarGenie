@@ -57,6 +57,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.mycargenie.R
+import com.android.mycargenie.shared.CarProfessionistsList
+import com.android.mycargenie.shared.ConfiguredDropdownMenu
 import com.android.mycargenie.shared.formatDateToString
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,11 +72,8 @@ fun EditManScreen(
 
     val manItem = manIndex?.takeIf { it in state.men.indices }?.let { state.men[it] }
 
-
     //Log.d("manIndex", "manIndex: $manIndex")
     //Log.d("manItem", "manItem: $manItem")
-
-
 
     if (manItem != null) {
         LaunchedEffect(manItem) {
@@ -121,7 +120,6 @@ fun EditManScreen(
     }
 
     Scaffold(
-
         floatingActionButton = {
             FloatingActionButton(onClick = {
                 if (state.title.value.isNotBlank() && state.date.value.isNotBlank() && state.description.value.isNotBlank()) {
@@ -195,7 +193,7 @@ fun EditManScreen(
                             fontSize = 17.sp
                         ),
                         shape = CircleShape,
-                        placeholder = {if (state.title.value.isEmpty()) Text(text = "${stringResource(R.string.title)}*") },
+                        placeholder = {if (state.title.value.isEmpty()) Text(text = stringResource(R.string.title) + "*") },
                         keyboardOptions = KeyboardOptions.Default.copy(
                             imeAction = ImeAction.Next,
                             capitalization = KeyboardCapitalization.Sentences
@@ -205,9 +203,6 @@ fun EditManScreen(
                         )
                     )
                 }
-
-
-                val types = listOf(stringResource(R.string.mechanic), stringResource(R.string.electrician), stringResource(R.string.coachbuilder), stringResource(R.string.different))
 
                 Row(
                     modifier = Modifier
@@ -219,16 +214,16 @@ fun EditManScreen(
                                 .fillMaxWidth()
                                 .padding(start = 8.dp, end = 8.dp)
                         ) {
-                            Column(
+
+                            ConfiguredDropdownMenu(
+                                label = stringResource(R.string.type),
+                                item = state.type.value,
+                                itemList = CarProfessionistsList.getCarProfessionistsList(),
+                                onItemSelected = {state.type.value = it},
                                 modifier = Modifier
-                                    .weight(1f)
-                                    .padding(8.dp)
-                            ) {
-                                TypeDropdownMenu(
-                                    types = types,
-                                    selectedType = state.type
-                                )
-                            }
+                                    .fillMaxWidth(0.5f)
+                                    .padding(start = 8.dp, end = 8.dp)
+                            )
 
                             Column(
                                 modifier = Modifier
@@ -287,10 +282,10 @@ fun EditManScreen(
                                 contentDescription = null
                             )
                             Text(
-                                text = state.date.value.ifEmpty { "${stringResource(R.string.date)}*" },
+                                text = state.date.value.ifEmpty { stringResource(R.string.date) + "*" },
                                 fontSize = 17.sp,
                                 modifier = Modifier
-                                    .padding(start = 8.dp)
+                                    .padding(start = 4.dp)
                             )
                         }
                     }
@@ -326,7 +321,7 @@ fun EditManScreen(
                     }
                 }
 
-                // 3. Descrizione
+                // Descrizione
                 Row {
                     Column {
                         OutlinedTextField(
@@ -340,7 +335,7 @@ fun EditManScreen(
                                 }
                             },
                             shape = CircleShape,
-                            placeholder = {if (state.description.value.isEmpty()) Text(text = "${stringResource(R.string.description)}*") },
+                            placeholder = {if (state.description.value.isEmpty()) Text(text = stringResource(R.string.description) + "*") },
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 capitalization = KeyboardCapitalization.Sentences
                             ),
@@ -349,7 +344,7 @@ fun EditManScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 4.dp, end = 16.dp)
+                                .padding(top = 4.dp, end = 32.dp)
                         ) {
                             Spacer(Modifier.weight(1f))
                             Text(

@@ -107,3 +107,14 @@ object CarEcoList {
         )
     }
 }
+
+object CarProfessionistsList {
+    @Composable
+    fun getCarProfessionistsList(): List<String> {
+        return listOf(
+            stringResource(R.string.mechanic),
+            stringResource(R.string.electrician),
+            stringResource(R.string.coachbuilder),
+            stringResource(R.string.different))
+    }
+}

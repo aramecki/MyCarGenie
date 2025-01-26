@@ -13,7 +13,7 @@
     <string name="value_eur_kWh">%1$s €/kWh</string>
     <string name="value_euro_liter">%1$s €/l</string>
     <string name="value_km">%1$s km</string>
-    <string name="value_euro">%1$s €</string>
+    <string name="value_euro">%1$s€</string>
     <string name="value_kwh">%1$s kWh</string>
     <string name="value_l">%1$s l</string>
     <string name="settings">Impostazioni</string>
@@ -130,4 +130,5 @@
     <string name="permission_to_save">Questa applicazione ha bisogno della tua autorizzazione per salvare file.</string>
     <string name="permission_to_read">Questa applicazione ha bisogno della tua autorizzazione per leggere file.</string>
     <string name="permit">Concedi</string>
+    <string name="you_paid">"Hai pagato: "</string>
 </resources>

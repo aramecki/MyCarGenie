@@ -89,7 +89,7 @@ fun RifornimentoScreen(
     val titleOpacity by remember {
         derivedStateOf {
             val offset = lazyListState.firstVisibleItemScrollOffset
-            (1f - (offset / 30f).coerceIn(0f, 1f)) // Riduce l'opacità più rapidamente
+            (1f - (offset / 30f).coerceIn(0f, 1f))
         }
     }
 
