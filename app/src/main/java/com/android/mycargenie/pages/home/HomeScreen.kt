@@ -9,7 +9,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -341,8 +341,9 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        //.clip(RoundedCornerShape(10.dp))
+                        .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(10.dp))
+                        //.background(MaterialTheme.colorScheme.primaryContainer)
                         .padding(12.dp)
                         .clickable {
                             navController.navigate("ViewManScreen/$index")
@@ -359,7 +360,6 @@ fun HomeScreen(
                     Column(
                         verticalArrangement = Arrangement.SpaceEvenly
                     ) {
-
 
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -385,7 +385,7 @@ fun HomeScreen(
                                     text = manutenzione.title,
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.SemiBold,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                    //color = MaterialTheme.colorScheme.onPrimaryContainer
                                 )
                             }
                             Column(
@@ -397,7 +397,7 @@ fun HomeScreen(
                                     text = manutenzione.date,
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.SemiBold,
-                                    color = MaterialTheme.colorScheme.primary
+                                    //color = MaterialTheme.colorScheme.primary
                                 )
                             }
                         }
@@ -425,7 +425,7 @@ fun HomeScreen(
                                 Text(
                                     text = manutenzione.place,
                                     fontSize = 18.sp,
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                                    //color = MaterialTheme.colorScheme.onSecondaryContainer
                                 )
                             } else {
                                 Spacer(
@@ -455,7 +455,7 @@ fun HomeScreen(
                             Text(
                                 text = stringResource(R.string.value_km, kmt),
                                 fontSize = 18.sp,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                                //color = MaterialTheme.colorScheme.onPrimaryContainer
                             )
 
                             Column(
@@ -468,13 +468,12 @@ fun HomeScreen(
                                 Text(
                                     text = stringResource(R.string.value_euro, price),
                                     fontSize = 18.sp,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    //color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 )
                             }
                         }
                     }
                 }
-
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -488,8 +487,9 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        //.clip(RoundedCornerShape(10.dp))
+                        .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(10.dp))
+                        //.background(MaterialTheme.colorScheme.primaryContainer)
                         .padding(12.dp)
                         .clickable {
                             navController.navigate("ViewRifScreen/$rifIndex")
@@ -529,7 +529,7 @@ fun HomeScreen(
                                     text = rifornimento.date,
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.SemiBold,
-                                    color = MaterialTheme.colorScheme.primary
+                                    //color = MaterialTheme.colorScheme.primary
                                 )
                             }
                             Column(
@@ -544,7 +544,7 @@ fun HomeScreen(
                                 Text(
                                     text = stringResource(R.string.value_euro, price),
                                     fontSize = 18.sp,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    //color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 )
                             }
                         }
@@ -573,7 +573,7 @@ fun HomeScreen(
                                 Text(
                                     text = unitprice,
                                     fontSize = 18.sp,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    //color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 )
                             }
                         }
@@ -599,7 +599,7 @@ fun HomeScreen(
                                 Text(
                                     text = rifornimento.place,
                                     fontSize = 18.sp,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                    //color = MaterialTheme.colorScheme.onPrimaryContainer
                                 )
                             } else {
                                 Spacer(
@@ -626,7 +626,7 @@ fun HomeScreen(
                                 Text(
                                     text = showunit,
                                     fontSize = 18.sp,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    //color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 )
                             }
                         }

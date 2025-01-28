@@ -1,8 +1,10 @@
 package com.android.mycargenie.pages.manutenzione
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -40,9 +42,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -68,6 +70,11 @@ fun EditManScreen(
     navController: NavController,
     onEvent: (ManEvent) -> Unit
 ) {
+
+    val focusManager = LocalFocusManager.current
+
+    val scrollState = rememberScrollState()
+
     val manIndex = navController.currentBackStackEntry?.arguments?.getInt("manIndex")
 
     val manItem = manIndex?.takeIf { it in state.men.indices }?.let { state.men[it] }
@@ -101,7 +108,8 @@ fun EditManScreen(
                 TextButton(onClick = {
                     val selectedDateMillis = datePickerState.selectedDateMillis
                     if (selectedDateMillis != null) {
-                        state.date.value = formatDateToString(selectedDateMillis
+                        state.date.value = formatDateToString(
+                            selectedDateMillis
                         )
                     }
                     showDatePicker = false
@@ -121,346 +129,385 @@ fun EditManScreen(
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                if (state.title.value.isNotBlank() && state.date.value.isNotBlank() && state.description.value.isNotBlank()) {
+            FloatingActionButton(
+                onClick = {
+                    if (state.title.value.isNotBlank() && state.date.value.isNotBlank() && state.description.value.isNotBlank()) {
 
-                    //Log.d("SaveMan", "Saving: Title: ${state.title.value}, Type: ${state.type.value} id: ${state.id.value}")
+                        //Log.d("SaveMan", "Saving: Title: ${state.title.value}, Type: ${state.type.value} id: ${state.id.value}")
 
-                    onEvent(
-                        ManEvent.UpdateMan(
-                            id = state.id.value,
-                            title = state.title.value,
-                            type = state.type.value,
-                            place = state.place.value,
-                            date = state.date.value,
-                            kmt = state.kmt.value,
-                            description = state.description.value,
-                            price = state.price.value,
+                        onEvent(
+                            ManEvent.UpdateMan(
+                                id = state.id.value,
+                                title = state.title.value,
+                                type = state.type.value,
+                                place = state.place.value,
+                                date = state.date.value,
+                                kmt = state.kmt.value,
+                                description = state.description.value,
+                                price = state.price.value,
                             )
-                    )
-                    navController.navigate("ManutenzioneScreen")
-                } else {
-                    showError = true
-                }
-            },
+                        )
+                        navController.navigate("ManutenzioneScreen")
+                    } else {
+                        showError = true
+                    }
+                },
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                ) {
+            ) {
                 Icon(
                     imageVector = Icons.Rounded.Check,
-                    contentDescription = "${stringResource(R.string.save)} ${stringResource(R.string.changes)} ${stringResource(R.string.maintenance)}"
+                    contentDescription = "${stringResource(R.string.save)} ${stringResource(R.string.changes)} ${
+                        stringResource(
+                            R.string.maintenance
+                        )
+                    }"
                 )
             }
         }
     ) { paddingValues ->
 
-        val focusManager = LocalFocusManager.current
-
-        val scrollState = rememberScrollState()
-
-        if (manItem != null) {
-            Column(
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start,
-                modifier = Modifier
-                    .padding(
-                        top = 16.dp,
-                        start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
-
-                        end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
-                        bottom = paddingValues.calculateBottomPadding()
-                    )
-                    .fillMaxSize()
-                    .verticalScroll(scrollState)
-            ) {
-
-                //Titolo
-                Row(
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = {
+                        focusManager.clearFocus()
+                    })
+                }
+        ) {
+            if (manItem != null) {
+                Column(
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.Start,
                     modifier = Modifier
-                        .padding(bottom = 16.dp)
-                ) {
-                    OutlinedTextField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 16.dp, end = 16.dp),
-                        value = state.title.value,
-                        onValueChange = { newValue ->
-                            if (newValue.length <= 50) {
-                                state.title.value = newValue
-                            }
-                        },
-                        textStyle = TextStyle(
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 17.sp
-                        ),
-                        shape = CircleShape,
-                        placeholder = {if (state.title.value.isEmpty()) Text(text = stringResource(R.string.title) + "*") },
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            imeAction = ImeAction.Next,
-                            capitalization = KeyboardCapitalization.Sentences
-                        ),
-                        keyboardActions = KeyboardActions(
-                            onNext = { focusManager.moveFocus(FocusDirection.Next) }
+                        .padding(
+                            top = 16.dp,
+                            start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
+
+                            end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+                            bottom = paddingValues.calculateBottomPadding()
                         )
-                    )
-                }
-
-                Row(
-                    modifier = Modifier
-                        .padding(bottom = 16.dp)
+                        .fillMaxSize()
+                        .verticalScroll(scrollState)
                 ) {
-                    Column {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 8.dp, end = 8.dp)
-                        ) {
 
-                            ConfiguredDropdownMenu(
-                                label = stringResource(R.string.type),
-                                item = state.type.value,
-                                itemList = CarProfessionistsList.getCarProfessionistsList(),
-                                onItemSelected = {state.type.value = it},
-                                modifier = Modifier
-                                    .fillMaxWidth(0.5f)
-                                    .padding(start = 8.dp, end = 8.dp)
-                            )
-
-                            Column(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(8.dp)
-                            ) {
-                                OutlinedTextField(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    value = state.place.value,
-                                    onValueChange = { newValue ->
-                                        if (newValue.length <= 16) {
-                                            state.place.value = newValue
-                                        }
-                                    },
-                                    shape = CircleShape,
-                                    textStyle = TextStyle(
-                                        fontSize = 17.sp
-                                    ),
-                                    placeholder = { if (state.place.value.isEmpty()) Text(text = stringResource(R.string.place)) },
-                                    keyboardOptions = KeyboardOptions.Default.copy(
-                                        imeAction = ImeAction.Next,
-                                        capitalization = KeyboardCapitalization.Sentences
-                                    ),
-                                    keyboardActions = KeyboardActions(
-                                        onNext = { focusManager.moveFocus(FocusDirection.Next) }
-                                    )
-                                )
-                            }
-                        }
-                    }
-                }
-
-
-                //Data
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(bottom = 16.dp)
-                ) {
-                    Column(
+                    //Titolo
+                    Row(
                         modifier = Modifier
-                            .fillMaxWidth(0.5f)
-                            .padding(start = 16.dp, end = 8.dp)
-                            .clickable {
-                                showDatePicker = true
-                            }
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.secondaryContainer)
-                            .padding(16.dp)
+                            .padding(bottom = 16.dp)
                     ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.DateRange,
-                                contentDescription = null
-                            )
-                            Text(
-                                text = state.date.value.ifEmpty { stringResource(R.string.date) + "*" },
-                                fontSize = 17.sp,
-                                modifier = Modifier
-                                    .padding(start = 4.dp)
-                            )
-                        }
-                    }
-
-                    //Kilometri
-                    Column {
                         OutlinedTextField(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 8.dp, end = 16.dp),
-                            value = if (state.kmt.value == 0) "" else state.kmt.value.toString(),
+                                .padding(start = 16.dp, end = 16.dp),
+                            value = state.title.value,
                             onValueChange = { newValue ->
-                                if (newValue.isEmpty()) {
-                                    state.kmt.value = 0
-                                } else {
-                                    newValue.toIntOrNull()?.let { intValue ->
-                                        if (intValue in 1..9_999_999) {
-                                            state.kmt.value = intValue
-                                        }
-                                    }
+                                if (newValue.length <= 50) {
+                                    state.title.value = newValue
                                 }
                             },
+                            textStyle = TextStyle(
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 17.sp
+                            ),
                             shape = CircleShape,
-                            placeholder = {if (state.kmt.value == 0) Text(text = stringResource(R.string.kilometers)) },
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number,
-                                imeAction = ImeAction.Next
+                            placeholder = {
+                                if (state.title.value.isEmpty()) Text(
+                                    text = stringResource(
+                                        R.string.title
+                                    ) + "*"
+                                )
+                            },
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                imeAction = ImeAction.Next,
+                                capitalization = KeyboardCapitalization.Sentences
                             ),
                             keyboardActions = KeyboardActions(
                                 onNext = { focusManager.moveFocus(FocusDirection.Next) }
                             )
                         )
                     }
-                }
 
-                // Descrizione
-                Row {
-                    Column {
-                        OutlinedTextField(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 8.dp, start = 16.dp, end = 16.dp),
-                            value = state.description.value,
-                            onValueChange = { newValue ->
-                                if (newValue.length <= 500) {
-                                    state.description.value = newValue
-                                }
-                            },
-                            shape = CircleShape,
-                            placeholder = {if (state.description.value.isEmpty()) Text(text = stringResource(R.string.description) + "*") },
-                            keyboardOptions = KeyboardOptions.Default.copy(
-                                capitalization = KeyboardCapitalization.Sentences
-                            ),
-                        )
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 4.dp, end = 32.dp)
-                        ) {
-                            Spacer(Modifier.weight(1f))
-                            Text(
-                                text = "${state.description.value.length} / 500",
-                                style = TextStyle(
-                                    color = MaterialTheme.colorScheme.primary,
-                                    fontSize = 12.sp
-                                ),
+                    Row(
+                        modifier = Modifier
+                            .padding(bottom = 16.dp)
+                    ) {
+                        Column {
+                            Row(
                                 modifier = Modifier
-                                    .alpha(0.7f)
-                            )
+                                    .fillMaxWidth()
+                                    .padding(start = 8.dp, end = 8.dp)
+                            ) {
+
+                                ConfiguredDropdownMenu(
+                                    label = stringResource(R.string.type),
+                                    item = state.type.value,
+                                    itemList = CarProfessionistsList.getCarProfessionistsList(),
+                                    onItemSelected = { state.type.value = it },
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.5f)
+                                        .padding(start = 8.dp, end = 8.dp)
+                                )
+
+                                Column(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(8.dp)
+                                ) {
+                                    OutlinedTextField(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        value = state.place.value,
+                                        onValueChange = { newValue ->
+                                            if (newValue.length <= 16) {
+                                                state.place.value = newValue
+                                            }
+                                        },
+                                        shape = CircleShape,
+                                        textStyle = TextStyle(
+                                            fontSize = 17.sp
+                                        ),
+                                        placeholder = {
+                                            if (state.place.value.isEmpty()) Text(
+                                                text = stringResource(
+                                                    R.string.place
+                                                )
+                                            )
+                                        },
+                                        keyboardOptions = KeyboardOptions.Default.copy(
+                                            imeAction = ImeAction.Next,
+                                            capitalization = KeyboardCapitalization.Sentences
+                                        ),
+                                        keyboardActions = KeyboardActions(
+                                            onNext = { focusManager.moveFocus(FocusDirection.Next) }
+                                        )
+                                    )
+                                }
+                            }
                         }
                     }
-                }
 
 
-                //Prezzo
-                Row(
-                    modifier = Modifier
-                        .padding(top = 16.dp)
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.End,
+                    //Data
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .padding(bottom = 16.dp)
                     ) {
-                        var userPriceInput by remember { mutableStateOf("") }
-
-                        LaunchedEffect(state.price.value) {
-                            userPriceInput = if (state.price.value == 0.0) "" else state.price.value.toString()
-                        }
-
-                        OutlinedTextField(
+                        Column(
                             modifier = Modifier
                                 .fillMaxWidth(0.5f)
-                                .padding(end = 16.dp),
-                            value = userPriceInput,
-                            onValueChange = { newValue ->
-                                val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?\$")
-                                if (newValue.isEmpty()) {
-                                    userPriceInput = ""
-                                    state.price.value = 0.0
-                                } else if (regex.matches(newValue)) {
-                                    userPriceInput = newValue
-                                    newValue.toDoubleOrNull()?.let { doubleValue ->
-                                        if (doubleValue <= 99999.99) {
-                                            state.price.value = doubleValue
+                                .padding(start = 16.dp, end = 8.dp)
+                                .clickable {
+                                    showDatePicker = true
+                                }
+                                .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
+                                .padding(16.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.DateRange,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
+                                Text(
+                                    text = state.date.value.ifEmpty { stringResource(R.string.date) + "*" },
+                                    fontSize = 17.sp,
+                                    style = TextStyle(color = MaterialTheme.colorScheme.secondary),
+                                    modifier = Modifier
+                                        .padding(start = 4.dp)
+                                )
+                            }
+                        }
+
+                        //Kilometri
+                        Column {
+                            OutlinedTextField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 8.dp, end = 16.dp),
+                                value = if (state.kmt.value == 0) "" else state.kmt.value.toString(),
+                                onValueChange = { newValue ->
+                                    if (newValue.isEmpty()) {
+                                        state.kmt.value = 0
+                                    } else {
+                                        newValue.toIntOrNull()?.let { intValue ->
+                                            if (intValue in 1..9_999_999) {
+                                                state.kmt.value = intValue
+                                            }
                                         }
                                     }
-                                }
-                            },
-                            shape = CircleShape,
-                            placeholder = { Text(text = stringResource(R.string.amount)) },
-                            leadingIcon = {
-                                Icon(
-                                    imageVector = ImageVector.vectorResource(id = R.drawable.euro_symbol),
-                                    contentDescription = stringResource(R.string.value),
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            },
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Decimal,
-                                imeAction = ImeAction.Done
-                            ),
-                            keyboardActions = KeyboardActions(
-                                onDone = {
-                                    if (state.title.value.isNotBlank() && state.date.value.isNotBlank() && state.description.value.isNotBlank()) {
-                                        onEvent(
-                                            ManEvent.UpdateMan(
-                                                id = state.id.value,
-                                                title = state.title.value,
-                                                type = state.type.value,
-                                                place = state.place.value,
-                                                date = state.date.value,
-                                                kmt = state.kmt.value,
-                                                description = state.description.value,
-                                                price = state.price.value
-                                            )
+                                },
+                                shape = CircleShape,
+                                placeholder = {
+                                    if (state.kmt.value == 0) Text(
+                                        text = stringResource(
+                                            R.string.kilometers
                                         )
-                                        navController.navigate("ManutenzioneScreen")
-                                    } else {
-                                        showError = true
-                                    }
-                                }
+                                    )
+                                },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number,
+                                    imeAction = ImeAction.Next
+                                ),
+                                keyboardActions = KeyboardActions(
+                                    onNext = { focusManager.moveFocus(FocusDirection.Next) }
+                                )
                             )
+                        }
+                    }
+
+                    // Descrizione
+                    Row {
+                        Column {
+                            OutlinedTextField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 8.dp, start = 16.dp, end = 16.dp),
+                                value = state.description.value,
+                                onValueChange = { newValue ->
+                                    if (newValue.length <= 500) {
+                                        state.description.value = newValue
+                                    }
+                                },
+                                shape = CircleShape,
+                                placeholder = {
+                                    if (state.description.value.isEmpty()) Text(
+                                        text = stringResource(
+                                            R.string.description
+                                        ) + "*"
+                                    )
+                                },
+                                keyboardOptions = KeyboardOptions.Default.copy(
+                                    capitalization = KeyboardCapitalization.Sentences
+                                ),
+                            )
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 4.dp, end = 32.dp)
+                            ) {
+                                Spacer(Modifier.weight(1f))
+                                Text(
+                                    text = "${state.description.value.length} / 500",
+                                    style = TextStyle(
+                                        color = MaterialTheme.colorScheme.primary,
+                                        fontSize = 12.sp
+                                    ),
+                                    modifier = Modifier
+                                        .alpha(0.7f)
+                                )
+                            }
+                        }
+                    }
+
+
+                    //Prezzo
+                    Row(
+                        modifier = Modifier
+                            .padding(top = 16.dp)
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.End,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            var userPriceInput by remember { mutableStateOf("") }
+
+                            LaunchedEffect(state.price.value) {
+                                userPriceInput =
+                                    if (state.price.value == 0.0) "" else state.price.value.toString()
+                            }
+
+                            OutlinedTextField(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.5f)
+                                    .padding(end = 16.dp),
+                                value = userPriceInput,
+                                onValueChange = { newValue ->
+                                    val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?\$")
+                                    if (newValue.isEmpty()) {
+                                        userPriceInput = ""
+                                        state.price.value = 0.0
+                                    } else if (regex.matches(newValue)) {
+                                        userPriceInput = newValue
+                                        newValue.toDoubleOrNull()?.let { doubleValue ->
+                                            if (doubleValue <= 99999.99) {
+                                                state.price.value = doubleValue
+                                            }
+                                        }
+                                    }
+                                },
+                                shape = CircleShape,
+                                placeholder = { Text(text = stringResource(R.string.amount)) },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = ImageVector.vectorResource(id = R.drawable.euro_symbol),
+                                        contentDescription = stringResource(R.string.value),
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Decimal,
+                                    imeAction = ImeAction.Done
+                                ),
+                                keyboardActions = KeyboardActions(
+                                    onDone = {
+                                        if (state.title.value.isNotBlank() && state.date.value.isNotBlank() && state.description.value.isNotBlank()) {
+                                            onEvent(
+                                                ManEvent.UpdateMan(
+                                                    id = state.id.value,
+                                                    title = state.title.value,
+                                                    type = state.type.value,
+                                                    place = state.place.value,
+                                                    date = state.date.value,
+                                                    kmt = state.kmt.value,
+                                                    description = state.description.value,
+                                                    price = state.price.value
+                                                )
+                                            )
+                                            navController.navigate("ManutenzioneScreen")
+                                        } else {
+                                            showError = true
+                                        }
+                                    }
+                                )
+                            )
+                        }
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(16.dp)
+                    ) {
+                        Text(
+                            text = if (showError) stringResource(R.string.compile_req_fields) else stringResource(
+                                R.string.req_fields
+                            ),
+                            fontSize = if (showError) 16.sp else 14.sp,
+                            color = if (showError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+                            fontWeight = if (showError) FontWeight.SemiBold else null,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
                         )
                     }
                 }
-
-                Row(
+            } else {
+                Column(
                     modifier = Modifier
-                        .weight(1f)
+                        .padding(paddingValues)
                         .padding(16.dp)
                 ) {
                     Text(
-                        text = if (showError) stringResource(R.string.compile_req_fields) else stringResource(R.string.req_fields),
-                        fontSize = if (showError) 16.sp else 14.sp,
-                        color = if (showError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
-                        fontWeight = if (showError) FontWeight.SemiBold else null,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
+                        text = stringResource(R.string.element_not_found_err),
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodyLarge
                     )
                 }
-            }
-        } else {
-            Column(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.element_not_found_err),
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodyLarge
-                )
             }
         }
     }
