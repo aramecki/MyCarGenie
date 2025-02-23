@@ -3,7 +3,7 @@ package com.android.mycargenie.pages.manutenzione
 import android.app.Activity
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -41,7 +41,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -255,8 +254,9 @@ fun ManItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(10.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer)
+            //.clip(RoundedCornerShape(10.dp))
+            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(10.dp))
+            //.background(MaterialTheme.colorScheme.primaryContainer)
             .padding(12.dp)
             .clickable {
                 navController.navigate("ViewManScreen/$index")
@@ -285,7 +285,7 @@ fun ManItem(
                     modifier = Modifier
                         .size(34.dp)
                         .padding(end = 4.dp),
-                    tint = MaterialTheme.colorScheme.onPrimary
+                    tint = MaterialTheme.colorScheme.primary
                 )
 
                 Column {
@@ -308,7 +308,7 @@ fun ManItem(
                     Text(
                         text = state.men[index].date,
                         fontSize = 18.sp,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
             }
@@ -326,7 +326,7 @@ fun ManItem(
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.location),
                         contentDescription = stringResource(R.string.place),
-                        tint = MaterialTheme.colorScheme.onPrimary,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .size(34.dp)
                             .padding(end = 4.dp),
@@ -334,7 +334,7 @@ fun ManItem(
                     Text(
                         text = state.men[index].place,
                         fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                        //color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 } else {
                     Spacer(modifier = Modifier
@@ -355,7 +355,7 @@ fun ManItem(
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.time_to_leave),
                         contentDescription = stringResource(R.string.date),
-                        tint = MaterialTheme.colorScheme.onPrimary,
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .size(34.dp)
                             .padding(end = 4.dp),
@@ -364,7 +364,7 @@ fun ManItem(
                     Text(
                         text = stringResource(R.string.value_km, kmt),
                         fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                        //color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 } else {
                     Spacer(modifier = Modifier
@@ -385,7 +385,7 @@ fun ManItem(
                         Text(
                             text = stringResource(R.string.value_euro, price),
                             fontSize = 18.sp,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            //color = MaterialTheme.colorScheme.onPrimaryContainer,
                         )
                     } else {
                         Spacer(modifier = Modifier

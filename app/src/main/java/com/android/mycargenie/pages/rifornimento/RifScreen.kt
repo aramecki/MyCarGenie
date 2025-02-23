@@ -3,7 +3,7 @@ package com.android.mycargenie.pages.rifornimento
 import android.app.Activity
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -41,7 +41,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -255,8 +254,9 @@ fun RifItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(10.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer)
+            //.clip(RoundedCornerShape(10.dp))
+            //.background(MaterialTheme.colorScheme.primaryContainer)
+            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(10.dp))
             .padding(12.dp)
             .clickable {
                 navController.navigate("ViewRifScreen/$index")
@@ -285,7 +285,7 @@ fun RifItem(
                         modifier = Modifier
                             .size(34.dp)
                             .padding(end = 4.dp),
-                        tint = MaterialTheme.colorScheme.onPrimary
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
 
@@ -296,7 +296,7 @@ fun RifItem(
                         text = state.rifs[index].date,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.primary
+                        //color = MaterialTheme.colorScheme.primary
                     )
                 }
 
@@ -312,7 +312,7 @@ fun RifItem(
                     Text(
                         text = stringResource(R.string.value_euro, price),
                         fontSize = 18.sp,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        //color = MaterialTheme.colorScheme.onPrimaryContainer,
                         )
                 }
             }
@@ -340,7 +340,7 @@ fun RifItem(
                     Text(
                         text = unitprice,
                         fontSize = 18.sp,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        //color = MaterialTheme.colorScheme.onPrimaryContainer,
                     )
                 }
             }
@@ -356,7 +356,7 @@ fun RifItem(
                         Icon(
                             imageVector = ImageVector.vectorResource(id = R.drawable.location),
                             contentDescription = stringResource(R.string.place),
-                            tint = MaterialTheme.colorScheme.onPrimary,
+                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier
                                 .size(34.dp)
                                 .padding(end = 4.dp),
@@ -364,7 +364,7 @@ fun RifItem(
                         Text(
                             text = state.rifs[index].place,
                             fontSize = 18.sp,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            //color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                 } else {
                     Spacer(modifier = Modifier
@@ -389,7 +389,7 @@ fun RifItem(
                     Text(
                         text = showunit,
                         fontSize = 18.sp,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        //color = MaterialTheme.colorScheme.onPrimaryContainer,
                     )
                 }
             }
