@@ -148,35 +148,30 @@ fun ViewRifScreen(
                         }
 
                         //Data
-                        Column {
-                            Text(
-                                text = rifItem.date,
-                                style = MaterialTheme.typography.headlineMedium.copy(
-                                    fontSize = 30.sp
-                                ),
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier
-                                    .padding(start = 8.dp)
-
-                            )
-                        }
-
-                        Column(
+                        Text(
+                            text = rifItem.date,
+                            style = MaterialTheme.typography.headlineMedium.copy(
+                                fontSize = 30.sp
+                            ),
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.primary,
                             modifier = Modifier
-                                .padding(start = 4.dp)
-                        ) {
-                            Text(
-                                text = rifItem.place,
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                        }
+                                .padding(start = 8.dp)
 
+                        )
                     }
-
                 }
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Row {
+                    Text(
+                        text = rifItem.place,
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontSize = 20.sp
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(28.dp))
 
                 Row {
                     //Prezzo
@@ -209,30 +204,30 @@ fun ViewRifScreen(
                             )
                         )
 
-                        //Unità totali
-
-                        val units = formatPrice(rifItem.totunit)
-
-                        val unitsText = when (rifItem.type) {
-                            stringResource(R.string.electric) -> "${stringResource(R.string.kWh)} ${stringResource(R.string.charged)}: $units"
-                            else -> "${stringResource(R.string.l)} ${stringResource(R.string.refueled_s)}: $units"
-                        }
-
-                        Text(
-                            text = unitsText,
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                fontSize = 20.sp
-                            ),
-                            modifier = Modifier
-                                .padding(top = 32.dp)
-                        )
-
                     }
                 }
 
+                //Unità totali
+
+                val units = formatPrice(rifItem.totunit)
+
+                val unitsText = when (rifItem.type) {
+                    stringResource(R.string.electric) -> "${stringResource(R.string.charged)}: $units${stringResource(R.string.kWh)}"
+                    else -> "${stringResource(R.string.refueled_s)}: $units${stringResource(R.string.l)}"
+                }
+
+                Text(
+                    text = unitsText,
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontSize = 17.sp
+                    ),
+                    modifier = Modifier
+                        .padding(top = 26.dp)
+                )
+
                 //Note
                 if (rifItem.note.isNotEmpty()) {
-                    Spacer(modifier = Modifier.height(52.dp))
+                    Spacer(modifier = Modifier.height(40.dp))
 
                     Text(
                         text = "${stringResource(R.string.notes)}: ${rifItem.note}",
@@ -244,7 +239,7 @@ fun ViewRifScreen(
 
 
 
-                Spacer(modifier = Modifier.height(52.dp))
+                Spacer(modifier = Modifier.height(40.dp))
 
 
                 Row {

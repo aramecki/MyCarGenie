@@ -341,9 +341,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp)
-                        //.clip(RoundedCornerShape(10.dp))
                         .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(10.dp))
-                        //.background(MaterialTheme.colorScheme.primaryContainer)
                         .padding(12.dp)
                         .clickable {
                             navController.navigate("ViewManScreen/$index")
@@ -385,7 +383,6 @@ fun HomeScreen(
                                     text = manutenzione.title,
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.SemiBold,
-                                    //color = MaterialTheme.colorScheme.onPrimaryContainer
                                 )
                             }
                             Column(
@@ -397,7 +394,6 @@ fun HomeScreen(
                                     text = manutenzione.date,
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.SemiBold,
-                                    //color = MaterialTheme.colorScheme.primary
                                 )
                             }
                         }
@@ -425,7 +421,6 @@ fun HomeScreen(
                                 Text(
                                     text = manutenzione.place,
                                     fontSize = 18.sp,
-                                    //color = MaterialTheme.colorScheme.onSecondaryContainer
                                 )
                             } else {
                                 Spacer(
@@ -436,26 +431,31 @@ fun HomeScreen(
                         }
 
                         //Kilometri
-
-                        val kmt = formatKmt(manutenzione.kmt)
-
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
                         ) {
+                            val kmt = formatKmt(manutenzione.kmt)
+                            val alphaVal = when (kmt) {
+                                "0" -> 0.0f
+                                else -> 1.0f
+                            }
+
                             Icon(
                                 imageVector = ImageVector.vectorResource(id = R.drawable.time_to_leave),
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier
                                     .size(34.dp)
-                                    .padding(end = 4.dp),
+                                    .padding(end = 4.dp)
+                                    .alpha(alphaVal),
                             )
 
                             Text(
                                 text = stringResource(R.string.value_km, kmt),
                                 fontSize = 18.sp,
-                                //color = MaterialTheme.colorScheme.onPrimaryContainer
+                                modifier = Modifier
+                                    .alpha(alphaVal)
                             )
 
                             Column(
@@ -464,11 +464,16 @@ fun HomeScreen(
                                     .fillMaxWidth()
                             ) {
                                 val price = formatPrice(manState.men[index].price)
+                                val alphaValP = when (price) {
+                                    "0.00" -> 0.0f
+                                    else -> 1.0f
+                                }
 
                                 Text(
                                     text = stringResource(R.string.value_euro, price),
                                     fontSize = 18.sp,
-                                    //color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    modifier = Modifier
+                                        .alpha(alphaValP)
                                 )
                             }
                         }
@@ -478,7 +483,7 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            //RIFORNIMENTO
+            //Rifornimento
             lastRifornimento?.let { rifornimento ->
 
                 val rifIndex = rifState.rifs.indexOf(rifornimento)
@@ -523,13 +528,11 @@ fun HomeScreen(
 
 
                             Column {
-
                                 //Data
                                 Text(
                                     text = rifornimento.date,
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.SemiBold,
-                                    //color = MaterialTheme.colorScheme.primary
                                 )
                             }
                             Column(
@@ -544,7 +547,6 @@ fun HomeScreen(
                                 Text(
                                     text = stringResource(R.string.value_euro, price),
                                     fontSize = 18.sp,
-                                    //color = MaterialTheme.colorScheme.onPrimaryContainer,
                                 )
                             }
                         }
@@ -562,6 +564,10 @@ fun HomeScreen(
                             ) {
                                 val uvalue =
                                     formatPrice(rifornimento.uvalue)
+                                val alphaVal = when (uvalue) {
+                                    "0.00" -> 0.0f
+                                    else -> 1.0f
+                                }
 
                                 val unitprice =
                                     if (rifornimento.type == stringResource(R.string.electric)) {
@@ -573,7 +579,8 @@ fun HomeScreen(
                                 Text(
                                     text = unitprice,
                                     fontSize = 18.sp,
-                                    //color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    modifier = Modifier
+                                        .alpha(alphaVal)
                                 )
                             }
                         }
@@ -599,7 +606,6 @@ fun HomeScreen(
                                 Text(
                                     text = rifornimento.place,
                                     fontSize = 18.sp,
-                                    //color = MaterialTheme.colorScheme.onPrimaryContainer
                                 )
                             } else {
                                 Spacer(
@@ -615,6 +621,10 @@ fun HomeScreen(
                                     .fillMaxWidth()
                             ) {
                                 val totunit = formatPrice(rifornimento.totunit)
+                                val alphaVal = when (totunit) {
+                                    "0.00" -> 0.0f
+                                    else -> 1.0f
+                                }
 
                                 val showunit =
                                     if (rifornimento.type == stringResource(R.string.electric)) {
@@ -626,7 +636,8 @@ fun HomeScreen(
                                 Text(
                                     text = showunit,
                                     fontSize = 18.sp,
-                                    //color = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    modifier = Modifier
+                                        .alpha(alphaVal)
                                 )
                             }
                         }

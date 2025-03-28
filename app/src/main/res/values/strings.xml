@@ -10,12 +10,12 @@
     <string name="coachbuilder">Carrozziere</string>
     <string name="place">Luogo</string>
     <string name="electric">Elettrico</string>
-    <string name="value_eur_kWh">%1$s €/kWh</string>
-    <string name="value_euro_liter">%1$s €/l</string>
+    <string name="value_eur_kWh">%1$s€/kWh</string>
+    <string name="value_euro_liter">%1$s€/l</string>
     <string name="value_km">%1$s km</string>
     <string name="value_euro">%1$s€</string>
-    <string name="value_kwh">%1$s kWh</string>
-    <string name="value_l">%1$s l</string>
+    <string name="value_kwh">%1$skWh</string>
+    <string name="value_l">%1$sl</string>
     <string name="settings">Impostazioni</string>
     <string name="configure_profile_message">Configura le informazioni sul tuo veicolo per visualizzarne il libretto.</string>
     <string name="displacement">Cilindrata</string>
@@ -79,8 +79,8 @@
     <string name="total">Totali</string>
     <string name="liters">Litri</string>
     <string name="notes">Note</string>
-    <string name="charged">ricaricati</string>
-    <string name="refueled_s">riforniti</string>
+    <string name="charged">Ricaricati</string>
+    <string name="refueled_s">Riforniti</string>
     <string name="vehicle">veicolo</string>
     <string name="km_maiusc">Km</string>
     <string name="km_lower">km</string>

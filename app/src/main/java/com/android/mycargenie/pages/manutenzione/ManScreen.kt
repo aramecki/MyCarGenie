@@ -299,18 +299,18 @@ fun ManItem(
                     )
                 }
 
-                //Data
-                Column(
-                    horizontalAlignment = Alignment.End,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Text(
-                        text = state.men[index].date,
-                        fontSize = 18.sp,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
+//                //Data
+//                Column(
+//                    horizontalAlignment = Alignment.End,
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                ) {
+//                    Text(
+//                        text = state.men[index].date,
+//                        fontSize = 18.sp,
+//                        color = MaterialTheme.colorScheme.primary
+//                    )
+//                }
             }
 
 
@@ -341,6 +341,20 @@ fun ManItem(
                         .height(34.dp)
                     )
                 }
+
+                //Data
+                Column(
+                    horizontalAlignment = Alignment.End,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Text(
+                        text = state.men[index].date,
+                        fontSize = 18.sp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+
             }
 
 

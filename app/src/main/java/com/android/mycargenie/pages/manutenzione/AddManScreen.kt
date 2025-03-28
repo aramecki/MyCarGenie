@@ -177,7 +177,7 @@ fun AddManScreen(
                             .padding(start = 16.dp, end = 16.dp),
                         value = state.title.value,
                         onValueChange = { newValue ->
-                            if (newValue.length <= 50) {
+                            if (newValue.length <= 35) {
                                 state.title.value = newValue
                             }
                         },

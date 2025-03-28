@@ -296,7 +296,6 @@ fun RifItem(
                         text = state.rifs[index].date,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.SemiBold,
-                        //color = MaterialTheme.colorScheme.primary
                     )
                 }
 
@@ -312,7 +311,6 @@ fun RifItem(
                     Text(
                         text = stringResource(R.string.value_euro, price),
                         fontSize = 18.sp,
-                        //color = MaterialTheme.colorScheme.onPrimaryContainer,
                         )
                 }
             }
@@ -328,20 +326,25 @@ fun RifItem(
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    val uvalue =
-                        formatPrice(state.rifs[index].uvalue)
-
-                    val unitprice = if (state.rifs[index].type == stringResource(R.string.electric)) {
-                        stringResource(R.string.value_eur_kWh, uvalue)
-                    } else {
-                        stringResource(R.string.value_euro_liter, uvalue)
+                    val uvalue = formatPrice(state.rifs[index].uvalue)
+                    val alphaVal = when (uvalue) {
+                        "0.00" -> 0.0f
+                        else -> 1.0f
                     }
+
+                    val unitprice =
+                        if (state.rifs[index].type == stringResource(R.string.electric)) {
+                            stringResource(R.string.value_eur_kWh, uvalue)
+                        } else {
+                            stringResource(R.string.value_euro_liter, uvalue)
+                        }
 
                     Text(
                         text = unitprice,
-                        fontSize = 18.sp,
-                        //color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        fontSize = 17.sp,
+                        modifier = Modifier.alpha(alphaVal)
                     )
+
                 }
             }
 
@@ -353,19 +356,18 @@ fun RifItem(
                 val place = state.rifs[index].place
 
                 if (place.isNotEmpty()) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(id = R.drawable.location),
-                            contentDescription = stringResource(R.string.place),
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier
-                                .size(34.dp)
-                                .padding(end = 4.dp),
-                        )
-                        Text(
-                            text = state.rifs[index].place,
-                            fontSize = 18.sp,
-                            //color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
+                    Icon(
+                        imageVector = ImageVector.vectorResource(id = R.drawable.location),
+                        contentDescription = stringResource(R.string.place),
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .size(34.dp)
+                            .padding(end = 4.dp),
+                    )
+                    Text(
+                        text = state.rifs[index].place,
+                        fontSize = 16.sp,
+                    )
                 } else {
                     Spacer(modifier = Modifier
                         .height(34.dp)
@@ -379,6 +381,10 @@ fun RifItem(
                         .fillMaxWidth()
                 ) {
                     val totunit = formatPrice(state.rifs[index].totunit)
+                    val alphaVal = when (totunit) {
+                        "0.00" -> 0.0f
+                        else -> 1.0f
+                    }
 
                     val showunit = if (state.rifs[index].type == stringResource(R.string.electric)) {
                         stringResource(R.string.value_kwh, totunit)
@@ -388,8 +394,8 @@ fun RifItem(
 
                     Text(
                         text = showunit,
-                        fontSize = 18.sp,
-                        //color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        fontSize = 15.sp,
+                        modifier = Modifier.alpha(alphaVal)
                     )
                 }
             }
