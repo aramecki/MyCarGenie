@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
@@ -154,7 +155,7 @@ fun ExpSettingsScreen(
                     isChecked = inscheck,
                     onValueChange = { inscheck = it },
                     modifier = Modifier
-                        .padding(10.dp)
+                        .padding(start = 4.dp, top = 8.dp, bottom = 0.dp)
                 )
             }
 
@@ -165,282 +166,348 @@ fun ExpSettingsScreen(
             ) {
                 Column(
                     verticalArrangement = Arrangement.SpaceEvenly,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-
-
-                        Text(
-                            text = "${stringResource(R.string.start)} ${stringResource(R.string.coverage)}",
-                            fontSize = 18.sp,
-                            modifier = Modifier
-                                .weight(1f)
-                        )
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth(0.5f)
-                                .clickable { showInsStartDatePicker = true }
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.secondaryContainer)
-                                .padding(16.dp)
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                            ) {
-
-                                Icon(
-                                    imageVector = Icons.Rounded.DateRange,
-                                    contentDescription = null
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = insstart.ifEmpty {
-                                        formatDateToString(
-                                            Instant.now().toEpochMilli()
-                                        )
-                                    },
-                                    fontSize = 17.sp,
-                                    modifier = Modifier
-                                )
-                            }
-                        }
-
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-
-
-                        Text(
-                            text = "${stringResource(R.string.end)} ${stringResource(R.string.coverage)}",
-                            fontSize = 18.sp,
-                            modifier = Modifier
-                                .weight(1f)
-                        )
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth(0.5f)
-                                .clickable { showInsEndDatePicker = true }
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.secondaryContainer)
-                                .padding(16.dp)
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                            ) {
-
-                                Icon(
-                                    imageVector = Icons.Rounded.DateRange,
-                                    contentDescription = null
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-
-                                Text(
-                                    text = insend.ifEmpty {
-                                        formatDateToString(
-                                            Instant.now().toEpochMilli()
-                                        )
-                                    },
-                                    fontSize = 17.sp
-                                )
-                            }
-                        }
-
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        Text(
-                            text = stringResource(R.string.dues),
-                            fontSize = 18.sp,
-                            modifier = Modifier
-                                .weight(3f)
-                                .wrapContentWidth(Alignment.Start)
-                        )
-
-                        val dues = listOf(0, 2, 3)
-
-                        dues.forEach { due ->
-                            Box(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .clickable {
-                                        insdues = due
-                                    }
-                                    .clip(CircleShape)
-                                    .background(
-                                        if (insdues == due) {
-                                            MaterialTheme.colorScheme.primary
-                                        } else {
-                                            MaterialTheme.colorScheme.secondaryContainer
-                                        }
-                                    )
-                                    .padding(16.dp)
-                            ) {
-                                Text(
-                                    text = due.toString(),
-                                    textAlign = TextAlign.Center,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                )
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-
-                        Text(
-                            text = stringResource(R.string.insurer),
-                            fontSize = 18.sp,
-                            modifier = Modifier
-                                .weight(1f)
-                        )
-
-
-
-                        OutlinedTextField(
-                            modifier = Modifier
-                                .fillMaxWidth(0.5f)
-                                .semantics {
-                                    if (insplace.isEmpty()) {
-                                        contentDescription = "$field $insurer"
-                                    }
-                                },
-                            shape = CircleShape,
-                            value = insplace,
-                            onValueChange = { newValue ->
-                                if (newValue.length <= 23) {
-                                    insplace = newValue
-                                }
-                            },
-                            textStyle = TextStyle(
-                                fontSize = 16.sp
-                            ),
-                            keyboardOptions = KeyboardOptions.Default.copy(
-                                imeAction = ImeAction.Next,
-                                capitalization = KeyboardCapitalization.Sentences
-                            ),
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-
-
-                        Text(
-                            text = "${stringResource(R.string.amount)} ${stringResource(R.string.total_e)}",
-                            fontSize = 18.sp,
-                            modifier = Modifier
-                                .weight(1f)
-                        )
-
-                        var insPriceString by remember {
-                            mutableStateOf(if (insprice == 0.0f) "" else insprice.toString())
-                        }
-
-                        OutlinedTextField(
-                            modifier = Modifier
-                                .fillMaxWidth(0.5f)
-                                .semantics {
-                                    if (insplace.isEmpty()) {
-                                        contentDescription = "$field $amount $total $insurance"
-                                    }
-                                },
-                            shape = CircleShape,
-                            value = insPriceString,
-                            onValueChange = { newValue ->
-                                val formattedValue = newValue.replace(',', '.')
-                                val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?\$")
-                                if (newValue.isEmpty()) {
-                                    insPriceString = ""
-                                    insprice = 0.0f
-                                } else if (regex.matches(newValue)) {
-                                    insPriceString = newValue
-                                    formattedValue.toFloatOrNull()?.let { floatValue ->
-                                        if (floatValue <= 9999.99f) {
-                                            insprice = floatValue
-                                        }
-                                    }
-                                }
-                            },
-                            textStyle = TextStyle(
-                                fontSize = 20.sp
-                            ),
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Decimal,
-                                imeAction = ImeAction.Next
-                            )
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    if (insend.isNotEmpty()) {
+                    // Riga assicuratore e importo totale
+                    Row {
+                        //Colonna assicuratore
                         Column(
-                            horizontalAlignment = Alignment.End,
+                            verticalArrangement = Arrangement.SpaceBetween,
+                            horizontalAlignment = Alignment.Start,
+                            modifier = Modifier
+                                .fillMaxWidth(0.5f)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 20.dp)
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.insurer),
+                                    fontSize = 14.sp
+                                )
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(end = 4.dp)
+                            ) {
+
+                                OutlinedTextField(
+                                    modifier = Modifier
+                                        .semantics {
+                                            if (insplace.isEmpty()) {
+                                                contentDescription = "$field $insurer"
+                                            }
+                                        },
+                                    shape = CircleShape,
+                                    value = insplace,
+                                    onValueChange = { newValue ->
+                                        if (newValue.length <= 23) {
+                                            insplace = newValue
+                                        }
+                                    },
+                                    textStyle = TextStyle(
+                                        fontSize = 16.sp
+                                    ),
+                                    keyboardOptions = KeyboardOptions.Default.copy(
+                                        imeAction = ImeAction.Next,
+                                        capitalization = KeyboardCapitalization.Sentences
+                                    ),
+                                )
+                            }
+                        }
+                        //Colonna importo totale
+                        Column(
+                            verticalArrangement = Arrangement.SpaceBetween,
+                            horizontalAlignment = Alignment.Start,
                             modifier = Modifier
                                 .fillMaxWidth()
                         ) {
                             Row(
-                                verticalAlignment = Alignment.CenterVertically
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 24.dp)
                             ) {
                                 Text(
-                                    stringResource(R.string.reminders),
-                                    modifier = Modifier
-                                        .padding(end = 8.dp)
+                                    text = "${stringResource(R.string.amount)} ${stringResource(R.string.total_e)}",
+                                    fontSize = 14.sp
                                 )
+                            }
 
-                                Switch(
-                                    checked = insnot,
-                                    onCheckedChange = { checked ->
-                                        insnot = checked
-                                        permissionHandler.initialize()
-                                    }
+                            var insPriceString by remember {
+                                mutableStateOf(if (insprice == 0.0f) "" else insprice.toString())
+                            }
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 4.dp)
+                            ) {
+                                OutlinedTextField(
+                                    modifier = Modifier
+                                        .semantics {
+                                            if (insplace.isEmpty()) {
+                                                contentDescription =
+                                                    "$field $amount $total $insurance"
+                                            }
+                                        },
+                                    shape = CircleShape,
+                                    value = insPriceString,
+                                    onValueChange = { newValue ->
+                                        val formattedValue = newValue.replace(',', '.')
+                                        val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?$")
+                                        if (newValue.isEmpty()) {
+                                            insPriceString = ""
+                                            insprice = 0.0f
+                                        } else if (regex.matches(newValue)) {
+                                            insPriceString = newValue
+                                            formattedValue.toFloatOrNull()?.let { floatValue ->
+                                                if (floatValue <= 9999.99f) {
+                                                    insprice = floatValue
+                                                }
+                                            }
+                                        }
+                                    },
+                                    textStyle = TextStyle(
+                                        fontSize = 20.sp
+                                    ),
+                                    keyboardOptions = KeyboardOptions(
+                                        keyboardType = KeyboardType.Decimal,
+                                        imeAction = ImeAction.Next
+                                    )
                                 )
                             }
                         }
                     }
 
+                    //Riga date assicurazione
+                    Row {
+                        // Colonna inizio assicurazione
+                        Column(
+                            verticalArrangement = Arrangement.SpaceBetween,
+                            horizontalAlignment = Alignment.Start,
+                            modifier = Modifier
+                                .fillMaxWidth(0.5f)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 20.dp)
+                            ) {
+                                Text(
+                                    text = "${stringResource(R.string.start)} ${stringResource(R.string.coverage)}",
+                                    fontSize = 14.sp
+                                )
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .padding(end = 4.dp)
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable { showInsStartDatePicker = true }
+                                        .clip(CircleShape)
+                                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                                        .padding(16.dp)
+                                ) {
+
+                                    Icon(
+                                        imageVector = Icons.Rounded.DateRange,
+                                        contentDescription = null
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = insstart.ifEmpty {
+                                            formatDateToString(
+                                                Instant.now().toEpochMilli()
+                                            )
+                                        },
+                                        fontSize = 17.sp,
+                                        modifier = Modifier
+                                    )
+                                }
+                            }
+                        }
+
+                        // Colonna fine assicurazione
+                        Column(
+                            verticalArrangement = Arrangement.SpaceBetween,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 24.dp)
+                            ) {
+                                Text(
+                                    text = "${stringResource(R.string.end)} ${stringResource(R.string.coverage)}",
+                                    fontSize = 14.sp
+                                )
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .padding(start = 4.dp)
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable { showInsEndDatePicker = true }
+                                        .clip(CircleShape)
+                                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                                        .padding(16.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Rounded.DateRange,
+                                        contentDescription = null
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+
+                                    Text(
+                                        text = insend.ifEmpty {
+                                            formatDateToString(
+                                                Instant.now().toEpochMilli()
+                                            )
+                                        },
+                                        fontSize = 17.sp
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Colonna rate
+                        Column(
+                            modifier = Modifier
+                                .padding(end = 4.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.5f)
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.dues),
+                                    fontSize = 14.sp,
+                                    modifier = Modifier
+                                        .wrapContentWidth(Alignment.Start)
+                                        .padding(start = 20.dp)
+                                )
+                            }
+
+                            Row(
+                                horizontalArrangement = Arrangement.SpaceEvenly,
+                                modifier = Modifier
+                                    .fillMaxWidth(0.5f)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.secondaryContainer)
+                                    .padding(8.dp)
+                            ) {
+
+                                val dues = listOf(0, 2, 3)
+
+                                dues.forEach { due ->
+                                    Column(
+                                        modifier = Modifier
+                                            .size(40.dp)
+                                            .clickable {
+                                                insdues = due
+                                            }
+                                            .clip(CircleShape)
+                                            .background(
+                                                if (insdues == due) {
+                                                    MaterialTheme.colorScheme.secondary
+                                                } else {
+                                                    MaterialTheme.colorScheme.onPrimary
+                                                }
+                                            )
+                                            .padding(6.dp)
+                                    ) {
+                                        Text(
+                                            text = due.toString(),
+                                            fontSize = 24.sp,
+                                            fontWeight = FontWeight(450),
+                                            textAlign = TextAlign.Center,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        if (insend.isNotEmpty()) {
+                            Column(
+                                modifier = Modifier
+                                    .padding(start = 4.dp)
+                            ) {
+
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.reminders),
+                                        fontSize = 14.sp,
+                                        modifier = Modifier
+                                            .wrapContentWidth(Alignment.Start)
+                                            .padding(start = 24.dp)
+                                    )
+                                }
+
+                                Row(
+                                    horizontalArrangement = Arrangement.SpaceEvenly,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(CircleShape)
+                                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                                        .padding(4.dp)
+                                ) {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                    ) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Text(
+                                                text = "OFF",
+                                                fontSize = 16.sp,
+                                                color = MaterialTheme.colorScheme.onSurface,
+                                                modifier = Modifier
+                                                    .padding(end = 6.dp)
+                                            )
+                                            Switch(
+                                                checked = insnot,
+                                                onCheckedChange = { checked ->
+                                                    insnot = checked
+                                                    permissionHandler.initialize()
+                                                },
+                                                enabled = insend.isNotEmpty()
+                                            )
+                                            Text(
+                                                text = "ON",
+                                                fontSize = 16.sp,
+                                                color = MaterialTheme.colorScheme.onSurface,
+                                                modifier = Modifier
+                                                    .padding(start = 6.dp)
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                     HorizontalDivider(
                         modifier = Modifier
-                            .padding(top = 4.dp, bottom = 4.dp),
+                            .padding(top = 12.dp, bottom = 4.dp),
                         thickness = 2.dp
                     )
 
@@ -458,7 +525,7 @@ fun ExpSettingsScreen(
                     isChecked = taxcheck,
                     onValueChange = { taxcheck = it },
                     modifier = Modifier
-                        .padding(10.dp)
+                        .padding(start = 4.dp, top = 8.dp, bottom = 0.dp)
                 )
             }
 
@@ -471,143 +538,188 @@ fun ExpSettingsScreen(
                     verticalArrangement = Arrangement.SpaceEvenly,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-
-                        Text(
-                            text = "${stringResource(R.string.next_m)} ${stringResource(R.string.payment)}",
-                            fontSize = 18.sp,
-                            modifier = Modifier
-                                .weight(1f)
-                        )
-
-                        Box(
+                    //Riga tassa prossimo saldo ed importo
+                    Row {
+                        Column(
+                            verticalArrangement = Arrangement.SpaceBetween,
+                            horizontalAlignment = Alignment.Start,
                             modifier = Modifier
                                 .fillMaxWidth(0.5f)
-                                .clickable { showTaxDatePicker = true }
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.secondaryContainer)
-                                .padding(16.dp)
                         ) {
+
                             Row(
-                                verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier
                                     .fillMaxWidth()
+                                    .padding(start = 20.dp)
                             ) {
-
-
-                                Icon(
-                                    imageVector = Icons.Rounded.DateRange,
-                                    contentDescription = null
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-
                                 Text(
-                                    text = taxdate.ifEmpty {
-                                        formatDateToString(
-                                            Instant.now().toEpochMilli()
-                                        )
-                                    },
-                                    fontSize = 17.sp,
+                                    text = "${stringResource(R.string.next_m)} ${stringResource(R.string.payment)}",
+                                    fontSize = 14.sp
+                                )
+                            }
+
+                            Box(
+                                modifier = Modifier
+                                    .padding(end = 4.dp)
+                            ) {
+                                Row(
                                     modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable { showTaxDatePicker = true }
+                                        .clip(CircleShape)
+                                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                                        .padding(16.dp)
+                                ) {
+
+                                    Icon(
+                                        imageVector = Icons.Rounded.DateRange,
+                                        contentDescription = null
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = taxdate.ifEmpty {
+                                            formatDateToString(
+                                                Instant.now().toEpochMilli()
+                                            )
+                                        },
+                                        fontSize = 17.sp,
+                                        modifier = Modifier
+                                    )
+                                }
+                            }
+                        }
+
+                        //Colonna importo tassa
+                        Column(
+                            verticalArrangement = Arrangement.SpaceBetween,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 24.dp)
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.amount),
+                                    fontSize = 14.sp
+                                )
+                            }
+
+                            var taxPriceString by remember {
+                                mutableStateOf(if (taxprice == 0.0f) "" else taxprice.toString())
+                            }
+
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 4.dp)
+                            ) {
+                                OutlinedTextField(
+                                    modifier = Modifier
+                                        .semantics {
+                                            if (taxPriceString.isEmpty()) {
+                                                contentDescription = "$field $amount $total $tax"
+                                            }
+                                        },
+                                    shape = CircleShape,
+                                    value = taxPriceString,
+                                    onValueChange = { newValue ->
+                                        val formattedValue = newValue.replace(',', '.')
+                                        val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?$")
+                                        if (newValue.isEmpty()) {
+                                            taxPriceString = ""
+                                            taxprice = 0.0f
+                                        } else if (regex.matches(newValue)) {
+                                            taxPriceString = newValue
+                                            formattedValue.toFloatOrNull()?.let { floatValue ->
+                                                if (floatValue <= 9999.99f) {
+                                                    taxprice = floatValue
+                                                }
+                                            }
+                                        }
+                                    },
+                                    textStyle = TextStyle(
+                                        fontSize = 20.sp
+                                    ),
+                                    keyboardOptions = KeyboardOptions(
+                                        keyboardType = KeyboardType.Decimal,
+                                        imeAction = ImeAction.Next
+                                    )
                                 )
                             }
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-
-                        Text(
-                            text = stringResource(R.string.amount),
-                            fontSize = 18.sp,
-                            modifier = Modifier
-                                .weight(1f)
-                        )
-
-                        var taxPriceString by remember {
-                            mutableStateOf(if (taxprice == 0.0f) "" else taxprice.toString())
-                        }
-
-                        OutlinedTextField(
-                            modifier = Modifier
-                                .fillMaxWidth(0.5f)
-                                .semantics {
-                                    if (taxPriceString.isEmpty()) {
-                                        contentDescription = "$field $amount $total $tax"
-                                    }
-                                },
-                            shape = CircleShape,
-                            value = taxPriceString,
-                            onValueChange = { newValue ->
-                                val formattedValue = newValue.replace(',', '.')
-                                val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?\$")
-                                if (newValue.isEmpty()) {
-                                    taxPriceString = ""
-                                    taxprice = 0.0f
-                                } else if (regex.matches(newValue)) {
-                                    taxPriceString = newValue
-                                    formattedValue.toFloatOrNull()?.let { floatValue ->
-                                        if (floatValue <= 9999.99f) {
-                                            taxprice = floatValue
-                                        }
-                                    }
-                                }
-                            },
-                            textStyle = TextStyle(
-                                fontSize = 20.sp
-                            ),
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Decimal,
-                                imeAction = ImeAction.Next
-                            )
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
+                    //Tax switch column
                     if (taxdate.isNotEmpty()) {
                         Column(
-                            horizontalAlignment = Alignment.End,
                             modifier = Modifier
-                                .fillMaxWidth()
+                                .padding(end = 4.dp)
                         ) {
                             Row(
-                                verticalAlignment = Alignment.CenterVertically
+                                modifier = Modifier
+                                    .fillMaxWidth()
                             ) {
                                 Text(
-                                    stringResource(R.string.reminders),
+                                    text = stringResource(R.string.reminders),
+                                    fontSize = 14.sp,
                                     modifier = Modifier
-                                        .padding(end = 8.dp)
+                                        .wrapContentWidth(Alignment.Start)
+                                        .padding(start = 24.dp)
                                 )
+                            }
 
-                                Switch(
-                                    checked = taxnot,
-                                    onCheckedChange = { checked ->
-                                        taxnot = checked
-                                        permissionHandler.initialize()
+                            Row(
+                                horizontalArrangement = Arrangement.SpaceEvenly,
+                                modifier = Modifier
+                                    .fillMaxWidth(0.5f)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.secondaryContainer)
+                                    .padding(4.dp)
+                            ) {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                ) {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = "OFF",
+                                            fontSize = 16.sp,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            modifier = Modifier
+                                                .padding(end = 6.dp)
+                                        )
+
+                                        Switch(
+                                            checked = taxnot,
+                                            onCheckedChange = { checked ->
+                                                taxnot = checked
+                                                permissionHandler.initialize()
+                                            }
+                                        )
+                                        Text(
+                                            text = "ON",
+                                            fontSize = 16.sp,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            modifier = Modifier
+                                                .padding(start = 6.dp)
+                                        )
                                     }
-                                )
+                                }
                             }
                         }
                     }
 
                     HorizontalDivider(
                         modifier = Modifier
-                            .padding(top = 4.dp, bottom = 4.dp),
+                            .padding(top = 12.dp, bottom = 4.dp),
                         thickness = 2.dp
                     )
-
                 }
             }
 
@@ -622,7 +734,7 @@ fun ExpSettingsScreen(
                     isChecked = revcheck,
                     onValueChange = { revcheck = it },
                     modifier = Modifier
-                        .padding(10.dp)
+                        .padding(start = 4.dp, top = 8.dp, bottom = 0.dp)
                 )
             }
 
@@ -631,179 +743,235 @@ fun ExpSettingsScreen(
                     enter = fadeIn() + expandVertically(),
                     exit = fadeOut() + shrinkVertically()
                 ) {
-
                     Column(
                         verticalArrangement = Arrangement.SpaceEvenly,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-
-                            Text(
-                                text = "${stringResource(R.string.last)} ${stringResource(R.string.revision_low)}",
-                                fontSize = 18.sp,
-                                modifier = Modifier
-                                    .weight(1f)
-                            )
-
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth(0.5f)
-                                    .clickable { showRevLastDatePicker = true }
-                                    .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.secondaryContainer)
-                                    .padding(16.dp)
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                ) {
-
-
-                                    Icon(
-                                        imageVector = Icons.Rounded.DateRange,
-                                        contentDescription = null
-                                    )
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Text(
-                                        text = revlast.ifEmpty { formatDateToString(Instant.now().toEpochMilli()) },
-                                        fontSize = 17.sp,
-                                        modifier = Modifier
-                                    )
-                                }
-                            }
-
-                        }
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-
-
-                            Text(
-                                text = "${stringResource(R.string.next_f)} ${stringResource(R.string.revision_low)}",
-                                fontSize = 18.sp,
-                                modifier = Modifier
-                                    .weight(1f)
-                            )
-
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth(0.5f)
-                                    .clickable { showRevNextDatePicker = true }
-                                    .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.secondaryContainer)
-                                    .padding(16.dp)
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                ) {
-
-                                    Icon(
-                                        imageVector = Icons.Rounded.DateRange,
-                                        contentDescription = null
-                                    )
-                                    Spacer(modifier = Modifier.width(8.dp))
-
-                                    Text(
-                                        text = revnext.ifEmpty { formatDateToString(Instant.now().toEpochMilli()) },
-                                        fontSize = 17.sp,
-                                        modifier = Modifier
-                                    )
-                                }
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            Text(
-                                text = stringResource(R.string.revplace),
-                                fontSize = 18.sp,
-                                modifier = Modifier
-                                    .weight(1f)
-                            )
-
-                                OutlinedTextField(
-                                    modifier = Modifier
-                                        .fillMaxWidth(0.5f)
-                                        .semantics {
-                                             if (revplace.isEmpty()) {
-                                                contentDescription = "$field $revPlace"
-                                            }
-                                        },
-                                    shape = CircleShape,
-                                    value = revplace,
-                                    onValueChange = { newValue ->
-                                        if (newValue.length <= 20) {
-                                            revplace = newValue
-                                        }
-                                    },
-                                    textStyle = TextStyle(
-                                        fontSize = 15.sp
-                                    ),
-                                    keyboardOptions = KeyboardOptions.Default.copy(
-                                        imeAction = ImeAction.Next,
-                                        capitalization = KeyboardCapitalization.Sentences
-                                    )
-                                )
-                        }
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        if (revnext.isNotEmpty()) {
+                        Row {
+                            //Colonna ultima revisione
                             Column(
-                                horizontalAlignment = Alignment.End,
+                                verticalArrangement = Arrangement.SpaceBetween,
+                                horizontalAlignment = Alignment.Start,
+                                modifier = Modifier
+                                    .fillMaxWidth(0.5f)
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(start = 20.dp)
+                                ) {
+                                    Text(
+                                        text = "${stringResource(R.string.last)} ${stringResource(R.string.revision_low)}",
+                                        fontSize = 14.sp
+                                    )
+                                }
+
+                                Box(
+                                    modifier = Modifier
+                                        .padding(end = 4.dp)
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable { showRevLastDatePicker = true }
+                                            .clip(CircleShape)
+                                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                                            .padding(16.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Rounded.DateRange,
+                                            contentDescription = null
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(
+                                            text = revlast.ifEmpty {
+                                                formatDateToString(
+                                                    Instant.now().toEpochMilli()
+                                                )
+                                            },
+                                            fontSize = 17.sp,
+                                            modifier = Modifier
+                                        )
+                                    }
+                                }
+                            }
+
+
+                            Column(
+                                verticalArrangement = Arrangement.SpaceBetween,
+                                horizontalAlignment = Alignment.CenterHorizontally,
                                 modifier = Modifier
                                     .fillMaxWidth()
                             ) {
                                 Row(
-                                    verticalAlignment = Alignment.CenterVertically
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(start = 24.dp)
                                 ) {
                                     Text(
-                                        stringResource(R.string.reminders),
-                                        modifier = Modifier
-                                            .padding(end = 8.dp)
+                                        text = "${stringResource(R.string.next_f)} ${stringResource(R.string.revision_low)}",
+                                        fontSize = 14.sp
                                     )
+                                }
 
-                                    Switch(
-                                        checked = revnot,
-                                        onCheckedChange = { checked ->
-                                            revnot = checked
-                                            permissionHandler.initialize()
+                                Box(
+                                    modifier = Modifier
+                                        .padding(start = 4.dp)
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable { showRevNextDatePicker = true }
+                                            .clip(CircleShape)
+                                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                                            .padding(16.dp)
+                                    ) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                        ) {
+
+                                            Icon(
+                                                imageVector = Icons.Rounded.DateRange,
+                                                contentDescription = null
+                                            )
+                                            Spacer(modifier = Modifier.width(8.dp))
+                                            Text(
+                                                text = revnext.ifEmpty {
+                                                    formatDateToString(
+                                                        Instant.now().toEpochMilli()
+                                                    )
+                                                },
+                                                fontSize = 17.sp,
+                                                modifier = Modifier
+                                            )
                                         }
-                                    )
+                                    }
                                 }
                             }
                         }
+
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            //Colonna revisore
+                            Column {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.5f)
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.revplace),
+                                        fontSize = 14.sp,
+                                        modifier = Modifier
+                                            .wrapContentWidth(Alignment.Start)
+                                            .padding(start = 20.dp)
+                                    )
+                                }
+
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.5f)
+                                        .padding(end = 4.dp)
+                                ) {
+
+                                    OutlinedTextField(
+                                        modifier = Modifier
+                                            .semantics {
+                                                if (revplace.isEmpty()) {
+                                                    contentDescription = "$field $revPlace"
+                                                }
+                                            },
+                                        shape = CircleShape,
+                                        value = revplace,
+                                        onValueChange = { newValue ->
+                                            if (newValue.length <= 20) {
+                                                revplace = newValue
+                                            }
+                                        },
+                                        textStyle = TextStyle(
+                                            fontSize = 15.sp
+                                        ),
+                                        keyboardOptions = KeyboardOptions.Default.copy(
+                                            imeAction = ImeAction.Next,
+                                            capitalization = KeyboardCapitalization.Sentences
+                                        )
+                                    )
+                                }
+                            }
+
+                            if (revnext.isNotEmpty()) {
+                                Column(
+                                    modifier = Modifier
+                                        .padding(start = 4.dp)
+                                ) {
+
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                    ) {
+                                        Text(
+                                            stringResource(R.string.reminders),
+                                            fontSize = 14.sp,
+                                            modifier = Modifier
+                                                .wrapContentWidth(Alignment.Start)
+                                                .padding(start = 24.dp)
+                                        )
+                                    }
+
+                                    Row(
+                                        horizontalArrangement = Arrangement.SpaceEvenly,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clip(CircleShape)
+                                            .background(MaterialTheme.colorScheme.secondaryContainer)
+                                            .padding(4.dp)
+                                    ) {
+                                        Column(
+                                            horizontalAlignment = Alignment.CenterHorizontally,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                        ) {
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                Text(
+                                                    text = "OFF",
+                                                    fontSize = 16.sp,
+                                                    color = MaterialTheme.colorScheme.onSurface,
+                                                    modifier = Modifier
+                                                        .padding(end = 6.dp)
+                                                )
+                                                Switch(
+                                                    checked = revnot,
+                                                    onCheckedChange = { checked ->
+                                                        revnot = checked
+                                                        permissionHandler.initialize()
+                                                    }
+                                                )
+                                                Text(
+                                                    text = "ON",
+                                                    fontSize = 16.sp,
+                                                    color = MaterialTheme.colorScheme.onSurface,
+                                                    modifier = Modifier
+                                                        .padding(start = 6.dp)
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
                         HorizontalDivider(
                             modifier = Modifier
-                                .padding(top = 4.dp, bottom = 4.dp),
+                                .padding(top = 12.dp, bottom = 4.dp),
                             thickness = 2.dp
                         )
+                    }
+
                 }
-
-
-
-            }
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -813,22 +981,26 @@ fun ExpSettingsScreen(
 
                 Button(onClick = {
 
+                    val finalInsCheck = if (insstart.isBlank() && insend.isBlank()) false else inscheck
+                    val finalTaxCheck = if (taxdate.isBlank()) false else taxcheck
+                    val finalRevCheck = if (revlast.isBlank() && revnext.isBlank()) false else revcheck
+
                     if (inscheck || taxcheck || revcheck) {
 
                         expirationsViewModel.updateExpSettings(
                             Expirations(
-                                inscheck,
+                                finalInsCheck,
                                 insstart,
                                 insend,
                                 insdues,
                                 insprice,
                                 insplace,
                                 insnot,
-                                taxcheck,
+                                finalTaxCheck,
                                 taxdate,
                                 taxprice,
                                 taxnot,
-                                revcheck,
+                                finalRevCheck,
                                 revlast,
                                 revnext,
                                 revplace,
@@ -836,9 +1008,9 @@ fun ExpSettingsScreen(
                             )
                         )
 
-                        handleInsuranceNotifications(insnot, insend, notificationManager)
-                        handleTaxNotifications(taxnot,taxdate, notificationManager)
-                        handleRevisionNotifications(revnot, revnext, notificationManager)
+                        if (finalInsCheck) handleInsuranceNotifications(insnot, insend, notificationManager)
+                        if (finalTaxCheck) handleTaxNotifications(taxnot,taxdate, notificationManager)
+                        if (finalRevCheck) handleRevisionNotifications(revnot, revnext, notificationManager)
 
                         navController.navigate("ExpirationsScreen")
 
@@ -951,7 +1123,10 @@ fun CustomDatePickerDialog(
                 val selectedDateMillis = datePickerState.selectedDateMillis
                 if (selectedDateMillis != null) {
                     onDateSelected(formatDateToString(selectedDateMillis))
+                } else {
+                    onDateSelected(formatDateToString(Instant.now().toEpochMilli()))
                 }
+                Log.d("date", "selectedDateMillis: $selectedDateMillis")
                 onDismissRequest()
             }) {
                 Text(stringResource(R.string.ok))

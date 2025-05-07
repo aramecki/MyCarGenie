@@ -65,7 +65,7 @@ fun formatDateToLong(dateString: String): Long {
         date.time
     } catch (e: Exception) {
         e.printStackTrace()
-        -1 // Fallback in caso di errore di parsing
+        -1
     }
 }
 
