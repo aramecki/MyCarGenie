@@ -97,11 +97,7 @@ fun ExpScreen(
         }
     ) { padding ->
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ) {
+        Column {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

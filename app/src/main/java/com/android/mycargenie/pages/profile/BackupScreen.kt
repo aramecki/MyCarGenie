@@ -5,9 +5,11 @@ import android.provider.OpenableColumns
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,6 +17,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,12 +27,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.android.mycargenie.R
 import com.android.mycargenie.pages.manutenzione.ManEvent
 import com.android.mycargenie.pages.rifornimento.RifEvent
@@ -38,6 +45,7 @@ import java.time.Instant
 
 @Composable
 fun BackupScreen(
+    navController: NavController,
     backupPermissionHandler: BackupPermissionHandler,
     onManEvent: (ManEvent) -> Unit,
     onRifEvent: (RifEvent) -> Unit,
@@ -75,7 +83,6 @@ fun BackupScreen(
         }
     )
 
-
     val openFileLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri ->
@@ -108,14 +115,45 @@ fun BackupScreen(
         }
     )
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Top
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 16.dp, top = 64.dp, end = 16.dp),
-            verticalArrangement = Arrangement.Top
+                .fillMaxWidth()
+                .padding(start = 4.dp, top = 14.dp, bottom = 8.dp)
         ) {
+            Icon(
+                imageVector = ImageVector.vectorResource(R.drawable.back),
+                contentDescription = "Back to profile view screen", //To put in strings xml
+                modifier = Modifier
+                    .padding(start = 10.dp)
+                    .clickable {
+                        navController.navigate("ProfileScreen")
+                    }
+            )
+            Text(
+                text = "Impostazioni Libretto", //To put in strings xml
+                fontSize = 24.sp,
+                modifier = Modifier
+                    .padding(start = 24.dp)
+            )
+        }
 
+        HorizontalDivider(
+            thickness = 0.5.dp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier
+                .alpha(0.2f)
+                .padding(bottom = 16.dp)
+        )
+
+        Column(
+            modifier = Modifier.padding(horizontal = 10.dp)
+        ) {
             Text(
                 text = stringResource(R.string.maintenance),
                 fontSize = 24.sp,

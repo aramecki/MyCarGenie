@@ -1,6 +1,7 @@
 package com.android.mycargenie.pages.scadenze
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -27,7 +28,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.DateRange
-import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DatePickerState
@@ -51,10 +51,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
@@ -71,6 +73,8 @@ import com.android.mycargenie.shared.CircleCheckbox
 import com.android.mycargenie.shared.formatDateToLong
 import com.android.mycargenie.shared.formatDateToString
 import java.time.Instant
+
+//Sovrascrivere back button con salvataggio settings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -130,6 +134,74 @@ fun ExpSettingsScreen(
     val tax = stringResource(R.string.tax)
     val revPlace = stringResource(R.string.revplace)
 
+    fun saveDeadlinesSettings() {
+        val finalInsCheck = if (insstart.isBlank() && insend.isBlank()) false else inscheck
+        val finalTaxCheck = if (taxdate.isBlank()) false else taxcheck
+        val finalRevCheck = if (revlast.isBlank() && revnext.isBlank()) false else revcheck
+
+        if (inscheck || taxcheck || revcheck) {
+
+            expirationsViewModel.updateExpSettings(
+                Expirations(
+                    finalInsCheck,
+                    insstart,
+                    insend,
+                    insdues,
+                    insprice,
+                    insplace,
+                    insnot,
+                    finalTaxCheck,
+                    taxdate,
+                    taxprice,
+                    taxnot,
+                    finalRevCheck,
+                    revlast,
+                    revnext,
+                    revplace,
+                    revnot
+                )
+            )
+
+            if (finalInsCheck) handleInsuranceNotifications(insnot, insend, notificationManager)
+            if (finalTaxCheck) handleTaxNotifications(taxnot,taxdate, notificationManager)
+            if (finalRevCheck) handleRevisionNotifications(revnot, revnext, notificationManager)
+
+            navController.navigate("ExpirationsScreen")
+
+        } else {
+            notificationManager.disableNotifications("insurance")
+            notificationManager.disableNotifications("tax")
+            notificationManager.disableNotifications("rev")
+
+            expirationsViewModel.updateExpSettings(
+                Expirations(
+                    inscheck = false,
+                    insstart = "",
+                    insend = "",
+                    insdues = 0,
+                    insprice = 0.0f,
+                    insplace = "",
+                    insnot = false,
+                    taxcheck = false,
+                    taxdate = "",
+                    taxprice = 0.0f,
+                    taxnot = false,
+                    revcheck = false,
+                    revlast = "",
+                    revnext = "",
+                    revplace = "",
+                    revnot = false
+                )
+            )
+            navController.navigate("ExpirationsScreen")
+        }
+    }
+
+    //When back button is pressed save settings and go back to the deadlines view screen
+    BackHandler {
+        saveDeadlinesSettings()
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -139,14 +211,46 @@ fun ExpSettingsScreen(
                 })
             }
     ) {
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 4.dp, top = 14.dp, bottom = 8.dp)
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.back),
+                    contentDescription = "Back to deadlines view screen", //To put in strings xml
+                    modifier = Modifier
+                        .padding(start = 10.dp)
+                        .clickable {
+                            saveDeadlinesSettings()
+                        }
+                )
+                Text(
+                    text = "Impostazioni Scadenze", //To put in strings xml
+                    fontSize = 24.sp,
+                    modifier = Modifier
+                        .padding(start = 24.dp)
+                )
+            }
+
+            HorizontalDivider(
+                thickness = 0.5.dp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .alpha(0.2f)
+            )
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(start = 10.dp)
             ) {
                 CircleCheckbox(
                     label = stringResource(R.string.insurance),
@@ -155,7 +259,7 @@ fun ExpSettingsScreen(
                     isChecked = inscheck,
                     onValueChange = { inscheck = it },
                     modifier = Modifier
-                        .padding(start = 4.dp, top = 8.dp, bottom = 0.dp)
+                        .padding(start = 4.dp, top= 0.dp, bottom = 0.dp)
                 )
             }
 
@@ -166,7 +270,9 @@ fun ExpSettingsScreen(
             ) {
                 Column(
                     verticalArrangement = Arrangement.SpaceEvenly,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(start = 10.dp, end = 10.dp)
                 ) {
                     // Riga assicuratore e importo totale
                     Row {
@@ -516,7 +622,9 @@ fun ExpSettingsScreen(
 
             // Tax
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(start = 10.dp)
             ) {
                 CircleCheckbox(
                     label = "${stringResource(R.string.tax)} ${stringResource(R.string.automotive)}",
@@ -536,7 +644,9 @@ fun ExpSettingsScreen(
             ) {
                 Column(
                     verticalArrangement = Arrangement.SpaceEvenly,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 10.dp, end = 10.dp)
                 ) {
                     //Riga tassa prossimo saldo ed importo
                     Row {
@@ -725,7 +835,9 @@ fun ExpSettingsScreen(
 
             // Revision
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(start = 10.dp)
             ) {
                 CircleCheckbox(
                     label = stringResource(R.string.revision),
@@ -745,7 +857,9 @@ fun ExpSettingsScreen(
                 ) {
                     Column(
                         verticalArrangement = Arrangement.SpaceEvenly,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp, end = 10.dp)
                     ) {
                         Row {
                             //Colonna ultima revisione
@@ -972,83 +1086,6 @@ fun ExpSettingsScreen(
                     }
 
                 }
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(top = 8.dp)
-            ) {
-
-                Button(onClick = {
-
-                    val finalInsCheck = if (insstart.isBlank() && insend.isBlank()) false else inscheck
-                    val finalTaxCheck = if (taxdate.isBlank()) false else taxcheck
-                    val finalRevCheck = if (revlast.isBlank() && revnext.isBlank()) false else revcheck
-
-                    if (inscheck || taxcheck || revcheck) {
-
-                        expirationsViewModel.updateExpSettings(
-                            Expirations(
-                                finalInsCheck,
-                                insstart,
-                                insend,
-                                insdues,
-                                insprice,
-                                insplace,
-                                insnot,
-                                finalTaxCheck,
-                                taxdate,
-                                taxprice,
-                                taxnot,
-                                finalRevCheck,
-                                revlast,
-                                revnext,
-                                revplace,
-                                revnot
-                            )
-                        )
-
-                        if (finalInsCheck) handleInsuranceNotifications(insnot, insend, notificationManager)
-                        if (finalTaxCheck) handleTaxNotifications(taxnot,taxdate, notificationManager)
-                        if (finalRevCheck) handleRevisionNotifications(revnot, revnext, notificationManager)
-
-                        navController.navigate("ExpirationsScreen")
-
-                    } else {
-                        notificationManager.disableNotifications("insurance")
-                        notificationManager.disableNotifications("tax")
-                        notificationManager.disableNotifications("rev")
-
-                        expirationsViewModel.updateExpSettings(
-                            Expirations(
-                                inscheck = false,
-                                insstart = "",
-                                insend = "",
-                                insdues = 0,
-                                insprice = 0.0f,
-                                insplace = "",
-                                insnot = false,
-                                taxcheck = false,
-                                taxdate = "",
-                                taxprice = 0.0f,
-                                taxnot = false,
-                                revcheck = false,
-                                revlast = "",
-                                revnext = "",
-                                revplace = "",
-                                revnot = false
-                            )
-                        )
-
-                        navController.navigate("ExpirationsScreen")
-                    }
-                                 },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Text(stringResource(R.string.save))
-                }
-            }
 
             Spacer(modifier = Modifier.height(4.dp))
 

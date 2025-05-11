@@ -1,5 +1,6 @@
 package com.android.mycargenie.pages.profile
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
@@ -10,10 +11,12 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -29,6 +32,7 @@ import androidx.compose.material.icons.outlined.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -41,9 +45,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -57,6 +64,7 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.android.mycargenie.R
 
+@SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun LibrettoScreen(
     carProfile: CarProfile,
@@ -154,31 +162,60 @@ fun LibrettoScreen(
 
         Column(
             modifier = Modifier
-                .padding(padding)
+                .padding(top = 8.dp)
+                .fillMaxSize()
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = {
+                        isExpanded = false
+                    })
+                }
                 .verticalScroll(rememberScrollState())
         ) {
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .graphicsLayer { alpha = 1f }
+            ) {
+                Text(
+                    text = stringResource(R.string.profile),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
+
+            HorizontalDivider(
+                thickness = 0.5.dp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .alpha(0.2f)
+                    .graphicsLayer { alpha = 1f }
+                    .padding(bottom = 16.dp)
+            )
 
             if (carProfile.brand.isEmpty()) {
 
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 100.dp)
+
                 ) {
                     Text(
                         text = stringResource(R.string.configure_profile_message),
-                        fontSize = 20.sp,
+                        fontSize = 18.sp,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
-                            .padding(8.dp)
+                            .padding(horizontal = 32.dp, vertical = 16.dp)
                     )
 
 
                     Button(onClick = {
                         navController.navigate("ProfileSettings")
                     }) {
-                        Text(stringResource(R.string.configure))
+                        Text(
+                            text = stringResource(R.string.configure),
+                            fontSize = 16.sp
+                        )
                     }
                 }
             } else {

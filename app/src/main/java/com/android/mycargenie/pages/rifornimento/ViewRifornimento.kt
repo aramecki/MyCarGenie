@@ -1,19 +1,21 @@
 package com.android.mycargenie.pages.rifornimento
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -27,10 +29,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -49,7 +51,6 @@ fun ViewRifScreen(
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     val rifItem = rifIndex?.takeIf { it in state.rifs.indices }?.let { state.rifs[it] }
-
 
     Scaffold(
         floatingActionButton = {
@@ -113,158 +114,206 @@ fun ViewRifScreen(
         if (rifItem != null) {
             Column(
                 modifier = Modifier
-                    .padding(
-                        top = 16.dp,
-                        start = 16.dp,
-                        end = 16.dp,
-                        bottom = paddingValues.calculateBottomPadding()
-                    )
+                    .verticalScroll(rememberScrollState())
+                    .padding(bottom = 150.dp)
             ) {
-
                 Row(
-                    verticalAlignment = Alignment.Bottom,
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(start = 4.dp, top = 14.dp, bottom = 8.dp)
                 ) {
+                    Icon(
+                        imageVector = ImageVector.vectorResource(R.drawable.back),
+                        contentDescription = "Back to refueling view screen", //To put in strings xml
+                        modifier = Modifier
+                            .padding(start = 10.dp)
+                            .clickable {
+                                navController.navigate("RifornimentoScreen")
+                            }
+                    )
 
-                    //Icona tipo
-                    val icon = when (rifItem.type) {
-                        stringResource(R.string.electric) -> ImageVector.vectorResource(id = R.drawable.electric)
-                        else -> ImageVector.vectorResource(id = R.drawable.oil)
-                    }
-
-
-                    Row(
-                        verticalAlignment = Alignment.Bottom,
-                    ) {
-                        Column {
-                            Icon(
-                                imageVector = icon,
-                                contentDescription = rifItem.type,
-                                modifier = Modifier
-                                    .size(45.dp),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }
-
-                        //Data
-                        Text(
-                            text = rifItem.date,
-                            style = MaterialTheme.typography.headlineMedium.copy(
-                                fontSize = 30.sp
-                            ),
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier
-                                .padding(start = 8.dp)
-
-                        )
-                    }
-                }
-
-                Row {
                     Text(
-                        text = rifItem.place,
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontSize = 20.sp
-                        )
+                        text = rifItem.date,
+                        fontSize = 24.sp,
+                        modifier = Modifier
+                            .padding(start = 24.dp)
                     )
                 }
 
-                Spacer(modifier = Modifier.height(28.dp))
-
-                Row {
-                    //Prezzo
-
-                        val price = formatPrice(rifItem.price)
-                        Text(
-                            text = "${stringResource(R.string.you_paid)}${stringResource(R.string.value_euro, price)}",
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                fontSize = 17.sp
-                            )
-                        )
-
-                    //Prezzo per unità
-                    Column(
-                        horizontalAlignment = Alignment.End,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        val uPrice = formatPrice(rifItem.uvalue)
-
-                        val unitValue = when (rifItem.type) {
-                            stringResource(R.string.electric) -> "${stringResource(R.string.eur_kwh)}: $uPrice"
-                            else -> "${stringResource(R.string.eur_l)}: $uPrice"
-                        }
-
-                        Text(
-                            text = unitValue,
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                fontSize = 16.sp
-                            )
-                        )
-
-                    }
-                }
-
-                //Unità totali
-
-                val units = formatPrice(rifItem.totunit)
-
-                val unitsText = when (rifItem.type) {
-                    stringResource(R.string.electric) -> "${stringResource(R.string.charged)}: $units${stringResource(R.string.kWh)}"
-                    else -> "${stringResource(R.string.refueled_s)}: $units${stringResource(R.string.l)}"
-                }
-
-                Text(
-                    text = unitsText,
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontSize = 17.sp
-                    ),
+                HorizontalDivider(
+                    thickness = 0.5.dp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier
-                        .padding(top = 26.dp)
+                        .alpha(0.2f)
+                        .padding(bottom = 16.dp)
                 )
 
-                //Note
-                if (rifItem.note.isNotEmpty()) {
-                    Spacer(modifier = Modifier.height(40.dp))
-
-                    Text(
-                        text = "${stringResource(R.string.notes)}: ${rifItem.note}",
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontSize = 16.sp
-                        )
-                    )
+                //Icona tipo
+                val icon = when (rifItem.type) {
+                    stringResource(R.string.electric) -> ImageVector.vectorResource(id = R.drawable.electric)
+                    else -> ImageVector.vectorResource(id = R.drawable.oil)
                 }
 
-
-
-                Spacer(modifier = Modifier.height(40.dp))
-
-
-                Row {
-                    Column(
-                        horizontalAlignment = Alignment.End,
+                //Prezzo complessivo
+                if (!rifItem.price.isNaN()) {
+                    val price = formatPrice(rifItem.price)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .padding(horizontal = 10.dp, vertical = 16.dp)
                     ) {
-                        //Kilometri
-
-                        val kmt = formatKmt(rifItem.kmt)
-
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.euro_symbol),
+                            contentDescription = stringResource(R.string.price),
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .size(30.dp)
+                        )
                         Text(
-                            text = "${stringResource(R.string.km_maiusc)} ${stringResource(R.string.vehicle)}: $kmt ${stringResource(R.string.km_lower)}",
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                fontSize = 14.sp
-                            )
+                            text = stringResource(R.string.value_euro, price),
+                            fontSize = 18.sp,
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier
+                                .padding(start = 16.dp)
                         )
                     }
-
-
                 }
 
+                //Unità complessive
+                if (!rifItem.totunit.isNaN()) {
+                    val units = formatPrice(rifItem.totunit)
 
+                    val unitsText = when (rifItem.type) {
+                        stringResource(R.string.electric) -> "$units${stringResource(R.string.kWh)}"
+                        else -> "$units${stringResource(R.string.l)}"
+                    }
 
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(horizontal = 10.dp, vertical = 16.dp)
+                    ) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = stringResource(R.string.total_e),
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .size(30.dp)
+                        )
+                        Text(
+                            text = unitsText,
+                            fontSize = 18.sp,
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier
+                                .padding(start = 16.dp)
+                        )
+                    }
+                }
+
+                //Prezzo per unità
+                if (!rifItem.uvalue.isNaN()) {
+                    val uPrice = formatPrice(rifItem.uvalue)
+
+                    val unitValue = when (rifItem.type) {
+                        stringResource(R.string.electric) -> "$uPrice${stringResource(R.string.eur_kwh)}"
+                        else -> "$uPrice${stringResource(R.string.eur_l)}"
+                    }
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(horizontal = 10.dp, vertical = 16.dp)
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.check),
+                            contentDescription = stringResource(R.string.unit_cost),
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .size(30.dp)
+                        )
+                        Text(
+                            text = unitValue,
+                            fontSize = 18.sp,
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier
+                                .padding(start = 16.dp)
+                        )
+                    }
+                }
+
+                //Luogo
+                if (!rifItem.place.isEmpty()) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(horizontal = 10.dp, vertical = 16.dp)
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.gas_station),
+                            contentDescription = stringResource(R.string.place),
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .size(30.dp)
+                        )
+                        Text(
+                            text = rifItem.place,
+                            fontSize = 18.sp,
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier
+                                .padding(start = 16.dp)
+                        )
+                    }
+                }
+
+                //Kilometri
+                if (rifItem.kmt != 0) {
+                    val kmt = formatKmt(rifItem.kmt)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(horizontal = 10.dp, vertical = 16.dp)
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.time_to_leave),
+                            contentDescription = stringResource(R.string.kilometers),
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .size(30.dp)
+                        )
+                        Text(
+                            text = stringResource(R.string.value_km, kmt),
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontSize = 18.sp
+                            ),
+                            modifier = Modifier
+                                .padding(start = 16.dp)
+                        )
+                    }
+                }
+
+                //Note
+                if (!rifItem.note.isEmpty()) {
+                    Row(
+                        modifier = Modifier
+                            .padding(horizontal = 10.dp, vertical = 16.dp)
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.assignment),
+                            contentDescription = stringResource(R.string.notes),
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .size(30.dp)
+                        )
+                        Text(
+                            text = rifItem.note,
+                            fontSize = 18.sp,
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier
+                                .padding(start = 16.dp)
+                        )
+                    }
+                }
             }
         } else {
             Column(

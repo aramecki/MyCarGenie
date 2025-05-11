@@ -1,5 +1,6 @@
 package com.android.mycargenie.pages.rifornimento
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -12,10 +13,12 @@ import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -26,6 +29,7 @@ import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -59,6 +63,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.android.mycargenie.R
+import com.android.mycargenie.shared.CancelWithoutSaving
 import com.android.mycargenie.shared.CarFuels
 import com.android.mycargenie.shared.ConfiguredDropdownMenu
 import com.android.mycargenie.shared.formatDateToString
@@ -99,6 +104,7 @@ fun EditRifScreen(
     }
 
     var showError by remember { mutableStateOf(false) }
+    var showCancel by remember { mutableStateOf(false) }
     var showDatePicker by remember { mutableStateOf(false) }
 
     // DatePickerDialog
@@ -128,35 +134,43 @@ fun EditRifScreen(
         }
     }
 
+    fun saveEventAndGoBackToView() {
+        if (state.price.value > 0) {
+
+            /*
+            Log.d(
+                "SaveRif",
+                "Saving: Price: ${state.price.value}, Type: ${state.type.value} id: ${state.id.value}"
+            )
+             */
+
+            onEvent(
+                RifEvent.UpdateRif(
+                    id = state.id.value,
+                    type = state.type.value,
+                    place = state.place.value,
+                    price = state.price.value,
+                    uvalue = state.uvalue.value,
+                    totunit = state.totunit.value,
+                    date = state.date.value,
+                    note = state.note.value,
+                    kmt = state.kmt.value,
+                )
+            )
+            navController.popBackStack()
+        } else {
+            showError = true
+        }
+    }
+
+    BackHandler {
+        showCancel = true
+    }
+
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                if (state.price.value > 0) {
-
-                    /*
-                    Log.d(
-                        "SaveRif",
-                        "Saving: Price: ${state.price.value}, Type: ${state.type.value} id: ${state.id.value}"
-                    )
-                     */
-
-                    onEvent(
-                        RifEvent.UpdateRif(
-                            id = state.id.value,
-                            type = state.type.value,
-                            place = state.place.value,
-                            price = state.price.value,
-                            uvalue = state.uvalue.value,
-                            totunit = state.totunit.value,
-                            date = state.date.value,
-                            note = state.note.value,
-                            kmt = state.kmt.value,
-                        )
-                    )
-                    navController.popBackStack()
-                } else {
-                    showError = true
-                }
+                saveEventAndGoBackToView()
             },
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                 ) {
@@ -168,7 +182,18 @@ fun EditRifScreen(
         }
     ) { paddingValues ->
 
-        Box(
+        Box(modifier = Modifier.padding(paddingValues)) {
+            CancelWithoutSaving(
+                isShowing = showCancel,
+                onDismiss = { showCancel = false },
+                onConfirm = {
+                    showCancel = false
+                    navController.navigate("RifornimentoScreen")
+                }
+            )
+        }
+
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .pointerInput(Unit) {
@@ -177,8 +202,39 @@ fun EditRifScreen(
                     })
                 }
             ) {
-            if (rifItem != null) {
 
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 4.dp, top = 14.dp, bottom = 8.dp)
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.back),
+                    contentDescription = stringResource(R.string.back_to_refueling),
+                    modifier = Modifier
+                        .padding(start = 10.dp)
+                        .clickable {
+                            showCancel = true
+                        }
+                )
+                Text(
+                    text = "${stringResource(R.string.edit)} ${stringResource(R.string.refueling)}",
+                    fontSize = 24.sp,
+                    modifier = Modifier
+                        .padding(start = 24.dp)
+                )
+            }
+
+            HorizontalDivider(
+                thickness = 0.5.dp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .alpha(0.2f)
+                    .padding(bottom = 16.dp)
+            )
+
+            if (rifItem != null) {
                 Column(
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.Start,
@@ -195,12 +251,12 @@ fun EditRifScreen(
                     Row(
                         modifier = Modifier
                             .padding(bottom = 16.dp)
+                            .padding(horizontal = 10.dp)
                     ) {
                         Column {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(start = 8.dp, end = 8.dp)
                             ) {
 
                                 ConfiguredDropdownMenu(
@@ -210,13 +266,13 @@ fun EditRifScreen(
                                     onItemSelected = {state.type.value = it},
                                     modifier = Modifier
                                         .fillMaxWidth(0.5f)
-                                        .padding(start = 8.dp, end = 8.dp)
+                                        .padding(end = 8.dp)
                                 )
 
                                     OutlinedTextField(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(start = 8.dp, top = 8.dp, end = 8.dp),
+                                            .padding(start = 8.dp, top = 8.dp),
                                         value = state.place.value,
                                         onValueChange = { newValue ->
                                             if (newValue.length <= 16) {
@@ -245,6 +301,7 @@ fun EditRifScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .padding(top = 8.dp, bottom = 16.dp)
+                            .padding(horizontal = 10.dp)
                     ) {
                         //Prezzo
                         var userPriceInput by remember { mutableStateOf("") }
@@ -257,7 +314,6 @@ fun EditRifScreen(
                             horizontalAlignment = Alignment.End,
                             modifier = Modifier
                                 .fillMaxWidth(0.5f)
-                                .padding(start = 16.dp)
                         ) {
                             OutlinedTextField(
                                 modifier = Modifier
@@ -265,7 +321,7 @@ fun EditRifScreen(
                                     .padding(end = 8.dp),
                                 value = userPriceInput,
                                 onValueChange = { newValue ->
-                                    val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?\$")
+                                    val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?$")
                                     if (newValue.isEmpty()) {
                                         userPriceInput = ""
                                         state.price.value = 0.0
@@ -324,10 +380,10 @@ fun EditRifScreen(
                             OutlinedTextField(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(start = 8.dp, end = 16.dp),
+                                    .padding(start = 8.dp),
                                 value = userUValueInput,
                                 onValueChange = { newValue ->
-                                    val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?\$")
+                                    val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?$")
                                     if (newValue.isEmpty()) {
                                         userUValueInput = ""
                                         state.uvalue.value = 0.0
@@ -372,12 +428,13 @@ fun EditRifScreen(
                     Row(
                         modifier = Modifier
                             .padding(top = 8.dp, bottom = 8.dp)
+                            .padding(horizontal = 10.dp)
                     ) {
 
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth(0.5f)
-                                .padding(start = 16.dp, end = 8.dp)
+                                .padding(end = 8.dp)
                         ) {
                             var totUnit by remember {
                                 mutableStateOf(if (state.totunit.value == 0.0) "" else state.totunit.value.toString())
@@ -401,7 +458,7 @@ fun EditRifScreen(
                                 modifier = Modifier.fillMaxWidth(),
                                 value = totUnit,
                                 onValueChange = { newValue ->
-                                    val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?\$")
+                                    val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?$")
                                     if (newValue.isEmpty()) {
                                         state.totunit.value = 0.0
                                         totUnit = ""
@@ -448,7 +505,7 @@ fun EditRifScreen(
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 8.dp, end = 16.dp)
+                                .padding(start = 8.dp)
                                 .clickable {
                                     showDatePicker = true
                                 }
@@ -484,19 +541,20 @@ fun EditRifScreen(
                     Row(
                         modifier = Modifier
                             .padding(bottom = 8.dp)
+                            .padding(horizontal = 10.dp)
                     ) {
                         Column {
                             OutlinedTextField(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                                    .padding(top = 16.dp),
                                 value = state.note.value,
                                 onValueChange = { newValue ->
                                     if (newValue.length <= 500) {
                                         state.note.value = newValue
                                     }
                                 },
-                                shape = CircleShape,
+                                shape = RoundedCornerShape(30.dp),
                                 placeholder = { Text(text = stringResource(R.string.notes)) },
                                 keyboardOptions = KeyboardOptions.Default.copy(
                                     capitalization = KeyboardCapitalization.Sentences
@@ -507,7 +565,7 @@ fun EditRifScreen(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(top = 4.dp, end = 32.dp)
+                                    .padding(top = 4.dp, end = 20.dp)
                             ) {
                                 Spacer(Modifier.weight(1f))
                                 Text(
@@ -527,6 +585,7 @@ fun EditRifScreen(
                     Row(
                         modifier = Modifier
                             .padding(top = 8.dp)
+                            .padding(horizontal = 10.dp),
                     ) {
                         Column(
                             horizontalAlignment = Alignment.End,
@@ -535,8 +594,7 @@ fun EditRifScreen(
                         ) {
                             OutlinedTextField(
                                 modifier = Modifier
-                                    .fillMaxWidth(0.5f)
-                                    .padding(end = 16.dp),
+                                    .fillMaxWidth(0.5f),
                                 value = if (state.kmt.value == 0) "" else state.kmt.value.toString(),
                                 onValueChange = { newValue ->
                                     if (newValue.isEmpty()) {
@@ -557,24 +615,7 @@ fun EditRifScreen(
                                 ),
                                 keyboardActions = KeyboardActions(
                                     onDone = {
-                                        if (state.price.value > 0) {
-                                            onEvent(
-                                                RifEvent.UpdateRif(
-                                                    id = state.id.value,
-                                                    type = state.type.value,
-                                                    place = state.place.value,
-                                                    price = state.price.value,
-                                                    uvalue = state.uvalue.value,
-                                                    totunit = state.totunit.value,
-                                                    date = state.date.value,
-                                                    note = state.note.value,
-                                                    kmt = state.kmt.value,
-                                                )
-                                            )
-                                            navController.popBackStack()
-                                        } else {
-                                            showError = true
-                                        }
+                                        saveEventAndGoBackToView()
                                     }
 
                                 )
@@ -597,6 +638,9 @@ fun EditRifScreen(
                                 .fillMaxWidth()
                         )
                     }
+
+                    Spacer(modifier = Modifier.height(100.dp))
+
                 }
             } else {
                 Column(

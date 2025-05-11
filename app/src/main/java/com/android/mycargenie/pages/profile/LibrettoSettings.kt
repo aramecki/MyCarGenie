@@ -3,15 +3,12 @@ package com.android.mycargenie.pages.profile
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +25,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -40,18 +39,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.android.mycargenie.R
@@ -83,8 +86,6 @@ fun LibrettoSettingsScreen(
     var eco by remember { mutableStateOf(carProfile.eco) }
     var conf by remember { mutableStateOf(carProfile.conf) }
 
-    var showError by remember { mutableStateOf(false) }
-
     val tag = "ProfilePic"
     Log.d(tag, "Immagine già presente: $savedImagePath")
 
@@ -99,6 +100,47 @@ fun LibrettoSettingsScreen(
         }
     )
 
+    //Function to save the profile picture and go back to Profile view page
+    fun saveProfileSettings() {
+        if (brand.isNotBlank() && model.isNotBlank()) {
+
+            //Log.d(tag, "Prima della funzione: $savedImagePath")
+
+            val imageToSave =
+                if (newImagePath != savedImagePath && newImagePath != "") {
+                    saveImageToMmry(context = context, newImagePath.toUri())
+                } else {
+                    savedImagePath
+                }
+
+            //Log.d(tag, "dopo la funzione: $newImagePath")
+
+            librettoViewModel.updateCarProfile(
+                CarProfile(
+                    brand,
+                    model,
+                    displacement,
+                    power,
+                    horsepower,
+                    savedImagePath = imageToSave,
+                    type,
+                    fuel,
+                    year,
+                    eco,
+                    conf
+                )
+            )
+            navController.navigate("ProfileScreen")
+        } else {
+            navController.navigate("ProfileScreen")
+        }
+    }
+
+    //When back button is pressed save settings and go back to the deadlines view screen
+    BackHandler {
+        saveProfileSettings()
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -111,10 +153,41 @@ fun LibrettoSettingsScreen(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .padding(16.dp)
                 .imePadding()
                 .verticalScroll(rememberScrollState())
         ) {
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 4.dp, top = 14.dp, bottom = 8.dp)
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.back),
+                    contentDescription = "Back to profile view screen", //To put in strings xml
+                    modifier = Modifier
+                        .padding(start = 10.dp)
+                        .clickable {
+                            saveProfileSettings()
+                        }
+                )
+                Text(
+                    text = "Impostazioni Libretto", //To put in strings xml
+                    fontSize = 24.sp,
+                    modifier = Modifier
+                        .padding(start = 24.dp)
+                )
+            }
+
+            HorizontalDivider(
+                thickness = 0.5.dp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .alpha(0.2f)
+                    .padding(bottom = 16.dp)
+            )
+
             if (savedImagePath.isNotEmpty() || newImagePath.isNotEmpty()) {
 
                 AsyncImage(
@@ -143,7 +216,6 @@ fun LibrettoSettingsScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-
             Button(onClick = {
                 photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                 Log.d(tag, "Immagine già presente dopo il photoPicker: $savedImagePath")
@@ -152,11 +224,12 @@ fun LibrettoSettingsScreen(
                 Text(stringResource(R.string.select))
             }
 
-
             Spacer(modifier = Modifier.height(8.dp))
 
-
-            Row {
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+            ) {
 
                 ConfiguredDropdownMenu(
                     label = stringResource(R.string.brand) + "*",
@@ -190,10 +263,12 @@ fun LibrettoSettingsScreen(
                 )
             }
 
-
             Spacer(modifier = Modifier.height(16.dp))
 
-            Row {
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+            ) {
                 OutlinedTextField(
                     value = conf,
                     onValueChange = { newValue ->
@@ -217,7 +292,10 @@ fun LibrettoSettingsScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Row {
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+            ) {
                 OutlinedTextField(
                     modifier = Modifier
                         .fillMaxWidth(0.5f)
@@ -274,7 +352,10 @@ fun LibrettoSettingsScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Row {
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+            ) {
                 var carPower by remember {
                     mutableStateOf(if (power == 0.0f) "" else power.toString())
                 }
@@ -286,7 +367,7 @@ fun LibrettoSettingsScreen(
                     value = carPower,
                     onValueChange = { newValue ->
                         val formattedValue = newValue.replace(',', '.')
-                        val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?\$")
+                        val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?$")
                         if (newValue.isEmpty()) {
                             carPower = ""
                             power = 0.0f
@@ -310,7 +391,6 @@ fun LibrettoSettingsScreen(
                     )
                 )
 
-
                 var carHorsePower by remember {
                     mutableStateOf(if (horsepower == 0.0f) "" else horsepower.toString())
                 }
@@ -322,7 +402,7 @@ fun LibrettoSettingsScreen(
                     value = carHorsePower,
                     onValueChange = { newValue ->
                         val formattedValue = newValue.replace(',', '.')
-                        val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?\$")
+                        val regex = Regex("^\\d{0,5}(\\.\\d{0,2})?$")
                         if (newValue.isEmpty()) {
                             carHorsePower = ""
                             horsepower = 0.0f
@@ -351,7 +431,9 @@ fun LibrettoSettingsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
             ) {
 
                 ConfiguredDropdownMenu(
@@ -378,7 +460,9 @@ fun LibrettoSettingsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(start = 16.dp, end = 16.dp)
             ) {
 
                 ConfiguredDropdownMenu(
@@ -390,80 +474,21 @@ fun LibrettoSettingsScreen(
                         .fillMaxWidth(0.5f)
                         .padding(end = 8.dp)
                 )
-
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-
-                    Button(
-                        onClick = {
-
-                            if (brand.isNotBlank() && model.isNotBlank()) {
-
-                                //Log.d(tag, "Prima della funzione: $savedImagePath")
-
-                                val imageToSave =
-                                    if (newImagePath != savedImagePath && newImagePath != "") {
-                                        saveImageToMmry(context = context, Uri.parse(newImagePath))
-                                    } else {
-                                        savedImagePath
-                                    }
-
-                                //Log.d(tag, "dopo la funzione: $newImagePath")
-
-                                librettoViewModel.updateCarProfile(
-                                    CarProfile(
-                                        brand,
-                                        model,
-                                        displacement,
-                                        power,
-                                        horsepower,
-                                        savedImagePath = imageToSave,
-                                        type,
-                                        fuel,
-                                        year,
-                                        eco,
-                                        conf
-                                    )
-                                )
-                                navController.navigate("ProfileScreen")
-                            } else {
-                                showError = true
-                            }
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 8.dp)
-                    ) {
-                        Text(stringResource(R.string.save))
-                    }
-                }
             }
 
-
-            AnimatedVisibility(
-                visible = showError,
-                enter = scaleIn() + slideInVertically(initialOffsetY = { it }),
-                exit = scaleOut() + slideOutVertically(targetOffsetY = { it })
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                Text(
+                    text = stringResource(R.string.req_fields),
                     modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    Text(
-                        text = stringResource(R.string.compile_req_fields),
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier
-                            .padding(top = 14.dp)
-                    )
-                }
-
-
-                Spacer(modifier = Modifier.height(16.dp))
+                        .padding(top = 14.dp)
+                )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
         }
     }

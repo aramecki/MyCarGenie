@@ -6,6 +6,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -48,6 +49,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -161,8 +163,7 @@ fun ManutenzioneScreen(
                 bottom = paddingValues.calculateBottomPadding()
             ),
             modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
+                .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
@@ -192,10 +193,7 @@ fun ManutenzioneScreen(
             if (state.men.isEmpty()) {
                 item {
                     Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp)
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
                             text = stringResource(R.string.add_event_message),
@@ -224,11 +222,16 @@ fun ManutenzioneScreen(
                 }
             } else {
                 items(state.men.size) { index ->
-                    ManItem(
-                        state = state,
-                        index = index,
-                        navController = navController
-                    )
+                    Box(
+                        modifier = Modifier
+                            .padding(horizontal = 10.dp)
+                    ) {
+                        ManItem(
+                            state = state,
+                            index = index,
+                            navController = navController
+                        )
+                    }
                 }
 
                 if (state.isLoading) {
@@ -254,9 +257,7 @@ fun ManItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            //.clip(RoundedCornerShape(10.dp))
             .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(10.dp))
-            //.background(MaterialTheme.colorScheme.primaryContainer)
             .padding(12.dp)
             .clickable {
                 navController.navigate("ViewManScreen/$index")
@@ -273,12 +274,12 @@ fun ManItem(
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
 
-
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .padding(bottom = 4.dp)
             ) {
+
                 Icon(
                     imageVector = icon,
                     contentDescription = state.men[index].type,
@@ -295,6 +296,8 @@ fun ManItem(
                         text = state.men[index].title,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -357,9 +360,7 @@ fun ManItem(
 
             }
 
-
             //Kilometri
-
             val kmt = formatKmt(state.men[index].kmt)
 
             Row(
@@ -398,8 +399,7 @@ fun ManItem(
                     if (price != "0.00") {
                         Text(
                             text = stringResource(R.string.value_euro, price),
-                            fontSize = 18.sp,
-                            //color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            fontSize = 18.sp
                         )
                     } else {
                         Spacer(modifier = Modifier

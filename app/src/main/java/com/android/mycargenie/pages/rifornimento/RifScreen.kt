@@ -6,6 +6,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -160,8 +161,7 @@ fun RifornimentoScreen(
                 bottom = paddingValues.calculateBottomPadding()
             ),
             modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
+                .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
@@ -197,7 +197,7 @@ fun RifornimentoScreen(
                         fontSize = 18.sp,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
-                            .padding(start = 32.dp, top = 82.dp, bottom = 15.dp, end = 32.dp)
+                            .padding(horizontal = 32.dp, vertical = 16.dp)
                     )
 
                     Button(onClick = {
@@ -220,11 +220,16 @@ fun RifornimentoScreen(
             }
         } else {
             items(state.rifs.size) { index ->
-                RifItem(
-                    state = state,
-                    index = index,
-                    navController = navController
-                )
+                Box(
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp)
+                ) {
+                    RifItem(
+                        state = state,
+                        index = index,
+                        navController = navController
+                    )
+                }
             }
 
 

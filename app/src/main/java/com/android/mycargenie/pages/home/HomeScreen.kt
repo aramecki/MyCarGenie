@@ -1,5 +1,6 @@
 package com.android.mycargenie.pages.home
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
@@ -11,11 +12,14 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -43,6 +47,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -50,6 +55,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -62,6 +68,7 @@ import com.android.mycargenie.shared.formatDisplacement
 import com.android.mycargenie.shared.formatKmt
 import com.android.mycargenie.shared.formatPrice
 
+@SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun HomeScreen(
     manState: ManState,
@@ -162,7 +169,7 @@ fun HomeScreen(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
                     ) {
                     Icon(
-                        imageVector =if (isExpanded) Icons.Outlined.KeyboardArrowDown else Icons.Outlined.KeyboardArrowUp,
+                        imageVector = if (isExpanded) Icons.Outlined.KeyboardArrowDown else Icons.Outlined.KeyboardArrowUp,
                         contentDescription = stringResource(R.string.settings)
                     )
                 }
@@ -176,7 +183,15 @@ fun HomeScreen(
                 .padding(padding)
         )
 
-        Column {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = {
+                        isExpanded = false
+                    })
+                }
+        ) {
 
             Spacer(modifier = Modifier.height(40.dp))
 
@@ -189,26 +204,32 @@ fun HomeScreen(
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth(0.5f)
-                                .padding(start = 18.dp)
+                                .padding(start = 10.dp)
                         ) {
                             val imagePainter =
                                 rememberAsyncImagePainter(model = carProfile.savedImagePath)
 
-                            Image(
-                                painter = imagePainter,
-                                contentDescription = stringResource(R.string.car),
+                            Box(
                                 modifier = Modifier
+                                    .fillMaxWidth()
+                                    .aspectRatio(1f)
                                     .clip(CircleShape)
-                                    .size(160.dp),
-                                contentScale = ContentScale.Crop
-                            )
+                            ) {
+                                Image(
+                                    painter = imagePainter,
+                                    contentDescription = stringResource(R.string.car),
+                                    modifier = Modifier
+                                        .fillMaxSize(),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
                         }
                     }
 
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 16.dp)
+                            .padding(start = 24.dp)
                     ) {
 
                         val brandFontSize = when {
@@ -281,7 +302,7 @@ fun HomeScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(38.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             Column {
                 if (lastManutenzione?.title.isNullOrEmpty() && lastRifornimento?.price?.toString()
@@ -340,7 +361,7 @@ fun HomeScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp)
+                        .padding(horizontal = 10.dp)
                         .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(10.dp))
                         .padding(12.dp)
                         .clickable {
@@ -364,17 +385,15 @@ fun HomeScreen(
                             modifier = Modifier
                                 .padding(bottom = 4.dp)
                         ) {
-                            Column {
-                                Icon(
-                                    imageVector = icon,
-                                    contentDescription = manutenzione.type,
-                                    modifier = Modifier
-                                        .size(34.dp)
-                                        .padding(end = 4.dp),
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                            }
 
+                            Icon(
+                                imageVector = icon,
+                                contentDescription = manutenzione.type,
+                                modifier = Modifier
+                                    .size(34.dp)
+                                    .padding(end = 4.dp),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
 
                             Column {
 
@@ -383,24 +402,15 @@ fun HomeScreen(
                                     text = manutenzione.title,
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.SemiBold,
-                                )
-                            }
-                            Column(
-                                horizontalAlignment = Alignment.End,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                            ) {
-                                Text(
-                                    text = manutenzione.date,
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.SemiBold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    color = MaterialTheme.colorScheme.primary
                                 )
                             }
                         }
 
 
                         //Luogo
-
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
@@ -420,7 +430,7 @@ fun HomeScreen(
 
                                 Text(
                                     text = manutenzione.place,
-                                    fontSize = 18.sp,
+                                    fontSize = 16.sp,
                                 )
                             } else {
                                 Spacer(
@@ -428,53 +438,66 @@ fun HomeScreen(
                                         .height(34.dp)
                                 )
                             }
-                        }
-
-                        //Kilometri
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                        ) {
-                            val kmt = formatKmt(manutenzione.kmt)
-                            val alphaVal = when (kmt) {
-                                "0" -> 0.0f
-                                else -> 1.0f
-                            }
-
-                            Icon(
-                                imageVector = ImageVector.vectorResource(id = R.drawable.time_to_leave),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier
-                                    .size(34.dp)
-                                    .padding(end = 4.dp)
-                                    .alpha(alphaVal),
-                            )
-
-                            Text(
-                                text = stringResource(R.string.value_km, kmt),
-                                fontSize = 18.sp,
-                                modifier = Modifier
-                                    .alpha(alphaVal)
-                            )
 
                             Column(
                                 horizontalAlignment = Alignment.End,
                                 modifier = Modifier
                                     .fillMaxWidth()
                             ) {
-                                val price = formatPrice(manState.men[index].price)
-                                val alphaValP = when (price) {
-                                    "0.00" -> 0.0f
-                                    else -> 1.0f
-                                }
+                                Text(
+                                    text = manutenzione.date,
+                                    fontSize = 18.sp,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
+
+                        //Kilometri
+                        val kmt = formatKmt(manutenzione.kmt)
+
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            if (kmt != "0") {
+                                Icon(
+                                    imageVector = ImageVector.vectorResource(id = R.drawable.time_to_leave),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier
+                                        .size(34.dp)
+                                        .padding(end = 4.dp)
+                                )
 
                                 Text(
-                                    text = stringResource(R.string.value_euro, price),
-                                    fontSize = 18.sp,
-                                    modifier = Modifier
-                                        .alpha(alphaValP)
+                                    text = stringResource(R.string.value_km, kmt),
+                                    fontSize = 16.sp
                                 )
+                            } else {
+                                Spacer(
+                                    modifier = Modifier
+                                        .height(34.dp)
+                                )
+                            }
+
+                            //Prezzo
+                            Column(
+                                horizontalAlignment = Alignment.End,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+                                val price = formatPrice(manState.men[index].price)
+
+                                if (price != "0.00") {
+                                    Text(
+                                        text = stringResource(R.string.value_euro, price),
+                                        fontSize = 18.sp
+                                    )
+                                } else {
+                                    Spacer(
+                                        modifier = Modifier
+                                            .height(34.dp)
+                                    )
+                                }
                             }
                         }
                     }
@@ -491,10 +514,8 @@ fun HomeScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp)
-                        //.clip(RoundedCornerShape(10.dp))
+                        .padding(horizontal = 10.dp)
                         .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(10.dp))
-                        //.background(MaterialTheme.colorScheme.primaryContainer)
                         .padding(12.dp)
                         .clickable {
                             navController.navigate("ViewRifScreen/$rifIndex")

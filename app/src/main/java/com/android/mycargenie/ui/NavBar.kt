@@ -543,6 +543,7 @@ fun MainApp(
                     popExitTransition = { slideOutHorizontally(targetOffsetX = { 1200 }, animationSpec = spring(stiffness = Spring.StiffnessMedium)) }
                     ) {
                     BackupScreen(
+                        navController = navController,
                         backupPermissionHandler = backupPermissionHandler,
                         onManEvent = manViewModel::onEvent,
                         onRifEvent = rifViewModel::onEvent

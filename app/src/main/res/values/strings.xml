@@ -17,7 +17,7 @@
     <string name="value_kwh">%1$skWh</string>
     <string name="value_l">%1$sl</string>
     <string name="settings">Impostazioni</string>
-    <string name="configure_profile_message">Configura le informazioni sul tuo veicolo per visualizzarne il libretto.</string>
+    <string name="configure_profile_message">Inserisci le informazioni del tuo veicolo per visualizzarne il libretto.</string>
     <string name="displacement">Cilindrata</string>
     <string name="cc">cc</string>
     <string name="power">Potenza</string>
@@ -131,4 +131,7 @@
     <string name="permission_to_read">Questa applicazione ha bisogno della tua autorizzazione per leggere file.</string>
     <string name="permit">Concedi</string>
     <string name="you_paid">"Hai pagato: "</string>
+    <string name="back_to_maintenance">Torna alla lista delle manutenzioni</string>
+    <string name="back_to_refueling">Torna alla lista dei rifornimenti</string>
+    <string name="add_1">Aggiunta</string>
 </resources>
