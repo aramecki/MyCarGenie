@@ -15,6 +15,11 @@
 -keep class androidx.compose.** { *; }
 -dontwarn androidx.compose.**
 
+-keep class androidx.datastore.preferences.** { *; }
+
+-keep class com.google.protobuf.** { *; }
+-keepclassmembers class com.google.protobuf.** { *; }
+
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
 #-keepattributes SourceFile,LineNumberTable
